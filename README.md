@@ -14,7 +14,8 @@ JS-Class-Loader works as either a command line tool, a Maven Mojo or a Servlet. 
 Servlet for dev and the generated static file for test and production installations.
 
 
-Getting started:
+Getting started
+---------------
 
 The simplest case on the command line:
 java -jar js-class-loader.jar --seed-file Main.js --output-file bundle.js
@@ -27,7 +28,8 @@ usages in source files to find runtime dependencies. It also parses any use of t
 dependencies and make sure they are loaded into the bundle before the subclass that requires them.
 
 
-Comparison with other tools:
+Comparison with other tools
+---------------------------
 
 RequireJS is a popular tool for doing this sort of thing. Reasons why this project still exists and isn't
 considered superceded by requireJS:

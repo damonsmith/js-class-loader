@@ -1,6 +1,10 @@
 js-class-loader
 ===============
 
+(Java) A Free Software tool for aggregating and serving large Javascript codebases with built-in dependency detection. 
+Fast, tested, easy to integrate and does not use the words rockstar or ninja, or have a website filled with big gradient 
+icons of robot kittens playing banjos. (but then it's not a javascript layout framework so I suppose it wouldn't anyway.)
+
 JS-Class-Loader is a java tool for managing large javascript codebases. It is not a generic tool like WRO4J or RequireJS
 that can be used on any codebase given a few modifications. This tool requires your source files to be organised in the
 Java style, where folders match package names and filenames match class names. If your code is organised this way then

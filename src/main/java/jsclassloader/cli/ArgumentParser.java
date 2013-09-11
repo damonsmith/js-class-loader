@@ -19,7 +19,7 @@ public class ArgumentParser {
 	
 	private static final Argument seedFilesArg = new Argument("seed.files", "f");
 	private static final Argument seedClassesArg = new Argument("seed.classes", "sc");
-	private static final Argument sourcePathArg = new Argument("source.paths", "s");
+	private static final Argument sourcePathArg = new Argument("source.paths", "sp");
 	private static final Argument basePathArg = new Argument("base.path", "b");
 	private static final Argument configFileArg =  new Argument("config.file", "c");
 	private static final Argument helpArg =  new Argument("help", "h");
@@ -81,15 +81,6 @@ public class ArgumentParser {
 				jsClassLoaderConfig.setSeedClassList(seedClassesFromCmdLine);
 			}
 				
-			if (jsClassLoaderConfig.getSourceFolders() == null) {
-				System.out.println("Error, no javascript class source paths were specified.\n" + 
-								   "Either set source folders directly with\n" +
-								   sourcePathArg.getLongText() + "=\"modules/module1/src,module/module2/src\"\n" +
-								   "or set a properties config file with\n " +
-								   configFileArg.getLongText() + "=\"conf/js-class-loader.properties\"");
-				System.exit(1);
-			}
-
 			if (jsClassLoaderConfig.getSeedFiles() == null && !seedClassesArg.isSet()) {
 				System.out.println("Error, no seed classes were specified.\n" + 
 								   "You can either specify some classes directly on the command line, e.g: \n" +
@@ -118,7 +109,7 @@ public class ArgumentParser {
 	
 	private static void printHelp() {
 		System.out.println(
-				"Javascript class loader - see www.jscl.caplin.com for more info.\n\n" +
+				"Javascript class loader - see www.jscl.testorg.com for more info.\n\n" +
 				"Usage: \n\n" +
 				"Specify a properties file with all the configuration in it:\n" +
 				"java -jar js-class-loader.jar " + configFileArg.getLongText() + "=conf/my-js-class-loader.properties\n\n" +
@@ -131,7 +122,7 @@ public class ArgumentParser {
 				"\n" +
 				"Options: \n" +
 				"-l, " + listArg.getLongText() + " - causes the bundler to list classes instead of outputting their contents\n" +
-				"-s=, " + sourcePathArg.getLongText() + "= - Comma separated list of base folders containing class files and folders.\n" +
+				"-sp=, " + sourcePathArg.getLongText() + "= - Comma separated list of base folders containing class files and folders.\n" +
 				"-f=, " + seedFilesArg.getLongText() + "= - Comma separated list of files containing text that matches fully qualified classes.\n" + 
 				"-sc=, " + seedClassesArg.getLongText() + "= - Comma separated list of fully qualified class names to use as seeds on top of any seed files.\n" + 
 				"-c=, " + configFileArg.getLongText() + "= - path to config properties file.\n" + 

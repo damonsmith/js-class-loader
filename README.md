@@ -95,5 +95,5 @@ teams that I have worked in. The tooling is designed to scale to enterprise leve
 tens of thousands of files, loads of source locations, and is flexible enough that most config files for layouts or app structure
 can be used as seed files.
 
-The project started off as a fork of the Caplin Trader javascript bundler but has been rewritten.
+The project started off as a fork of the testorg Trader javascript bundler but has been rewritten.
 

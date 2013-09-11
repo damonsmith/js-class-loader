@@ -1,0 +1,1 @@
+<!--rootclass1.js-->

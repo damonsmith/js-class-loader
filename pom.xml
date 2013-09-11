@@ -1,18 +1,18 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
-
-	<groupId>js-class-loader</groupId>
-	<artifactId>js-class-loader</artifactId>
+	<groupId>larrymite.javascript</groupId>
+	<artifactId>js-class-loader-parent</artifactId>
 	<version>1.2-SNAPSHOT</version>
-	<packaging>jar</packaging>
-
-	<name>js-class-loader</name>
-	<url>http://maven.apache.org</url>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
+	<packaging>pom</packaging>
+	<name>js-class-loader-group</name>
+	<scm>
+		<url>scm:git:git@github.com:damonsmith/js-class-loader.git</url>
+		<connection>scm:git:git@github.com:damonsmith/js-class-loader.git</connection>
+		<developerConnection>scm:git:git@github.com:damonsmith/js-class-loader.git</developerConnection>
+	</scm>
 	<build>
 		<plugins>
 			<plugin>
@@ -20,19 +20,6 @@
 				<version>2.3.2</version>
 				<configuration>
 					<target>1.6</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>jsclassloader.cli.JSClassLoader</mainClass>
-						</manifest>
-					</archive>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -43,23 +30,9 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-		</dependency>
-	</dependencies>
+	<modules>
+		<module>js-class-loader</module>
+		<module>js-class-loader-mojo</module>
+	</modules>
 
-	<scm>
-		<url>scm:git:git@github.com:damonsmith/js-class-loader.git</url>
-		<connection>scm:git:git@github.com:damonsmith/js-class-loader.git</connection>
-		<developerConnection>scm:git:git@github.com:damonsmith/js-class-loader.git</developerConnection>
-	</scm>
 </project>

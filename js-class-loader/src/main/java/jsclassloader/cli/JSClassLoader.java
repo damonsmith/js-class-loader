@@ -1,5 +1,8 @@
 package jsclassloader.cli;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +16,6 @@ public class JSClassLoader {
 
 	static boolean usePropertiesFile;
 	static String propFileName;
-	static String basePath;
 	static List<String> seedClassesFromCmdLine;
 	static String [] sourceFolders;
 	
@@ -35,7 +37,25 @@ public class JSClassLoader {
 		}
 		
 		Bundler bundler = new Bundler(seedClassList, dependencyGraph);
-		if (parser.isListMode()) {
+		
+		if (parser.isScriptTagMode()) {
+			for (ClassNode item : bundler.getClassList()) {
+				File file = dependencyGraph.getClassFileSet().getFileFromClassname(item.getValue());
+				
+				Path filePath = Paths.get(file.getAbsolutePath());
+				
+				/* Fix path string because java sees /. or \, as a folder and adds a .. to the relative path. */
+				String absoluteBasePath = new File(parser.getBasePath()).getAbsolutePath();
+				if (absoluteBasePath.indexOf(File.separator + ".") == absoluteBasePath.length() - 2) {
+					absoluteBasePath = absoluteBasePath.substring(0, absoluteBasePath.length() - 2);
+				}
+				/* ****************************************************************************************** */
+
+				Path basePath = Paths.get(absoluteBasePath);
+				System.out.println("<script type=\"text/javascript\" src=\"" + basePath.relativize(filePath) + "\"></script>");
+			}
+		}
+		else if (parser.isListMode()) {
 			for (ClassNode item : bundler.getClassList()) {
 				System.out.println(item.getValue());
 			}

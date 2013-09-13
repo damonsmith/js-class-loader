@@ -24,6 +24,7 @@ public class ArgumentParser {
 	private static final Argument configFileArg =  new Argument("config.file", "c");
 	private static final Argument helpArg =  new Argument("help", "h");
 	private static final Argument listArg =  new Argument("list", "l");
+	private static final Argument scriptTagsArg =  new Argument("scriptTags", "t");
 	
 	public Config parseArgs(String [] args) {
 		Config jsClassLoaderConfig;
@@ -39,6 +40,7 @@ public class ArgumentParser {
 			configFileArg.checkAndSet(arg);
 			helpArg.checkAndSet(arg);
 			listArg.checkAndSet(arg);
+			scriptTagsArg.checkAndSet(arg);
 		}
 		
 		if (helpArg.isSet()) {	
@@ -106,6 +108,15 @@ public class ArgumentParser {
 	public boolean isListMode() {
 		return listArg.isSet();
 	}
+	
+	public boolean isScriptTagMode() {
+		return scriptTagsArg.isSet();
+	}
+	
+	public String getBasePath() {
+		return basePathArg.getValue();
+	}
+	
 	
 	private static void printHelp() {
 		System.out.println(

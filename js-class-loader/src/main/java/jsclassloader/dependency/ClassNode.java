@@ -1,5 +1,6 @@
 package jsclassloader.dependency;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,7 @@ public class ClassNode
     public String getValue() {
 		return value;
 	}
+    
 	public void setValue(String value) {
 		this.value = value;
 	}

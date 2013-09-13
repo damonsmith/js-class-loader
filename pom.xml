@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>larrymite.javascript</groupId>
 	<artifactId>js-class-loader-parent</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>js-class-loader-group</name>
 	<scm>

@@ -17,11 +17,12 @@ import jsclassloader.Config;
  */
 public class ArgumentParser {
 	
-	private static final Argument seedFilesArg = new Argument("seed.files", "f");
+	private static final Argument seedFilesArg = new Argument("seed.files", "sf");
 	private static final Argument seedClassesArg = new Argument("seed.classes", "sc");
 	private static final Argument sourcePathArg = new Argument("source.paths", "sp");
 	private static final Argument basePathArg = new Argument("base.path", "b");
 	private static final Argument configFileArg =  new Argument("config.file", "c");
+	private static final Argument outputToFileArg = new Argument("output", "o");
 	private static final Argument helpArg =  new Argument("help", "h");
 	private static final Argument listArg =  new Argument("list", "l");
 	private static final Argument scriptTagsArg =  new Argument("scriptTags", "t");
@@ -41,6 +42,7 @@ public class ArgumentParser {
 			helpArg.checkAndSet(arg);
 			listArg.checkAndSet(arg);
 			scriptTagsArg.checkAndSet(arg);
+			outputToFileArg.checkAndSet(arg);
 		}
 		
 		if (helpArg.isSet()) {	
@@ -117,6 +119,10 @@ public class ArgumentParser {
 		return basePathArg.getValue();
 	}
 	
+	public String getOutpuTotFile() {
+		return outputToFileArg.getValue();
+	}
+	
 	
 	private static void printHelp() {
 		System.out.println(
@@ -137,7 +143,8 @@ public class ArgumentParser {
 				"-f=, " + seedFilesArg.getLongText() + "= - Comma separated list of files containing text that matches fully qualified classes.\n" + 
 				"-sc=, " + seedClassesArg.getLongText() + "= - Comma separated list of fully qualified class names to use as seeds on top of any seed files.\n" + 
 				"-c=, " + configFileArg.getLongText() + "= - path to config properties file.\n" + 
-				"-b=, " + basePathArg.getLongText() + "= - Alternative base path to base all relative paths from.\n"
+				"-b=, " + basePathArg.getLongText() + "= - Alternative base path to base all relative paths from.\n" +
+				"-o=, " + outputToFileArg.getLongText() + "= - File to write to, if not set then print to stdout.\n"
 		);
 	}
 }

@@ -1,6 +1,8 @@
 package jsclassloader.cli;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -38,6 +40,12 @@ public class JSClassLoader {
 		
 		Bundler bundler = new Bundler(seedClassList, dependencyGraph);
 		
+		PrintStream out = System.out;
+		
+		if (parser.getOutpuTotFile() != null) {
+			out = new PrintStream(new FileOutputStream(new File(parser.getOutpuTotFile())));
+		}
+		
 		if (parser.isScriptTagMode()) {
 			for (ClassNode item : bundler.getClassList()) {
 				File file = dependencyGraph.getClassFileSet().getFileFromClassname(item.getValue());
@@ -52,16 +60,16 @@ public class JSClassLoader {
 				/* ****************************************************************************************** */
 
 				Path basePath = Paths.get(absoluteBasePath);
-				System.out.println("<script type=\"text/javascript\" src=\"" + basePath.relativize(filePath) + "\"></script>");
+				out.println("<script type=\"text/javascript\" src=\"" + basePath.relativize(filePath) + "\"></script>");
 			}
 		}
 		else if (parser.isListMode()) {
 			for (ClassNode item : bundler.getClassList()) {
-				System.out.println(item.getValue());
+				out.println(item.getValue());
 			}
 		}
 		else {
-			bundler.write(System.out);
+			bundler.write(out);
 		}
 	}
 }

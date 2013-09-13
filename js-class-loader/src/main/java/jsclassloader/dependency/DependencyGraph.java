@@ -102,12 +102,14 @@ public class DependencyGraph {
 		List<String> results = new ArrayList<String>();
 		
 		for (File file: seedSources) {
-			BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
-			
-			for (DependencyParser.Match match : depParser.parse(in)) {
-				results.add(match.getClassname());
+			if (!file.isDirectory() && file.canRead()) {
+				BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
+				
+				for (DependencyParser.Match match : depParser.parse(in)) {
+					results.add(match.getClassname());
+				}
+				in.close();
 			}
-			in.close();
 		}
 		return results;
 	}

@@ -16,7 +16,6 @@ import org.junit.Test;
 
 public class JSDependencyGraphTest
 {
-
 	private String forceLoadRegex = ".*force\\.load\\s*\\(.*";
 	private String implementRegex = ".*imp\\.lements\\s*\\(.*";
 	private String extendRegex = ".*ext\\.ends\\s*\\(.*";
@@ -28,23 +27,21 @@ public class JSDependencyGraphTest
 	@Before
 	public void setUp() {
 		config = new Config();
-		config.setForceLoadRegex(forceLoadRegex);
-		config.setImplementRegex(implementRegex);
-		config.setExtendRegex(extendRegex);
-		config.setStartOfWholeLineForceLoadRegex(startOfWholeLineForceLoadRegex);
-		config.setWholeLineForceLoadRegex(wholeLineForceLoadRegex);
+		config.setProperty(Config.PROP_FORCE, forceLoadRegex);
+		config.setProperty(Config.PROP_IMPLEMENT, implementRegex);
+		config.setProperty(Config.PROP_EXTEND, extendRegex);
+		config.setProperty(Config.PROP_START_FORCE, startOfWholeLineForceLoadRegex);
+		config.setProperty(Config.PROP_WHOLE_FORCE, wholeLineForceLoadRegex);
 	}
 	
 	@After
-	public void tearDown() 
-	{
+	public void tearDown() {
 	}
 
 	@Test
-	public void testLoadNormalDependency() 
-	{
-		String[] roots = {"src/test/resources/dependency-tree"};
-		DependencyGraph loader = createClassLoader(roots);
+	public void testLoadNormalDependency()  throws Exception {
+		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree");
+		DependencyGraph loader = new DependencyGraph(config);
 		
 		assertTrue(loader.getNode("abra.cad.abra.Hat") != null);
 
@@ -58,10 +55,10 @@ public class JSDependencyGraphTest
 	}
 
 	@Test
-	public void testLoadWholeLineDependency() { 
+	public void testLoadWholeLineDependency() throws Exception { 
 		
-		String[] roots = {"src/test/resources/dependency-tree"};
-		DependencyGraph loader = createClassLoader(roots);
+		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree");
+		DependencyGraph loader = new DependencyGraph(config);
 		
 		assertTrue(loader.getNode("ala.kazam.Zap").hasRuntimeDependency("abra.cad.abra.Presto"));
 		assertTrue(loader.getNode("ala.kazam.Zap").hasStaticDependency("abra.cad.abra.Hey"));
@@ -70,18 +67,4 @@ public class JSDependencyGraphTest
 		assertFalse(loader.getNode("ala.kazam.Zap").hasRuntimeDependency("ala.kazam.Souffle"));//There is no Souffle, Neo.
 		assertTrue(loader.getNode("ala.kazam.Zap").hasStaticDependency("ala.kazam.Fizzle"));
 	}
-
-	private DependencyGraph createClassLoader(String[] rootFolders) {
-		try {
-		List<File> roots = new ArrayList<File>();
-		for (String root: rootFolders) {
-			roots.add(new File(root));
-		}
-		return new DependencyGraph(roots, config);
-		}
-		catch(IOException ioe) {
-			throw new RuntimeException("error reading class files : " + ioe);
-		}
-	}
-	
 }

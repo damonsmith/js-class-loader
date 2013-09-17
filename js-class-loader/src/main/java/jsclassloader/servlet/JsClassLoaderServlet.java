@@ -1,7 +1,6 @@
 package jsclassloader.servlet;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -25,8 +24,7 @@ public class JsClassLoaderServlet extends HttpServlet {
 		super.init(config);
 		try {
 			jsClassLoaderConfig = new Config(
-				this.getClass().getClassLoader().getResourceAsStream(propFileName),
-				config.getServletContext().getRealPath("."));
+				this.getClass().getClassLoader().getResourceAsStream(propFileName));
 		}
 		catch(IOException ioe) {
 			throw new ServletException(
@@ -38,11 +36,9 @@ public class JsClassLoaderServlet extends HttpServlet {
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) {
 		try {
-			DependencyGraph dependencyGraph = new DependencyGraph(jsClassLoaderConfig.getSourceFolderList(), jsClassLoaderConfig);
-			List<String> seedClasses = dependencyGraph.getSeedClassesFromFiles(jsClassLoaderConfig.getSeedFileList());
+			DependencyGraph dependencyGraph = new DependencyGraph(jsClassLoaderConfig);
 			
-			
-			Bundler bundler = new Bundler(seedClasses, dependencyGraph);
+			Bundler bundler = new Bundler(jsClassLoaderConfig, dependencyGraph);
 			response.setContentType("text/javascript");
 			
 			response.setContentLength(bundler.getContentLength());

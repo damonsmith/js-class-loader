@@ -27,7 +27,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>jsclassloader.cli.JSClassLoader</mainClass>
+							<mainClass>jsclassloader.cli.CommandLineRunner</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

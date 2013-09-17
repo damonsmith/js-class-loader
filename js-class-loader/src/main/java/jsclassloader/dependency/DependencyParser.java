@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import jsclassloader.Config;
 import jsclassloader.classes.ClassFileSet;
@@ -12,37 +13,38 @@ import jsclassloader.classes.LetterNode;
 
 public class DependencyParser {
 
-	private final LetterNode root;
+	private LetterNode root;
 	private StringBuffer sinceStartOfLine;
 	private List<Match> possibleMatches;
 	
-	private String forceLoadRegex;
-	private String implementRegex;
-	private String extendRegex;
-	private String startOfWholeLineForceLoadRegex;
-	private String wholeLineForceLoadRegex;
+	private Pattern extendRegex;
+	private Pattern implementRegex;
+	private Pattern forceLoadRegex;
+
+	private Pattern startOfWholeLineForceLoadRegex;
+	private Pattern wholeLineForceLoadRegex;
 	
 	private static String jsdocLinkRegex = ".*\\{ *@link.*";
 	
 	private int readAheadLimit = 1000;
+	
 
-	public DependencyParser(ClassFileSet fileSet, Config config) {
+	public DependencyParser(Config config) {
+		this.extendRegex = Pattern.compile(config.getProperty(Config.PROP_EXTEND));
+		this.implementRegex = Pattern.compile(config.getProperty(Config.PROP_IMPLEMENT));
+		this.forceLoadRegex = Pattern.compile(config.getProperty(Config.PROP_FORCE));
+		this.startOfWholeLineForceLoadRegex = Pattern.compile(config.getProperty(Config.PROP_START_FORCE));
+		this.wholeLineForceLoadRegex = Pattern.compile(config.getProperty(Config.PROP_WHOLE_FORCE));
+	}
+	
+	public void setClassFileSet(ClassFileSet fileSet) {
 		root = new ClassNameCharTree(fileSet).getRootNode();
-		
+	}
+	
+	public List<Match> parse(InputStream in) throws IOException {
 		sinceStartOfLine = new StringBuffer();
 		possibleMatches = new ArrayList<Match>();
-		
-		this.forceLoadRegex = config.getForceLoadRegex();
-		this.implementRegex = config.getImplementRegex();
-		this.extendRegex = config.getExtendRegex();
-		this.startOfWholeLineForceLoadRegex = config.getStartOfWholeLineForceLoadRegex();
-		this.wholeLineForceLoadRegex = config.getWholeLineForceLoadRegex();
-		
-	}
 
-	public List<Match> parse(InputStream in) throws IOException {
-		
-		sinceStartOfLine.setLength(0);
 		int latest;
 		List<Match> results = new ArrayList<Match>();
 		while((latest = in.read()) !=  -1)
@@ -111,7 +113,7 @@ public class DependencyParser {
 	}
 	
 	public void checkWholeLineForceLoad(String line, Match match) {
-		if (line.matches(wholeLineForceLoadRegex)) {
+		if (wholeLineForceLoadRegex.matcher(line).find()) {
 			match.setStaticDependency(true);
 		}
 		
@@ -127,16 +129,16 @@ public class DependencyParser {
 		
 		String line = sinceStartOfLine.toString();
 		
-		if(line.matches(startOfWholeLineForceLoadRegex)) {
+		if(startOfWholeLineForceLoadRegex.matcher(line).find()) {
 			match.setReadAheadRequired(true);
 		}
-		else if(line.matches(implementRegex)){
+		else if(implementRegex.matcher(line).find()){
 			match.setStaticDependency(true);
 		}
-		else if(line.matches(extendRegex)){
+		else if(extendRegex.matcher(line).find()){
 			match.setStaticDependency(true);
 		}
-		else if (line.matches(forceLoadRegex)) {
+		else if (forceLoadRegex.matcher(line).find()) {
 			match.setStaticDependency(true);
 		}
 	}

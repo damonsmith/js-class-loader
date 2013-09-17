@@ -3,7 +3,6 @@ package jsclassloader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +29,17 @@ public class JsBundleReaderTest
 	
 	@Before
 	public void setUp() {
+		
 		config = new Config();
-		config.setForceLoadRegex(forceLoadRegex);
-		config.setImplementRegex(implementRegex);
-		config.setExtendRegex(extendRegex);
-		config.setStartOfWholeLineForceLoadRegex(startOfWholeLineForceLoadRegex);
-		config.setWholeLineForceLoadRegex(wholeLineForceLoadRegex);
+		config.setProperty(Config.PROP_FORCE, forceLoadRegex);
+		config.setProperty(Config.PROP_IMPLEMENT, implementRegex);
+		config.setProperty(Config.PROP_EXTEND, extendRegex);
+		config.setProperty(Config.PROP_START_FORCE, startOfWholeLineForceLoadRegex);
+		config.setProperty(Config.PROP_WHOLE_FORCE, wholeLineForceLoadRegex);
 		
 		try {
-			List<File> roots = new ArrayList<File>();
-			roots.add(new File("src/test/resources/dependency-tree"));
-			depGraph = new DependencyGraph(roots, config);
+			config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree");
+			depGraph = new DependencyGraph(config);
 		}
 		catch(IOException ioe) {
 			throw new RuntimeException("error reading class files : " + ioe);
@@ -56,8 +55,8 @@ public class JsBundleReaderTest
 	@Test
 	public void testClassWithNoDependencies() 
 	{	
-		seedClasses.add("abra.cad.abra.Presto");
-		List<ClassNode> bundle = new Bundler(seedClasses, depGraph).getClassList();
+		config.setProperty(Config.PROP_SEED_CLASSES, "abra.cad.abra.Presto");
+		List<ClassNode> bundle = new Bundler(config, depGraph).getClassList();
 		
 		assertTrue(bundle.size() == 1);
 		assertEquals(bundle.get(0).getValue(), "abra.cad.abra.Presto");
@@ -66,9 +65,9 @@ public class JsBundleReaderTest
 	@Test
 	public void testRuntimeDependentClass() 
 	{
-		seedClasses.add("abra.cad.abra.open.sesame.Lamp");
+		config.setProperty(Config.PROP_SEED_CLASSES, "abra.cad.abra.open.sesame.Lamp");
 		
-		List<ClassNode> bundle = new Bundler(seedClasses, depGraph).getClassList();
+		List<ClassNode> bundle = new Bundler(config, depGraph).getClassList();
 		assertTrue(bundle.size() == 2);
 		assertEquals(bundle.get(0).getValue(), "abra.cad.abra.open.sesame.Lamp");
 		assertEquals(bundle.get(1).getValue(), "abra.cad.abra.Rabbit");
@@ -77,8 +76,9 @@ public class JsBundleReaderTest
 	@Test
 	public void testDependencyList() throws Exception
 	{
-		seedClasses.add("abra.cad.abra.Hat");
-		Bundler reader = new Bundler(seedClasses, depGraph);
+		config.setProperty(Config.PROP_SEED_CLASSES, "abra.cad.abra.Hat");
+		
+		Bundler reader = new Bundler(config, depGraph);
 		List<ClassNode> bundle = reader.getClassList();
 		
 		assertEquals(bundle.get(0).getValue(), "abra.cad.abra.open.sesame.Genie");

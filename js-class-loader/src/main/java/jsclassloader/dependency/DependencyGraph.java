@@ -24,9 +24,13 @@ public class DependencyGraph {
 		return classFileSet;
 	}
 
-	public DependencyGraph(List<File> sourceFolders, Config config) throws IOException {
-		classFileSet = new ClassFileSet(sourceFolders);
-		depParser = new DependencyParser(classFileSet, config);
+	public DependencyGraph(Config config) throws IOException {
+		classFileSet = new ClassFileSet(config);
+
+		depParser = new DependencyParser(config);
+		
+		depParser.setClassFileSet(classFileSet);
+		
 		nodeMap = new HashMap<String, ClassNode>();
 		for (String className : classFileSet.getAllJsClasses()) {
 			nodeMap.put(className, new ClassNode(className));

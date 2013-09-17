@@ -1,9 +1,23 @@
 js-class-loader
 ===============
 
-(Java) A Free Software tool for aggregating and serving large Javascript codebases with built-in dependency detection. 
+(Java) A Free Software tool for bundling and serving large Javascript codebases with built-in dependency detection. 
 Fast, tested, easy to integrate and does not use the words rockstar or ninja, or have a website filled with big gradient 
 icons of robot kittens playing banjos. (but then it's not a javascript layout framework so I suppose it wouldn't anyway.)
+
+Rules of JS-Class-Loader
+------------------------
+
+1. Class names must match file names
+2. Folder structure must match package structure
+3. You must have a well defined way of extending classes
+
+Having said that, you can still include 3rd party libraries and modules in your bundle that don't conform to this scheme. 
+You just need to explicitly include them in your code somewhere, you can't just rely on dependency detection to work out
+that you need them.
+
+What is it?
+-----------
 
 JS-Class-Loader is a java tool for managing large javascript codebases. It is not a generic tool like WRO4J or RequireJS
 that can be used on any codebase given a few modifications. This tool requires your source files to be organised in the
@@ -17,6 +31,7 @@ Servlet for dev and the generated static file for test and production installati
 It can be used to manage your own code as well as 3rd party modules. Third party modules may have to be listed as an explicit
 import() but they will be added to the bundle in the same way.
 
+See the wiki at http://github.com/damonsmith/js-class-loader for all the info and examples.
 
 Getting started
 ---------------

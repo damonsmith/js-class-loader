@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jsclassloader.Config;
+
+import com.esotericsoftware.wildcard.Paths;
+
 /**
  * Given a list of root folders this class will locate all js class files and store them, converting their
  * folder paths and file names into fully qualified class names.
@@ -17,8 +21,8 @@ public class ClassFileSet {
 	private Map<File, String> fileToClassnamelookup = new HashMap<File, String>();
 	private List<String> allJsClasses = new ArrayList<String>();
 
-	public ClassFileSet(List<File> rootDirs) {
-		this.rootDirs = rootDirs;
+	public ClassFileSet(Config config) {
+		this.rootDirs = this.generateSourceFolderList(config);
 		this.initialize();
 	}
 	
@@ -68,5 +72,17 @@ public class ClassFileSet {
 		String relative = name.substring(rootFilenameLength + 1 , endPos);
 		String result  = relative.replace(File.separatorChar, '.');
 		return result;
+	}
+	
+	private List<File> generateSourceFolderList(Config config) {
+		Paths paths = new Paths();
+		
+		String sourceFolders = config.getProperty(Config.PROP_SOURCE_FOLDERS);
+		String basePath = config.getProperty(Config.PROP_BASE_FOLDER);
+		
+		for (String path : sourceFolders.split(",")) {
+			paths.glob(basePath, path);
+		}
+		return paths.dirsOnly().getFiles();
 	}
 }

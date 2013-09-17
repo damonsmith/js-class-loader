@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -23,18 +26,39 @@ public class Bundler {
 	private ClassFileSet classFileSet;
 	private int contentLength;
 	private Map<String, Boolean> addedClasses;
+	private DependencyGraph dependencyGraph;
 	
 	public List<ClassNode> getClassList() {
 		return classList;
 	}
 
-	public Bundler(List<String> seedClasses, DependencyGraph dependencyGraph) {
+	public Bundler(Config config, DependencyGraph dependencyGraph) {
 		classList = new LinkedList<ClassNode>();
+		
+		this.dependencyGraph = dependencyGraph;
 		
 		addedClasses = new HashMap<String, Boolean>();
 		
-		for (String className : seedClasses) {
-			addNode(dependencyGraph.getNode(className), classList);
+		String seedClassString = config.getProperty(Config.PROP_SEED_CLASSES);
+		if (seedClassString != null) {
+			String [] seedClasses = seedClassString.split(",");
+		
+			for (String className : seedClasses) {
+				addNode(dependencyGraph.getNode(className), classList);
+			}
+		}
+		
+		if (config.getProperty(Config.PROP_SEED_FILES) != null) {
+			try {
+				List<String> seedFileClasses = dependencyGraph.getSeedClassesFromFiles(generateSeedFileList(config));
+			
+				for (String seedFileClass : seedFileClasses) {
+					addNode(dependencyGraph.getNode(seedFileClass), classList);
+				}
+			}
+			catch (IOException e) {
+				throw new RuntimeException("error parsing seed files: " + e);
+			}
 		}
 		
 		iterator = classList.listIterator();
@@ -84,6 +108,29 @@ public class Bundler {
 		}
 	}
 	
+	public void writeScriptTags(OutputStream out, Config config) throws IOException {
+		
+		String basePathString = config.getProperty(Config.PROP_BASE_FOLDER);
+		
+		for (ClassNode item : getClassList()) {
+			File file = dependencyGraph.getClassFileSet().getFileFromClassname(item.getValue());
+			
+			Path filePath = Paths.get(file.getAbsolutePath());
+			
+			/* Fix path string because java sees /. or \, as a folder and adds a .. to the relative path. */
+			String absoluteBasePath = new File(basePathString).getAbsolutePath();
+			if (absoluteBasePath.indexOf(File.separator + ".") == absoluteBasePath.length() - 2) {
+				absoluteBasePath = absoluteBasePath.substring(0, absoluteBasePath.length() - 2);
+			}
+			/* ****************************************************************************************** */
+
+			Path basePath = Paths.get(absoluteBasePath);
+			out.write(("<script type=\"text/javascript\" src=\"" + basePath.relativize(filePath) + "\"></script>\n").getBytes());
+		}
+		
+	}
+	
+	
 	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
 	public static int copy(InputStream input, OutputStream output) throws IOException {
@@ -104,6 +151,22 @@ public class Bundler {
 	     count += n;
 	   }
 	   return count;
+	}
+	
+	private List<File> generateSeedFileList(Config config) {
+		List<File> seedFileList = new ArrayList<File>();
+		
+		String seedFileString = config.getProperty(Config.PROP_SEED_FILES);
+		String basePath = config.getProperty(Config.PROP_BASE_FOLDER);
+		
+		com.esotericsoftware.wildcard.Paths paths;
+		for (String path : seedFileString.split(",")) {
+			paths = new com.esotericsoftware.wildcard.Paths();
+			paths.glob(basePath, path);
+			seedFileList.addAll(paths.getFiles());
+		}
+
+		return seedFileList;
 	}
 	
 	

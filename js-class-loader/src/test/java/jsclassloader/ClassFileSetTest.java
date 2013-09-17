@@ -1,6 +1,5 @@
 package jsclassloader;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +29,10 @@ public class ClassFileSetTest
 	@Test
 	public void testFindAllClasses() throws IOException 
 	{
-		File root = new File("src/test/resources/jsbundler");
-		List<File> roots = new ArrayList<File>();
-		roots.add(root);
-		ClassFileSet unit = new ClassFileSet(roots);
+		Config config = new Config();
+		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/jsbundler");
+		
+		ClassFileSet unit = new ClassFileSet(config);
 		
 		List<String> result = unit.getAllJsClasses();
 		
@@ -55,10 +54,9 @@ public class ClassFileSetTest
 	@Test
 	public void testFindDepTestClasses() throws IOException 
 	{
-		File root = new File("src/test/resources/dependency-tree");
-		List<File> roots = new ArrayList<File>();
-		roots.add(root);
-		ClassFileSet unit = new ClassFileSet(roots);
+		Config config = new Config();
+		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree");
+		ClassFileSet unit = new ClassFileSet(config);
 		
 		List<String> result = unit.getAllJsClasses();
 		

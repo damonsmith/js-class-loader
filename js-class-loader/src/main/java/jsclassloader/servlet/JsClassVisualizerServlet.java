@@ -22,8 +22,7 @@ public class JsClassVisualizerServlet extends HttpServlet {
 		super.init(config);
 		try {
 			jsClassLoaderConfig = new Config(
-				this.getClass().getClassLoader().getResourceAsStream(propFileName),
-				config.getServletContext().getRealPath("."));
+				this.getClass().getClassLoader().getResourceAsStream(propFileName));
 		}
 		catch(IOException ioe) {
 			throw new ServletException(
@@ -36,7 +35,7 @@ public class JsClassVisualizerServlet extends HttpServlet {
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) {
 		try {
-			DependencyGraph dependencyGraph = new DependencyGraph(jsClassLoaderConfig.getSourceFolderList(), jsClassLoaderConfig);
+			DependencyGraph dependencyGraph = new DependencyGraph(jsClassLoaderConfig);
 			response.setContentType("text/plain");
 			response.getWriter().print(dependencyGraph.renderDotFile(request.getParameter("root.class")));
 		}

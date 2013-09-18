@@ -32,10 +32,10 @@ public class Bundler {
 		return classList;
 	}
 
-	public Bundler(Config config, DependencyGraph dependencyGraph) {
+	public Bundler(Config config) throws IOException {
 		classList = new LinkedList<ClassNode>();
 		
-		this.dependencyGraph = dependencyGraph;
+		this.dependencyGraph = new DependencyGraph(config);
 		
 		addedClasses = new HashMap<String, Boolean>();
 		

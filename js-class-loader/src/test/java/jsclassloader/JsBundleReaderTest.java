@@ -3,8 +3,6 @@ package jsclassloader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import jsclassloader.dependency.ClassNode;
@@ -37,14 +35,7 @@ public class JsBundleReaderTest
 		config.setProperty(Config.PROP_START_FORCE, startOfWholeLineForceLoadRegex);
 		config.setProperty(Config.PROP_WHOLE_FORCE, wholeLineForceLoadRegex);
 		
-		try {
-			config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree");
-			depGraph = new DependencyGraph(config);
-		}
-		catch(IOException ioe) {
-			throw new RuntimeException("error reading class files : " + ioe);
-		}
-		seedClasses = new ArrayList<String>();
+		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree");
 	}
 
 	@After
@@ -53,21 +44,21 @@ public class JsBundleReaderTest
 	}
 
 	@Test
-	public void testClassWithNoDependencies() 
+	public void testClassWithNoDependencies()  throws Exception
 	{	
 		config.setProperty(Config.PROP_SEED_CLASSES, "abra.cad.abra.Presto");
-		List<ClassNode> bundle = new Bundler(config, depGraph).getClassList();
+		List<ClassNode> bundle = new Bundler(config).getClassList();
 		
 		assertTrue(bundle.size() == 1);
 		assertEquals(bundle.get(0).getValue(), "abra.cad.abra.Presto");
 	}
 	
 	@Test
-	public void testRuntimeDependentClass() 
+	public void testRuntimeDependentClass()  throws Exception
 	{
 		config.setProperty(Config.PROP_SEED_CLASSES, "abra.cad.abra.open.sesame.Lamp");
 		
-		List<ClassNode> bundle = new Bundler(config, depGraph).getClassList();
+		List<ClassNode> bundle = new Bundler(config).getClassList();
 		assertTrue(bundle.size() == 2);
 		assertEquals(bundle.get(0).getValue(), "abra.cad.abra.open.sesame.Lamp");
 		assertEquals(bundle.get(1).getValue(), "abra.cad.abra.Rabbit");
@@ -78,7 +69,7 @@ public class JsBundleReaderTest
 	{
 		config.setProperty(Config.PROP_SEED_CLASSES, "abra.cad.abra.Hat");
 		
-		Bundler reader = new Bundler(config, depGraph);
+		Bundler reader = new Bundler(config);
 		List<ClassNode> bundle = reader.getClassList();
 		
 		assertEquals(bundle.get(0).getValue(), "abra.cad.abra.open.sesame.Genie");

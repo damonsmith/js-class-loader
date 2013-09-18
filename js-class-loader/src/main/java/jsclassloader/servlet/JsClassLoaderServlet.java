@@ -36,9 +36,7 @@ public class JsClassLoaderServlet extends HttpServlet {
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) {
 		try {
-			DependencyGraph dependencyGraph = new DependencyGraph(jsClassLoaderConfig);
-			
-			Bundler bundler = new Bundler(jsClassLoaderConfig, dependencyGraph);
+			Bundler bundler = new Bundler(jsClassLoaderConfig);
 			response.setContentType("text/javascript");
 			
 			response.setContentLength(bundler.getContentLength());

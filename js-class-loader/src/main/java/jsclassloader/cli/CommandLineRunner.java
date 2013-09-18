@@ -8,7 +8,6 @@ import java.util.List;
 import jsclassloader.Bundler;
 import jsclassloader.Config;
 import jsclassloader.dependency.ClassNode;
-import jsclassloader.dependency.DependencyGraph;
 
 
 public class CommandLineRunner {
@@ -20,11 +19,9 @@ public class CommandLineRunner {
 	
 	public static void main(String[] args) throws Exception {
 		ArgumentParser parser = new ArgumentParser();
-		Config jsClassLoaderConfig = parser.parseArgs(args);
+		Config config = parser.parseArgs(args);
 		
-		DependencyGraph dependencyGraph = new DependencyGraph(jsClassLoaderConfig);
-		
-		Bundler bundler = new Bundler(jsClassLoaderConfig, dependencyGraph);
+		Bundler bundler = new Bundler(config);
 		
 		PrintStream out = System.out;
 		
@@ -33,7 +30,7 @@ public class CommandLineRunner {
 		}
 		
 		if (parser.isScriptTagMode()) {
-			bundler.writeScriptTags(out, jsClassLoaderConfig);
+			bundler.writeScriptTags(out, config);
 		}
 		else if (parser.isListMode()) {
 			for (ClassNode item : bundler.getClassList()) {

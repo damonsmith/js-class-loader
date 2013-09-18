@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import jsclassloader.Bundler;
 import jsclassloader.Config;
-import jsclassloader.dependency.DependencyGraph;
 
 
 @SuppressWarnings("serial")

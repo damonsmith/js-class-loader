@@ -11,40 +11,56 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
 
 /**
  * @goal generate-js-bundle
- * @phase process-resources
  */
 public class JsClassLoaderMojo extends AbstractMojo {
 
 	/**
-	 * @parameter default-value="${project}"
-	 */
-	private MavenProject mavenProject;
-
-	/**
 	 * Location of the config file.
 	 * 
-	 * @parameter expression="${project.build.directory}/classes/js-class-loader.properties"
+	 * @parameter default-value="${project.build.outputDirectory}/js-class-loader.properties"
 	 */
-	private File configPath;
+	private String configFile;
+	
+	/**
+	 * Location of the script sources:
+	 * 
+	 * @parameter
+	 */
+	private String scriptSources;
+	
+	/**
+	 * Where to write the bundle (relative to target/${finalName}):
+	 * 
+	 * @parameter
+	 */
+	private String bundleFile;
+	
+	/**
+	 * Where to write the script tags file (relative to target/${finalName}):
+	 * 
+	 * @parameter
+	 */
+	private String scriptTagsFile;
+	
 
 	public void execute() throws MojoExecutionException {
 
 		OutputStream out = null;
 		try {
 
-			Properties properties = new Properties();
-			properties.load(new FileInputStream(configPath));
+			Config config = new Config();
+			System.out.println("Config path: " + configFile);
+			if ((new File(configFile)).exists()) {
+				config.loadPropertiesFromStream(new FileInputStream(configFile));
+			}
 			
-			Config config = new Config(mavenProject.getProperties());
-
+			
 			File outputFile = new File(
 					config.getProperty(Config.PROP_BUNDLE_FILE));
 			if (!outputFile.getParentFile().exists()) {
@@ -52,9 +68,22 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			}
 
 			out = new BufferedOutputStream(new FileOutputStream(outputFile));
-
+			
 			Bundler bundler = new Bundler(config);
 			bundler.write(out);
+			
+			out.close();
+			
+			File scriptOutputFile = new File(
+					config.getProperty(Config.PROP_SCRIPT_TAGS));
+			if (!scriptOutputFile.getParentFile().exists()) {
+				scriptOutputFile.getParentFile().mkdirs();
+			}
+			out = new BufferedOutputStream(new FileOutputStream(scriptOutputFile));
+			
+			bundler.writeScriptTags(out, config);
+			
+			out.close();
 
 		} catch (FileNotFoundException e1) {
 			throw new RuntimeException(e1);

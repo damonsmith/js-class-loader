@@ -1,0 +1,9 @@
+apply plugin: 'war'
+
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+	runtime 'larrymite.javascript:js-class-loader:1.2.2-SNAPSHOT'
+}

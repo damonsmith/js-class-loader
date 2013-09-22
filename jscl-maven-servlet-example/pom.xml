@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>larrymite.javascript</groupId>
+	<artifactId>jscl-servlet-example</artifactId>
+	<version>1.2.2-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>JSCL Example Project with servlet bundling</name>
+	<url>http://maven.apache.org</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>larrymite.javascript</groupId>
+			<artifactId>js-class-loader</artifactId>
+			<version>1.2.2-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>jscl-servlet-example</finalName>
+	</build>
+	<description>A standard maven webapp project with a JS-Class-Loader servlet configured to bundle and serve the included example js files.</description>
+</project>

@@ -11,10 +11,10 @@ import java.util.Properties;
 public class Config {
 
 	public static final String PROP_BASE_FOLDER = "base.folder";
-	public static final String PROP_SOURCE_FOLDERS = "source.folders";
+	public static final String PROP_SOURCE_FOLDERS = "sourceFolders";
 	
-	public static final String PROP_SEED_FILES = "seed.files";
-	public static final String PROP_SEED_CLASSES = "seed.classes";
+	public static final String PROP_SEED_FILES = "seedFiles";
+	public static final String PROP_SEED_CLASSES = "seedClasses";
 	
 	public static final String PROP_IMPLEMENT = "regex.implement";
 	public static final String PROP_EXTEND = "regex.extend";
@@ -24,6 +24,7 @@ public class Config {
 	
 	public static final String PROP_BUNDLE_FILE = "bundle.file";
 	public static final String PROP_SCRIPT_TAGS = "script.tags.file";
+	public static final String PROP_SCRIPT_TAG_BASE_PATH = "script.tags.basePath";
 	
 	public Properties properties;
 	

@@ -31,22 +31,30 @@
 	</dependencies>
 
 	<build>
-		<finalName>jscl-maven-example</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>larrymite.javascript</groupId>
 				<artifactId>js-class-loader-mojo</artifactId>
 				<version>1.2.2-SNAPSHOT</version>
-				
+
 				<executions>
 					<execution>
-						<phase>process-resources</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate-js-bundle</goal>
 						</goals>
+						<configuration>
+							<configFile>${basedir}/src/main/resources/js-class-loader.properties</configFile>
+							<basePath>${basedir}/src/main/webapp</basePath>
+							<sourceFolders>js/modules/*,js/lib</sourceFolders>
+							<seedClasses>com.myproject.Loader</seedClasses>
+							<seedFiles>conf/layout.anyoldtextfile</seedFiles>
+							<bundleFile>gen/bundle.js</bundleFile>
+							<scriptTagsFile>gen/jscl-script-tags.html</scriptTagsFile>
+						</configuration>
 					</execution>
 				</executions>
-
 			</plugin>
 		</plugins>
 	</build>

@@ -32,7 +32,7 @@
 	<modules>
 		<module>js-class-loader</module>
 		<module>js-class-loader-mojo</module>
-    <module>jscl-maven-example</module>
+		<module>jscl-maven-example</module>
   </modules>
 
 </project>

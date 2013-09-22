@@ -118,7 +118,7 @@ public class Bundler {
 	public void writeScriptTags(OutputStream out, Config config)
 			throws IOException {
 
-		String basePathString = config.getProperty(Config.PROP_BASE_FOLDER);
+		String basePathString = config.getProperty(Config.PROP_SCRIPT_TAG_BASE_PATH);
 
 		for (ClassNode item : getClassList()) {
 			File file = dependencyGraph.getClassFileSet().getFileFromClassname(

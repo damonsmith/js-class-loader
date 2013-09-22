@@ -14,21 +14,21 @@ import jsclassloader.Config;
  */
 public class ArgumentParser {
 
-	private static final Argument seedFilesArg = new Argument("seed.files",
+	private static final Argument seedFilesArg = new Argument("seedFiles",
 			"sf");
-	private static final Argument seedClassesArg = new Argument("seed.classes",
+	private static final Argument seedClassesArg = new Argument("seedClasses",
 			"sc");
-	private static final Argument sourcePathArg = new Argument("source.paths",
+	private static final Argument sourcePathArg = new Argument("sourcePaths",
 			"sp");
-	private static final Argument basePathArg = new Argument("base.path", "b");
-	private static final Argument configFileArg = new Argument("config.file",
+	private static final Argument basePathArg = new Argument("basePath", "b");
+	private static final Argument configFileArg = new Argument("configFile",
 			"c");
 	private static final Argument bundleOutputPathArg = new Argument(
-			"bundle.output", "o");
+			"bundleOutput", "o");
 	private static final Argument helpArg = new Argument("help", "h");
 	private static final Argument listArg = new Argument("list", "l");
 	private static final Argument scriptTagsArg = new Argument(
-			"script.tag.output", "t");
+			"scriptTagOutput", "t");
 
 	public Config parseArgs(String[] args) {
 

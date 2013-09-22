@@ -94,9 +94,11 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			else {
 				throw new MojoExecutionException("Can't find the config file in JS-Class-Loader plugin config: " + configFile);
 			}
+			
+			System.out.println("Base path parameter: " + basePath);
 			if (basePath != null) {
 				config.setProperty(Config.PROP_BASE_FOLDER, basePath);
-			}			
+			}		
 			if (seedFiles != null) {
 				config.setProperty(Config.PROP_SEED_FILES, seedFiles);
 			}

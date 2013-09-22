@@ -47,6 +47,7 @@
 						<configuration>
 							<configFile>${basedir}/src/main/resources/js-class-loader.properties</configFile>
 							<basePath>${basedir}/src/main/webapp</basePath>
+							<scriptTagsBasePath>${basedir}/src/main/webapp</scriptTagsBasePath>
 							<sourceFolders>js/modules/*,js/lib</sourceFolders>
 							<seedClasses>com.myproject.Loader</seedClasses>
 							<seedFiles>conf/layout.anyoldtextfile</seedFiles>
@@ -57,5 +58,39 @@
 				</executions>
 			</plugin>
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>larrymite.javascript</groupId>
+										<artifactId>js-class-loader-mojo</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>generate-js-bundle</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute>
+											<runOnIncremental>true</runOnIncremental>
+										</execute>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
 	</build>
 </project>

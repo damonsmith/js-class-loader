@@ -23,17 +23,6 @@ public class ClassFileSet {
 
 	public ClassFileSet(Config config) {
 		this.rootDirs = this.generateSourceFolderList(config);
-		
-		for (File file : rootDirs) {
-			System.out.println("*");
-			
-			System.out.println("*");
-			System.out.println("*");
-			System.out.println("*");
-			System.out.println("*");
-			System.out.println("*");
-			System.out.println(file.getAbsolutePath());
-		}
 		this.initialize();
 	}
 	
@@ -91,7 +80,6 @@ public class ClassFileSet {
 		String sourceFolders = config.getProperty(Config.PROP_SOURCE_FOLDERS);
 		String basePath = config.getProperty(Config.PROP_BASE_FOLDER);
 		for (String path : sourceFolders.split(",")) {
-			System.out.println("GLOB: " + basePath + "-/-" + path);
 			paths.glob(basePath, path);
 		}
 		return paths.dirsOnly().getFiles();

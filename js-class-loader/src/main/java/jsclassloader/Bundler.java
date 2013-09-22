@@ -138,8 +138,10 @@ public class Bundler {
 						absoluteBasePath.length() - 2);
 			}
 			/* ****************************************************************************************** */
-
 			Path basePath = Paths.get(absoluteBasePath);
+			
+			System.out.println("Base: " + absoluteBasePath + ", path: " + file.getAbsolutePath());
+			
 			out.write(("<script type=\"text/javascript\" src=\""
 					+ basePath.relativize(filePath) + "\"></script>\n")
 					.getBytes());

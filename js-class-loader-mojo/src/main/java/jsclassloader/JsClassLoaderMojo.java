@@ -23,7 +23,7 @@ public class JsClassLoaderMojo extends AbstractMojo {
 	/**
 	 * Base path that all the other path parameters will be relative to. 
 	 * 
-	 * @parameter
+	 * @parameter default-value="${basedir}/src/main/webapp"
 	 */
 	private String basePath;
 	
@@ -34,7 +34,7 @@ public class JsClassLoaderMojo extends AbstractMojo {
 	 * maven properties so you should configure the path settings in the plugin config
 	 * rather than in a config file so it can survive being moved, renamed or refactored. 
 	 * 
-	 * @parameter default-value="${project.build.outputDirectory}/js-class-loader.properties"
+	 * @parameter default-value="${basedir}/src/main/resources/js-class-loader.properties"
 	 */
 	private String configFile;
 	
@@ -69,13 +69,13 @@ public class JsClassLoaderMojo extends AbstractMojo {
 	
 	/**
 	 * Where to write the script tags file
-	 * @parameter name="script.tags.file"
+	 * @parameter
 	 */
 	private String scriptTagsFile;
 	
 	/**
 	 * Where each script tag src will be relative to
-	 * @parameter name="script.tags.basePath"
+	 * @parameter
 	 */
 	private String scriptTagsBasePath;
 	

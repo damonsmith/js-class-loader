@@ -24,7 +24,7 @@ public class Config {
 	
 	public static final String PROP_BUNDLE_FILE = "bundle.file";
 	public static final String PROP_SCRIPT_TAGS = "script.tags.file";
-	public static final String PROP_SCRIPT_TAG_BASE_PATH = "script.tags.basePath";
+	public static final String PROP_SCRIPT_TAG_BASE_PATH = "scriptTagsBasePath";
 	
 	public Properties properties;
 	

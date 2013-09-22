@@ -45,9 +45,12 @@
 							<goal>generate-js-bundle</goal>
 						</goals>
 						<configuration>
+							<!-- These three path settings are all the default values: -->
 							<configFile>${basedir}/src/main/resources/js-class-loader.properties</configFile>
 							<basePath>${basedir}/src/main/webapp</basePath>
 							<scriptTagsBasePath>${basedir}/src/main/webapp</scriptTagsBasePath>
+
+							<!-- These next five settings could all be moved into the properties file for neatness: -->
 							<sourceFolders>js/modules/*,js/lib</sourceFolders>
 							<seedClasses>com.myproject.Loader</seedClasses>
 							<seedFiles>conf/layout.anyoldtextfile</seedFiles>
@@ -59,10 +62,10 @@
 			</plugin>
 		</plugins>
 
+		<!-- This whole pluginManagement section is only here to force the Eclipse m2e plugin to
+		     run the bundler when building. If you're not going to use the Eclipse m2e plugin you can delete it. -->
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>

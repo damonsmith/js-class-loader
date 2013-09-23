@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -35,8 +34,6 @@ public class Bundler {
 	private Map<String, Boolean> addedClasses;
 	private DependencyGraph dependencyGraph;
 	
-	private final Charset UTF8_CHARSET = Charset.forName("UTF-8");
-
 	public List<ClassNode> getClassList() {
 		return classList;
 	}

@@ -1,5 +1,5 @@
-//Create a namespace from a string, e.g:
-//namespace("com.mycompany.mypackage");
+// Create a namespace from a string, e.g:
+// namespace("com.mycompany.mypackage");
 function namespace(name) {
 	var i, node = window, parts = name.split(".");
 	for (i=0; i<parts.length; i++) {

@@ -5,20 +5,28 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import jsclassloader.classes.ClassFileSet;
 import jsclassloader.dependency.ClassNode;
 import jsclassloader.dependency.DependencyGraph;
 
 public class Bundler {
+	
+	private final static Logger LOG = Logger.getLogger("JS-Class-Loader");
+	
 	private List<ClassNode> classList;
 	private Iterator<ClassNode> iterator;
 	private ClassNode currentNode;
@@ -26,6 +34,8 @@ public class Bundler {
 	private int contentLength;
 	private Map<String, Boolean> addedClasses;
 	private DependencyGraph dependencyGraph;
+	
+	private final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
 	public List<ClassNode> getClassList() {
 		return classList;
@@ -102,19 +112,6 @@ public class Bundler {
 		}
 	}
 
-	public void write(OutputStream out) throws IOException {
-
-		iterator = classList.listIterator();
-
-		while (iterator.hasNext()) {
-			currentNode = iterator.next();
-			File file = classFileSet.getFileFromClassname(currentNode
-					.getValue());
-			out.write(("\n\n//File: " + file.getName() + "\n").getBytes());
-			Bundler.copy(new FileInputStream(file), out);
-		}
-	}
-
 	public void writeScriptTags(OutputStream out, Config config)
 			throws IOException {
 
@@ -140,7 +137,7 @@ public class Bundler {
 			/* ****************************************************************************************** */
 			Path basePath = Paths.get(absoluteBasePath);
 			
-			System.out.println("Base: " + absoluteBasePath + ", path: " + file.getAbsolutePath());
+			LOG.info("Base: " + absoluteBasePath + ", path: " + file.getAbsolutePath());
 			
 			out.write(("<script type=\"text/javascript\" src=\""
 					+ basePath.relativize(filePath) + "\"></script>\n")
@@ -148,24 +145,47 @@ public class Bundler {
 		}
 
 	}
+	
+	public void write(OutputStream out) throws IOException {
+		MessageDigest md5 = null;
+		iterator = classList.listIterator();
+		try {
+			md5 = MessageDigest.getInstance("MD5");
+		}
+		catch (NoSuchAlgorithmException nsae) {
+			throw new RuntimeException("Java doesn't have MD5 hashing for some reason. JSCL needs it to create a unique id of the content. Aborting.");
+		}
+		while (iterator.hasNext()) {
+			currentNode = iterator.next();
+			File file = classFileSet.getFileFromClassname(currentNode
+					.getValue());
+			out.write(("\n\n//File: " + file.getName() + "\n").getBytes());
+			Bundler.copy(new FileInputStream(file), out, md5);
+		}
+		
+		String md5String = new BigInteger(1, md5.digest()).toString(16);
+		
+		out.write(("\n\nvar JSCL_UNIQUE_BUNDLE_HASH=" + "'" + md5String + "';\n\n").getBytes());
+	}
 
 	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-	public static int copy(InputStream input, OutputStream output)
+	public static int copy(InputStream input, OutputStream output, MessageDigest md5)
 			throws IOException {
-		long count = copyLarge(input, output);
+		long count = copyLarge(input, output, md5);
 		if (count > Integer.MAX_VALUE) {
 			return -1;
 		}
 		return (int) count;
 	}
 
-	public static long copyLarge(InputStream input, OutputStream output)
+	public static long copyLarge(InputStream input, OutputStream output, MessageDigest md5)
 			throws IOException {
 		byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 		long count = 0;
 		int n = 0;
 		while (-1 != (n = input.read(buffer))) {
+			md5.update(buffer);
 			output.write(buffer, 0, n);
 			count += n;
 		}

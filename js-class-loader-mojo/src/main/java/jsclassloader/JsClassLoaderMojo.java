@@ -118,10 +118,20 @@ public class JsClassLoaderMojo extends AbstractMojo {
 				config.setProperty(Config.PROP_SCRIPT_TAG_BASE_PATH, scriptTagsBasePath);
 			}
 			
-			File outputFile = new File(
-					config.getProperty(Config.PROP_BASE_FOLDER) + 
-					File.separator + 
-					config.getProperty(Config.PROP_BUNDLE_FILE));
+			
+			String bundlePath = config.getProperty(Config.PROP_BUNDLE_FILE);
+			File outputFile;
+			
+			if (new File(bundlePath).isAbsolute()) {
+				outputFile = new File(bundlePath);
+			}
+			else {
+				outputFile = new File(
+						config.getProperty(Config.PROP_BASE_FOLDER) + 
+						File.separator + 
+						config.getProperty(Config.PROP_BUNDLE_FILE));
+			}
+			
 			if (!outputFile.getParentFile().exists()) {
 				outputFile.getParentFile().mkdirs();
 			}
@@ -132,11 +142,19 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			bundler.write(out);
 			
 			out.close();
-			System.out.println();
-			File scriptOutputFile = new File(
-					config.getProperty(Config.PROP_BASE_FOLDER) + 
-					File.separator + 
-					config.getProperty(Config.PROP_SCRIPT_TAGS));
+			
+			String scriptTagsPath = config.getProperty(Config.PROP_SCRIPT_TAGS);
+			File scriptOutputFile;
+			
+			if (new File(scriptTagsPath).isAbsolute()) {
+				scriptOutputFile = new File(scriptTagsPath);
+			}
+			else {
+				scriptOutputFile = new File(
+						config.getProperty(Config.PROP_BASE_FOLDER) + 
+						File.separator + 
+						config.getProperty(Config.PROP_SCRIPT_TAGS));
+			}
 			
 			if (!scriptOutputFile.getParentFile().exists()) {
 				scriptOutputFile.getParentFile().mkdirs();

@@ -40,7 +40,7 @@
 
 				<executions>
 					<execution>
-						<phase>generate-sources</phase>
+						<phase>process-resources</phase>
 						<goals>
 							<goal>generate-js-bundle</goal>
 						</goals>
@@ -50,12 +50,15 @@
 							<basePath>${basedir}/src/main/webapp</basePath>
 							<scriptTagsBasePath>${basedir}/src/main/webapp</scriptTagsBasePath>
 
-							<!-- These next five settings could all be moved into the properties file for neatness: -->
+							<!-- This is the bit where you need to make sure your generated files are going to the right place -->
+							<bundleFile>${project.build.directory}/${project.artifactId}/gen/bundle.js</bundleFile>
+							<scriptTagsFile>${project.build.directory}/${project.artifactId}/gen/jscl-script-tags.html</scriptTagsFile>
+
+							<!-- These next three settings could all be moved into the properties file for neatness: -->
 							<sourceFolders>js/modules/*,js/lib</sourceFolders>
 							<seedClasses>com.myproject.Loader</seedClasses>
 							<seedFiles>conf/layout.anyoldtextfile</seedFiles>
-							<bundleFile>gen/bundle.js</bundleFile>
-							<scriptTagsFile>gen/jscl-script-tags.html</scriptTagsFile>
+							
 						</configuration>
 					</execution>
 				</executions>

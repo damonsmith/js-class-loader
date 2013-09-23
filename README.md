@@ -10,7 +10,8 @@ Rules of JS-Class-Loader
 
 1. Class names must match file names
 2. Folder structure must match package structure
-3. You must have a well defined way of extending classes
+3. File names must not have extra dots in them (dashes and everything else are ok though)
+4. You must have a well defined way of extending classes
 
 Having said that, you can still include 3rd party libraries and modules in your bundle that don't conform to this scheme. 
 You just need to explicitly include them in your code somewhere, you can't just rely on dependency detection to work out
@@ -23,10 +24,13 @@ JS-Class-Loader is a java tool for managing large javascript codebases. It is no
 that can be used on any codebase given a few modifications. This tool requires your source files to be organised in the
 Java style, where folders match package names and filenames match class names. If your code is organised this way then
 JS-Class-Loader will detect dependencies without you having to declare them at all, bundle your code or generate script
-tags for development, and also provide diagnostics like dependency dot files and graphs.
+tags for development, and also provide diagnostics like dependency graphs, lists of unused files and validation that your files
+contain the classes you think they do. (it's all too easy to copy-and-paste a function onto the wrong prototype in JS)
 
-JS-Class-Loader works as either a command line tool, a Maven Mojo or a Servlet. The default config would be to use the 
-Servlet for dev and the generated static file for test and production installations.
+JS-Class-Loader works as either a command line tool, a Maven Mojo, a Gradle task or a Servlet. The command line or java runners
+can be integrated into any other build system or just used ad-hoc. 
+
+A recommended approach would be to use the servlet for dev and the generated static bundle file for test and production installations.
 
 It can be used to manage your own code as well as 3rd party modules. Third party modules may have to be listed as an explicit
 import() but they will be added to the bundle in the same way.

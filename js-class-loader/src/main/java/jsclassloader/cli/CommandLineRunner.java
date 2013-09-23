@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jsclassloader.Bundler;
 import jsclassloader.Config;
@@ -16,8 +18,12 @@ public class CommandLineRunner {
 	static String propFileName;
 	static List<String> seedClassesFromCmdLine;
 	static String [] sourceFolders;
+	private final static Logger LOG = Logger.getLogger("JS-Class-Loader");
 	
 	public static void main(String[] args) throws Exception {
+		
+		LOG.setLevel(Level.WARNING);
+		
 		ArgumentParser parser = new ArgumentParser();
 		Config config = parser.parseArgs(args);
 		

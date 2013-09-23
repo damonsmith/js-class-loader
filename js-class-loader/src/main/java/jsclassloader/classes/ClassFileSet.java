@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jsclassloader.Config;
 
@@ -15,7 +17,10 @@ import com.esotericsoftware.wildcard.Paths;
  * folder paths and file names into fully qualified class names.
  */
 public class ClassFileSet {
-
+	
+	private final static Logger LOG = Logger.getLogger("JS-Class-Loader");
+	
+	
 	private final List<File> rootDirs;
 	private Map<String, File> classnameToFilelookup = new HashMap<String, File>();
 	private Map<File, String> fileToClassnamelookup = new HashMap<File, String>();
@@ -23,6 +28,11 @@ public class ClassFileSet {
 
 	public ClassFileSet(Config config) {
 		this.rootDirs = this.generateSourceFolderList(config);
+		if (this.rootDirs.size() == 0) {
+			throw new RuntimeException("Error, the source paths that you have provided don't match anything.\n"
+					+ "base path: " + config.getProperty(Config.PROP_BASE_FOLDER) + "\n"
+					+ "source paths: " + config.getProperty(Config.PROP_SOURCE_FOLDERS));
+		}
 		this.initialize();
 	}
 	
@@ -44,6 +54,7 @@ public class ClassFileSet {
 
 	private void initialize() {
 		for (File rootDir : rootDirs) {
+			LOG.info("Source path: " + rootDir.getAbsolutePath());
 			int rootFilenameLength = rootDir.getAbsolutePath().length();
 			findJsFiles(rootDir, rootFilenameLength);
 		}
@@ -79,7 +90,9 @@ public class ClassFileSet {
 		
 		String sourceFolders = config.getProperty(Config.PROP_SOURCE_FOLDERS);
 		String basePath = config.getProperty(Config.PROP_BASE_FOLDER);
+		
 		for (String path : sourceFolders.split(",")) {
+			LOG.info("Source folder string: " + basePath + ", " + path);
 			paths.glob(basePath, path);
 		}
 		return paths.dirsOnly().getFiles();

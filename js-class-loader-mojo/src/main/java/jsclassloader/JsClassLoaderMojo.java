@@ -17,9 +17,16 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * @goal generate-js-bundle
+ * @phase process-resources
  */
 public class JsClassLoaderMojo extends AbstractMojo {
 
+	/**
+	 * @parameter expression="${project.build.directory}/${project.build.finalName}"
+	 * @readonly
+	 */
+	private File outputPath;
+	
 	/**
 	 * Base path that all the other path parameters will be relative to. 
 	 * 
@@ -119,18 +126,7 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			}
 			
 			
-			String bundlePath = config.getProperty(Config.PROP_BUNDLE_FILE);
-			File outputFile;
-			
-			if (new File(bundlePath).isAbsolute()) {
-				outputFile = new File(bundlePath);
-			}
-			else {
-				outputFile = new File(
-						config.getProperty(Config.PROP_BASE_FOLDER) + 
-						File.separator + 
-						config.getProperty(Config.PROP_BUNDLE_FILE));
-			}
+			File outputFile = new File(outputPath, config.getProperty(Config.PROP_BUNDLE_FILE));
 			
 			if (!outputFile.getParentFile().exists()) {
 				outputFile.getParentFile().mkdirs();
@@ -143,18 +139,7 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			
 			out.close();
 			
-			String scriptTagsPath = config.getProperty(Config.PROP_SCRIPT_TAGS);
-			File scriptOutputFile;
-			
-			if (new File(scriptTagsPath).isAbsolute()) {
-				scriptOutputFile = new File(scriptTagsPath);
-			}
-			else {
-				scriptOutputFile = new File(
-						config.getProperty(Config.PROP_BASE_FOLDER) + 
-						File.separator + 
-						config.getProperty(Config.PROP_SCRIPT_TAGS));
-			}
+			File scriptOutputFile = new File(outputPath, config.getProperty(Config.PROP_SCRIPT_TAGS));
 			
 			if (!scriptOutputFile.getParentFile().exists()) {
 				scriptOutputFile.getParentFile().mkdirs();

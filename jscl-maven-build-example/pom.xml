@@ -11,18 +11,13 @@
 		<version>1.2.2-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>jscl-maven-example</artifactId>
+	<artifactId>jscl-maven-build-example</artifactId>
 	<packaging>war</packaging>
 	<name>JSCL Example Project with build-time js bundling</name>
 	<url>http://maven.apache.org</url>
 	<version>0.1</version>
 
 	<dependencies>
-		<dependency>
-			<groupId>larrymite.javascript</groupId>
-			<artifactId>js-class-loader</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
-		</dependency>
 		<dependency>
 			<groupId>larrymite.javascript</groupId>
 			<artifactId>js-class-loader-mojo</artifactId>
@@ -40,7 +35,6 @@
 
 				<executions>
 					<execution>
-						<phase>process-resources</phase>
 						<goals>
 							<goal>generate-js-bundle</goal>
 						</goals>
@@ -50,11 +44,9 @@
 							<basePath>${basedir}/src/main/webapp</basePath>
 							<scriptTagsBasePath>${basedir}/src/main/webapp</scriptTagsBasePath>
 
-							<!-- This is the bit where you need to make sure your generated files are going to the right place -->
-							<bundleFile>${project.build.directory}/${project.artifactId}/gen/bundle.js</bundleFile>
-							<scriptTagsFile>${project.build.directory}/${project.artifactId}/gen/jscl-script-tags.html</scriptTagsFile>
-
-							<!-- These next three settings could all be moved into the properties file for neatness: -->
+							<!-- These next five settings could all be moved into the properties file for neatness: -->
+							<bundleFile>gen/bundle.js</bundleFile>
+							<scriptTagsFile>gen/jscl-script-tags.html</scriptTagsFile>
 							<sourceFolders>js/modules/*,js/lib</sourceFolders>
 							<seedClasses>com.myproject.Loader</seedClasses>
 							<seedFiles>conf/layout.anyoldtextfile</seedFiles>
@@ -64,39 +56,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-
-		<!-- This whole pluginManagement section is only here to force the Eclipse m2e plugin to
-		     run the bundler when building. If you're not going to use the Eclipse m2e plugin you can delete it. -->
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>larrymite.javascript</groupId>
-										<artifactId>js-class-loader-mojo</artifactId>
-										<versionRange>[1.0.0,)</versionRange>
-										<goals>
-											<goal>generate-js-bundle</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<execute>
-											<runOnIncremental>true</runOnIncremental>
-										</execute>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 
 	</build>
 	<description>A standard maven webapp project which has the bare bones config plus the maven config to run JSCL bundling and some example script files to bundle.</description>

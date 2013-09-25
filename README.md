@@ -10,7 +10,7 @@ Rules of JS-Class-Loader
 
 1. Class names must match file names
 2. Folder structure must match package structure
-3. File names must not have extra dots in them (dashes and everything else are ok though)
+3. File names must not have extra dots in them (dashes and underscores are ok though)
 4. You must have a well defined way of extending classes
 
 Having said that, you can still include 3rd party libraries and modules in your bundle that don't conform to this scheme. 

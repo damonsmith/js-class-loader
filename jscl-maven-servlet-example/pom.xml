@@ -4,18 +4,21 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>larrymite.javascript</groupId>
+	<parent>
+		<groupId>larrymite.javascript</groupId>
+		<artifactId>js-class-loader-parent</artifactId>
+		<version>1.2.2-SNAPSHOT</version>
+	</parent>
+	
 	<artifactId>jscl-servlet-example</artifactId>
-	<version>1.2.2-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>JSCL Example Project with servlet bundling</name>
-	<url>http://maven.apache.org</url>
+	<name>JSCL Example Project with JSCL running as a servlet</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>larrymite.javascript</groupId>
 			<artifactId>js-class-loader</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>${pom.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

@@ -4,7 +4,6 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- This example project doesn't really need a parent POM. -->
 	<parent>
 		<groupId>larrymite.javascript</groupId>
 		<artifactId>js-class-loader-parent</artifactId>
@@ -14,14 +13,12 @@
 	<artifactId>jscl-maven-build-example</artifactId>
 	<packaging>war</packaging>
 	<name>JSCL Example Project with build-time js bundling</name>
-	<url>http://maven.apache.org</url>
-	<version>0.1</version>
 
 	<dependencies>
 		<dependency>
 			<groupId>larrymite.javascript</groupId>
 			<artifactId>js-class-loader-mojo</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>${pom.version}</version>
 		</dependency>
 	</dependencies>
 

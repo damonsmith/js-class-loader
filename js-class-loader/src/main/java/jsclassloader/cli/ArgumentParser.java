@@ -14,34 +14,35 @@ import jsclassloader.Config;
  */
 public class ArgumentParser {
 
-	private static final Argument seedFilesArg = new Argument("seedFiles",
-			"sf");
-	private static final Argument seedClassesArg = new Argument("seedClasses",
-			"sc");
-	private static final Argument sourcePathArg = new Argument("sourcePaths",
-			"sp");
+	private static final Argument seedFilesArg = new Argument("seedFiles", "sf");
+	private static final Argument seedClassesArg = new Argument("seedClasses", "sc");
+	private static final Argument sourcePathArg = new Argument("sourcePaths", "sp");
 	private static final Argument basePathArg = new Argument("basePath", "b");
-	private static final Argument configFileArg = new Argument("configFile",
-			"c");
-	private static final Argument bundleOutputPathArg = new Argument(
-			"bundleOutput", "o");
+	private static final Argument configFileArg = new Argument("configFile", "c");
+	private static final Argument BundleFilePathArg = new Argument("BundleFile", "o");
 	private static final Argument helpArg = new Argument("help", "h");
 	private static final Argument listArg = new Argument("list", "l");
-	private static final Argument scriptTagsArg = new Argument(
-			"scriptTagOutput", "t");
+	private static final Argument graphArg = new Argument("graphFile", "g");
+	private static final Argument scriptTagsArg = new Argument("scriptTagFile", "t");
 
 	public Config parseArgs(String[] args) {
 
 		for (String arg : args) {
-			seedFilesArg.checkAndSet(arg);
-			seedClassesArg.checkAndSet(arg);
-			sourcePathArg.checkAndSet(arg);
-			basePathArg.checkAndSet(arg);
-			configFileArg.checkAndSet(arg);
-			helpArg.checkAndSet(arg);
-			listArg.checkAndSet(arg);
-			scriptTagsArg.checkAndSet(arg);
-			bundleOutputPathArg.checkAndSet(arg);
+			if (
+				!seedFilesArg.checkAndSet(arg) &&
+				!seedClassesArg.checkAndSet(arg) &&
+				!sourcePathArg.checkAndSet(arg) &&
+				!basePathArg.checkAndSet(arg) &&
+				!configFileArg.checkAndSet(arg) &&
+				!helpArg.checkAndSet(arg) &&
+				!listArg.checkAndSet(arg) &&
+				!scriptTagsArg.checkAndSet(arg) &&
+				!graphArg.checkAndSet(arg) &&
+				!BundleFilePathArg.checkAndSet(arg)) {
+				
+				System.out.println("Error, unknown argument: " + arg);
+				System.exit(1);
+			}
 		}
 
 		if (helpArg.isSet()) {
@@ -53,50 +54,36 @@ public class ArgumentParser {
 
 		if (configFileArg.isSet()) {
 			try {
-				jsClassLoaderConfig.loadPropertiesFromStream(new FileInputStream(
-					configFileArg.getValue()));
-			}
-			catch(IOException e) {
+				jsClassLoaderConfig.loadPropertiesFromStream(new FileInputStream(configFileArg.getValue()));
+			} catch (IOException e) {
 				System.err.println("Error, the specified config file does not exist: " + configFileArg.getValue());
 			}
 		}
 
 		if (basePathArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_BASE_FOLDER,
-					basePathArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_BASE_FOLDER, basePathArg.getValue());
 		}
 
 		if (sourcePathArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_SOURCE_FOLDERS,
-					sourcePathArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_SOURCE_FOLDERS, sourcePathArg.getValue());
 		}
 
 		if (seedFilesArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_SEED_FILES,
-					seedFilesArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_SEED_FILES, seedFilesArg.getValue());
 		}
 
 		if (seedClassesArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_SEED_CLASSES,
-					seedClassesArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_SEED_CLASSES, seedClassesArg.getValue());
 		}
 
-		if (!seedFilesArg.isSet() && !seedClassesArg.isSet()) {
-			System.out
-					.println("Error, no seed classes or files were specified.\n"
-							+ "You can either specify some classes directly on the command line, e.g: \n"
-							+ ""
-							+ seedClassesArg.getLongText()
-							+ "=com.my.stuff.Class1,com.my.things.Class2\n"
-							+ "\n"
-							+ "Or you can specify some files to parse for class names, e.g: \n"
-							+ ""
-							+ seedFilesArg.getLongText()
-							+ "=\"baseClassesList.txt,others.xml\" \n"
-							+ "\n"
-							+ "Or you can point to a properties config file, e.g: \n--"
-							+ configFileArg
-							+ "=\"conf/js-class-loader.properties\"");
+		if (!configFileArg.isSet() && !seedFilesArg.isSet() && !seedClassesArg.isSet()) {
+			System.out.println("Error, no seed classes or files were specified.\n"
+					+ "You can either specify some classes directly on the command line, e.g: \n" + ""
+					+ seedClassesArg.getLongText() + "=com.my.stuff.Class1,com.my.things.Class2\n" + "\n"
+					+ "Or you can specify some files to parse for class names, e.g: \n" + ""
+					+ seedFilesArg.getLongText() + "=\"baseClassesList.txt,others.xml\" \n" + "\n"
+					+ "Or you can point to a properties config file, e.g: \n--" + configFileArg
+					+ "=\"conf/js-class-loader.properties\"");
 			System.exit(1);
 		}
 
@@ -107,16 +94,24 @@ public class ArgumentParser {
 		return listArg.isSet();
 	}
 
-	public boolean isScriptTagMode() {
+	public boolean isscriptTagFileEnabled() {
 		return scriptTagsArg.isSet();
+	}
+	
+	public boolean isGraphOutputEnabled() {
+		return graphArg.isSet();
+	}
+	
+	public String getGraphOutputFilePath() {
+		return graphArg.getValue();
 	}
 
 	public String getBasePath() {
 		return basePathArg.getValue();
 	}
 
-	public String getOutpuTotFile() {
-		return bundleOutputPathArg.getValue();
+	public String getBundleFileFilePath() {
+		return BundleFilePathArg.getValue();
 	}
 
 	private static void printHelp() {
@@ -139,7 +134,7 @@ public class ArgumentParser {
 						+ scriptTagsArg.getLongText()
 						+ "=gen/script-tag-list.html\n"
 						+ "\\\n     "
-						+ bundleOutputPathArg.getLongText()
+						+ BundleFilePathArg.getLongText()
 						+ "=gen/bundle.js\n"
 						+ "\n"
 						+ "or you can both specify a config file and then override it with options.\n"
@@ -167,7 +162,10 @@ public class ArgumentParser {
 						+ scriptTagsArg.getLongText()
 						+ "= - path of the script tag list file to generate.\n"
 						+ "-o=, "
-						+ bundleOutputPathArg.getLongText()
+						+ graphArg.getLongText()
+						+ "= - path of the dot file graph to generate.\n"
+						+ "-g=, "
+						+ BundleFilePathArg.getLongText()
 						+ "= - File to write the bundle to, if not set then print to stdout.\n");
 	}
 }

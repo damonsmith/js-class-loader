@@ -10,7 +10,7 @@ import java.util.Properties;
  */
 public class Config {
 
-	public static final String PROP_BASE_FOLDER = "base.folder";
+	public static final String PROP_BASE_FOLDER = "basePath";
 	public static final String PROP_SOURCE_FOLDERS = "sourceFolders";
 	
 	public static final String PROP_SEED_FILES = "seedFiles";
@@ -22,8 +22,9 @@ public class Config {
 	public static final String PROP_START_FORCE = "regex.start.force";
 	public static final String PROP_WHOLE_FORCE = "regex.whole.force";
 	
-	public static final String PROP_BUNDLE_FILE = "bundle.file";
-	public static final String PROP_SCRIPT_TAGS = "script.tags.file";
+	public static final String PROP_BUNDLE_FILE = "bundleFile";
+	public static final String PROP_SCRIPT_TAGS = "scriptTagsFile";
+	public static final String PROP_GRAPH_FILE = "graphFile";
 	public static final String PROP_SCRIPT_TAG_BASE_PATH = "scriptTagsBasePath";
 	
 	public Properties properties;

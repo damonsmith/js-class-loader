@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -86,6 +87,11 @@ public class JsClassLoaderMojo extends AbstractMojo {
 	 */
 	private String scriptTagsBasePath;
 	
+	/**
+	 * Where the dependency graph file will be written to
+	 * @parameter
+	 */
+	private String graphFilePath;
 	
 
 	public void execute() throws MojoExecutionException {
@@ -124,6 +130,9 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			if (scriptTagsBasePath != null) {
 				config.setProperty(Config.PROP_SCRIPT_TAG_BASE_PATH, scriptTagsBasePath);
 			}
+			if (graphFilePath != null) {
+				config.setProperty(Config.PROP_GRAPH_FILE, graphFilePath);
+			}
 			
 			
 			File outputFile = new File(outputPath, config.getProperty(Config.PROP_BUNDLE_FILE));
@@ -149,6 +158,16 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			bundler.writeScriptTags(out, config);
 			
 			out.close();
+			
+			if (graphFilePath != null) {
+				File graphFile = new File(graphFilePath);
+				if (!graphFile.getParentFile().exists()) {
+					graphFile.getParentFile().mkdirs();
+				}
+				PrintStream graphOut = new PrintStream(new FileOutputStream(graphFile));
+				graphOut.print(bundler.getDependencyGraph().renderDotFile(bundler.getSeedClassNameList()));
+				graphOut.close();
+			}
 
 		} catch (FileNotFoundException e1) {
 			throw new RuntimeException(e1);

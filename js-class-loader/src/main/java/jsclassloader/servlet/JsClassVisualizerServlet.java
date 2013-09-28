@@ -37,7 +37,7 @@ public class JsClassVisualizerServlet extends HttpServlet {
 		try {
 			DependencyGraph dependencyGraph = new DependencyGraph(jsClassLoaderConfig);
 			response.setContentType("text/plain");
-			response.getWriter().print(dependencyGraph.renderDotFile(request.getParameter("root.class")));
+			//response.getWriter().print(dependencyGraph.renderDotFile(request.getParameter("root.class")));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

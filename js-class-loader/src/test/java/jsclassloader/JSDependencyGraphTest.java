@@ -1,7 +1,10 @@
 package jsclassloader;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import jsclassloader.dependency.DependencyGraph;
 
 import org.junit.After;
@@ -61,4 +64,18 @@ public class JSDependencyGraphTest
 		assertFalse(loader.getNode("ala.kazam.Zap").hasRuntimeDependency("ala.kazam.Souffle"));//There is no Souffle, Neo.
 		assertTrue(loader.getNode("ala.kazam.Zap").hasStaticDependency("ala.kazam.Fizzle"));
 	}
+	
+	@Test
+	public void testDependencyGraphDotOutput() throws Exception { 
+		
+		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree");
+		DependencyGraph loader = new DependencyGraph(config);
+
+		List<String> classNames = new ArrayList<String>();
+		classNames.add("ala.kazam.Zap");
+		String graph = loader.renderDotFile(classNames);
+		assertNotNull(graph);
+	}
+	
+	
 }

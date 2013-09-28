@@ -33,6 +33,7 @@ public class Bundler {
 	private int contentLength;
 	private Map<String, Boolean> addedClasses;
 	private DependencyGraph dependencyGraph;
+	private List<String> seedClassNameList;
 	
 	public List<ClassNode> getClassList() {
 		return classList;
@@ -42,13 +43,13 @@ public class Bundler {
 		classList = new LinkedList<ClassNode>();
 
 		this.dependencyGraph = new DependencyGraph(config);
-
+		seedClassNameList = new ArrayList<String>();
 		addedClasses = new HashMap<String, Boolean>();
 
 		String seedClassString = config.getProperty(Config.PROP_SEED_CLASSES);
 		if (seedClassString != null) {
 			String[] seedClasses = seedClassString.split(",");
-
+			
 			for (String className : seedClasses) {
 				ClassNode node = dependencyGraph.getNode(className);
 				if (node == null) {
@@ -56,6 +57,7 @@ public class Bundler {
 							"Error, you have specified a seed class that doesn't exist or isn't in the correct file location: "
 									+ className);
 				}
+				seedClassNameList.add(className);
 				addNode(dependencyGraph.getNode(className), classList);
 			}
 		}
@@ -66,6 +68,7 @@ public class Bundler {
 						.getSeedClassesFromFiles(generateSeedFileList(config));
 
 				for (String seedFileClass : seedFileClasses) {
+					seedClassNameList.add(seedFileClass);
 					addNode(dependencyGraph.getNode(seedFileClass), classList);
 				}
 			} catch (IOException e) {
@@ -87,6 +90,14 @@ public class Bundler {
 
 	public int getContentLength() {
 		return contentLength;
+	}
+	
+	public DependencyGraph getDependencyGraph() {
+		return this.dependencyGraph;
+	}
+	
+	public List<String> getSeedClassNameList() {
+		return seedClassNameList;
 	}
 
 	private void addNode(ClassNode node, List<ClassNode> classList) {

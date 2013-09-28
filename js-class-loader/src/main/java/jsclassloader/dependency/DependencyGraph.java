@@ -69,12 +69,14 @@ public class DependencyGraph {
 		}
 	}
 	
-	public String renderDotFile(String className) {
+	public String renderDotFile(List<String> classNames) {
 		Map<ClassNode, Boolean> done = new HashMap<ClassNode, Boolean>();
 		StringBuffer graph = new StringBuffer("digraph G {\n");
-		ClassNode parentNode = getNode(className);
-		addNodeToDotFile(parentNode, graph, done);
 		
+		for (String className : classNames) {
+			ClassNode parentNode = getNode(className);
+			addNodeToDotFile(parentNode, graph, done);
+		}
 		graph.append("}\n");
 		return graph.toString();
 	};
@@ -82,6 +84,8 @@ public class DependencyGraph {
 	private void addNodeToDotFile(ClassNode node, StringBuffer graph, Map<ClassNode, Boolean> done) {
 		if (done.get(node) == null) {
 			done.put(node, true);
+ 
+			graph.append("\"" + node.getValue() + "\"\n");
 			
 			for (ClassNode child : node.getStaticDependencies()) {
 				graph.append("edge [color=red];\n");

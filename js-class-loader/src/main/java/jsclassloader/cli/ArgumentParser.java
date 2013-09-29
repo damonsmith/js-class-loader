@@ -77,13 +77,13 @@ public class ArgumentParser {
 		}
 
 		if (!configFileArg.isSet() && !seedFilesArg.isSet() && !seedClassesArg.isSet()) {
-			System.out.println("\nError, no seed classes or files were specified.\n"
-					+ "You can either specify some classes directly on the command line, e.g: \n" + ""
-					+ seedClassesArg.getLongText() + "=com.my.stuff.Class1,com.my.things.Class2\n" + "\n"
-					+ "Or you can specify some files to parse for class names, e.g: \n" + ""
-					+ seedFilesArg.getLongText() + "=\"baseClassesList.txt,others.xml\" \n" + "\n"
-					+ "Or you can point to a properties config file, e.g: \n--" + configFileArg.getLongText()
-					+ "=\"conf/js-class-loader.properties\"");
+			System.out.println("\nError, you must either specify a config file, like this:\n"
+					+ "--config=js-class-loader.properties\n\n"
+					+ "or specify the seedClasses/seedFiles and other options on the command line, like this:\n"
+					+ "--seedClasses=com.mine.MyApp --sourceFolders=js/modules/*/src --bundleFile=gen/bundle.js\n\n"
+					+ "use --help to see all the options, or even better,\n"
+					+ "read the Getting Started section here: at\n"
+					+ "http://github.com/damonsmith/js-class-loader/wiki.\n\n");
 			System.exit(1);
 		}
 

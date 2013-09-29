@@ -18,7 +18,7 @@ public class ArgumentParser {
 	private static final Argument seedClassesArg = new Argument("seedClasses", "sc");
 	private static final Argument sourcePathArg = new Argument("sourcePaths", "sp");
 	private static final Argument basePathArg = new Argument("basePath", "b");
-	private static final Argument configFileArg = new Argument("configFile", "c");
+	private static final Argument configFileArg = new Argument("config", "c");
 	private static final Argument BundleFilePathArg = new Argument("BundleFile", "o");
 	private static final Argument helpArg = new Argument("help", "h");
 	private static final Argument listArg = new Argument("list", "l");
@@ -77,12 +77,12 @@ public class ArgumentParser {
 		}
 
 		if (!configFileArg.isSet() && !seedFilesArg.isSet() && !seedClassesArg.isSet()) {
-			System.out.println("Error, no seed classes or files were specified.\n"
+			System.out.println("\nError, no seed classes or files were specified.\n"
 					+ "You can either specify some classes directly on the command line, e.g: \n" + ""
 					+ seedClassesArg.getLongText() + "=com.my.stuff.Class1,com.my.things.Class2\n" + "\n"
 					+ "Or you can specify some files to parse for class names, e.g: \n" + ""
 					+ seedFilesArg.getLongText() + "=\"baseClassesList.txt,others.xml\" \n" + "\n"
-					+ "Or you can point to a properties config file, e.g: \n--" + configFileArg
+					+ "Or you can point to a properties config file, e.g: \n--" + configFileArg.getLongText()
 					+ "=\"conf/js-class-loader.properties\"");
 			System.exit(1);
 		}

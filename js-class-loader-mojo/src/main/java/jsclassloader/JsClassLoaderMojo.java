@@ -4,11 +4,9 @@ package jsclassloader;
  * Maven plugin for JS-Class-Loader
  */
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -91,7 +89,7 @@ public class JsClassLoaderMojo extends AbstractMojo {
 	 * Where the dependency graph file will be written to
 	 * @parameter
 	 */
-	private String graphFilePath;
+	private String graphFile;
 	
 
 	public void execute() throws MojoExecutionException {
@@ -100,7 +98,6 @@ public class JsClassLoaderMojo extends AbstractMojo {
 		try {
 
 			Config config = new Config();
-			System.out.println("Config path: " + configFile);
 			if ((new File(configFile)).exists()) {
 				config.loadPropertiesFromStream(new FileInputStream(configFile));
 			}
@@ -130,41 +127,28 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			if (scriptTagsBasePath != null) {
 				config.setProperty(Config.PROP_SCRIPT_TAG_BASE_PATH, scriptTagsBasePath);
 			}
-			if (graphFilePath != null) {
-				config.setProperty(Config.PROP_GRAPH_FILE, graphFilePath);
+			if (graphFile != null) {
+				config.setProperty(Config.PROP_GRAPH_FILE, graphFile);
 			}
 			
 			
-			File outputFile = new File(outputPath, config.getProperty(Config.PROP_BUNDLE_FILE));
-			
-			if (!outputFile.getParentFile().exists()) {
-				outputFile.getParentFile().mkdirs();
-			}
-
-			out = new BufferedOutputStream(new FileOutputStream(outputFile));
-			
+			PrintStream bundleOut = new PrintStream(prepFile(config.getProperty(Config.PROP_BUNDLE_FILE)));
 			Bundler bundler = new Bundler(config);
-			bundler.write(out);
+			bundler.write(bundleOut);
+			bundleOut.close();
 			
-			out.close();
+			String scriptTagsPath = config.getProperty(Config.PROP_SCRIPT_TAGS);
 			
-			File scriptOutputFile = new File(outputPath, config.getProperty(Config.PROP_SCRIPT_TAGS));
-			
-			if (!scriptOutputFile.getParentFile().exists()) {
-				scriptOutputFile.getParentFile().mkdirs();
+			if (scriptTagsPath != null) {
+				PrintStream tagsOut = new PrintStream(prepFile(scriptTagsPath));
+				bundler.writeScriptTags(tagsOut, config);
+				tagsOut.close();
 			}
-			out = new BufferedOutputStream(new FileOutputStream(scriptOutputFile));
 			
-			bundler.writeScriptTags(out, config);
+			String graphPath = config.getProperty(Config.PROP_GRAPH_FILE);
 			
-			out.close();
-			
-			if (graphFilePath != null) {
-				File graphFile = new File(graphFilePath);
-				if (!graphFile.getParentFile().exists()) {
-					graphFile.getParentFile().mkdirs();
-				}
-				PrintStream graphOut = new PrintStream(new FileOutputStream(graphFile));
+			if (graphPath != null) {
+				PrintStream graphOut = new PrintStream(prepFile(graphPath));
 				graphOut.print(bundler.getDependencyGraph().renderDotFile(bundler.getSeedClassNameList()));
 				graphOut.close();
 			}
@@ -183,5 +167,13 @@ public class JsClassLoaderMojo extends AbstractMojo {
 				}
 			}
 		}
+	}
+	
+	private File prepFile(String path) {
+		File file = new File(outputPath, path);
+		if (!file.getParentFile().exists()) {
+			file.getParentFile().mkdirs();
+		}
+		return file;
 	}
 }

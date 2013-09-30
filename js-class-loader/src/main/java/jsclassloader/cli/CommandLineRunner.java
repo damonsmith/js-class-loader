@@ -68,7 +68,7 @@ public class CommandLineRunner {
 	
 	public static File prepFile(String path) {
 		File file = new File(path);
-		if (!file.getParentFile().exists()) {
+		if (file.getParentFile() != null && !file.getParentFile().exists()) {
 			file.getParentFile().mkdirs();
 		}
 		return file;

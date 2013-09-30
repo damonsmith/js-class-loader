@@ -19,7 +19,7 @@ public class ArgumentParser {
 	private static final Argument sourcePathArg = new Argument("sourcePaths", "sp");
 	private static final Argument basePathArg = new Argument("basePath", "b");
 	private static final Argument configFileArg = new Argument("config", "c");
-	private static final Argument BundleFilePathArg = new Argument("BundleFile", "o");
+	private static final Argument bundleFilePathArg = new Argument("bundleFile", "o");
 	private static final Argument helpArg = new Argument("help", "h");
 	private static final Argument listArg = new Argument("list", "l");
 	private static final Argument graphArg = new Argument("graphFile", "g");
@@ -38,7 +38,7 @@ public class ArgumentParser {
 				!listArg.checkAndSet(arg) &&
 				!scriptTagsArg.checkAndSet(arg) &&
 				!graphArg.checkAndSet(arg) &&
-				!BundleFilePathArg.checkAndSet(arg)) {
+				!bundleFilePathArg.checkAndSet(arg)) {
 				
 				System.out.println("Error, unknown argument: " + arg);
 				System.exit(1);
@@ -74,6 +74,15 @@ public class ArgumentParser {
 
 		if (seedClassesArg.isSet()) {
 			jsClassLoaderConfig.setProperty(Config.PROP_SEED_CLASSES, seedClassesArg.getValue());
+		}
+		if (bundleFilePathArg.isSet()) {
+			jsClassLoaderConfig.setProperty(Config.PROP_BUNDLE_FILE, bundleFilePathArg.getValue());
+		}
+		if (graphArg.isSet()) {
+			jsClassLoaderConfig.setProperty(Config.PROP_GRAPH_FILE, graphArg.getValue());
+		}
+		if (scriptTagsArg.isSet()) {
+			jsClassLoaderConfig.setProperty(Config.PROP_SCRIPT_TAGS, scriptTagsArg.getValue());
 		}
 
 		if (!configFileArg.isSet() && !seedFilesArg.isSet() && !seedClassesArg.isSet()) {
@@ -111,7 +120,7 @@ public class ArgumentParser {
 	}
 
 	public String getBundleFileFilePath() {
-		return BundleFilePathArg.getValue();
+		return bundleFilePathArg.getValue();
 	}
 
 	private static void printHelp() {
@@ -134,7 +143,7 @@ public class ArgumentParser {
 						+ scriptTagsArg.getLongText()
 						+ "=gen/script-tag-list.html\n"
 						+ "\\\n     "
-						+ BundleFilePathArg.getLongText()
+						+ bundleFilePathArg.getLongText()
 						+ "=gen/bundle.js\n"
 						+ "\n"
 						+ "or you can both specify a config file and then override it with options.\n"
@@ -165,7 +174,7 @@ public class ArgumentParser {
 						+ graphArg.getLongText()
 						+ "= - path of the dot file graph to generate.\n"
 						+ "-g=, "
-						+ BundleFilePathArg.getLongText()
+						+ bundleFilePathArg.getLongText()
 						+ "= - File to write the bundle to, if not set then print to stdout.\n");
 	}
 }

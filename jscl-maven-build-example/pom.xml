@@ -44,9 +44,9 @@
 							<!-- These next settings could all be moved into the properties file for neatness: -->
 							<bundleFile>gen/bundle.js</bundleFile>
 							<scriptTagsFile>gen/jscl-script-tags.html</scriptTagsFile>
-							<graphFile>gen/dependency-graph.dot</graphFile>
-							<sourceFolders>js/modules/*,js/lib</sourceFolders>
-							<seedClasses>com.myproject.Loader</seedClasses>
+							<graphFile>gen/graph.dot</graphFile>
+							<sourceFolders>js/src,js/lib</sourceFolders>
+							<seedClasses>Base,jsviz.JSVizRunner</seedClasses>
 							<seedFiles>conf/layout.anyoldtextfile</seedFiles>
 							
 						</configuration>

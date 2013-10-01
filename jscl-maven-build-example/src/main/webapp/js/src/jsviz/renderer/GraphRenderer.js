@@ -16,7 +16,7 @@ jsviz.renderer.GraphRenderer = function(svg, vw, vh) {
 
 	svg.appendChild(this.defsElement);
 	this.setupFilters(this.defsElement, this.filterElements);
-}
+};
 
 jsviz.renderer.GraphRenderer.makeFilterId = function(i){return "blurf-"+i;}
 jsviz.renderer.GraphRenderer.PEN_DASHED = 1;

@@ -4,7 +4,7 @@ jsviz.graph.GraphExtractor = function() {
 	this.g = new jsviz.graph.Graph();
 	this.tempBuffer = null;
 	this.tempBufferSize = 256;
-}
+};
 
 jsviz.graph.GraphExtractor.prototype = {
 	extractFromJSON: function(j) {

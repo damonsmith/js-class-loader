@@ -22,7 +22,7 @@ jsviz.renderer.GVEdge = function(pEdge, n1, n2) {
 	this.animatedCurve = null;
 	this.tweenSchedule = instantiateTweenSchedule();
 	this.label = null;
-}
+};
 
 jsviz.renderer.GVEdge.ET_EMERGE    = 0;
 jsviz.renderer.GVEdge.ET_MOVE      = 1;

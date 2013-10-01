@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>larrymite.javascript</groupId>
+		<groupId>com.larrymite</groupId>
 		<artifactId>js-class-loader-parent</artifactId>
-		<version>1.2.4-SNAPSHOT</version>
+		<version>1.2.5-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>jscl-maven-build-example</artifactId>
@@ -16,7 +16,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>larrymite.javascript</groupId>
+			<groupId>com.larrymite</groupId>
 			<artifactId>js-class-loader-mojo</artifactId>
 			<version>${pom.version}</version>
 		</dependency>
@@ -26,7 +26,7 @@
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
-				<groupId>larrymite.javascript</groupId>
+				<groupId>com.larrymite</groupId>
 				<artifactId>js-class-loader-mojo</artifactId>
 				<version>${pom.version}</version>
 

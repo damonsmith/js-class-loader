@@ -513,7 +513,7 @@ function reSign(value, bits, ignore, sig) {
 
 
 
-Runtime.QUANTUM_SIZE = 4
+Runtime.QUANTUM_SIZE = 4;
 var $0___SIZE = 48; // %0
   var $0___FLATTENER = [0,1,4,8,12,16,20,24,28,32,36,40,44];
 var $1___SIZE = 4; // %1

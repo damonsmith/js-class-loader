@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jsclassloader.Bundler;
 import jsclassloader.Config;
 import jsclassloader.dependency.DependencyGraph;
 
@@ -35,9 +36,9 @@ public class JsClassVisualizerServlet extends HttpServlet {
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) {
 		try {
-			DependencyGraph dependencyGraph = new DependencyGraph(jsClassLoaderConfig);
+			Bundler bundler = new Bundler(jsClassLoaderConfig);
 			response.setContentType("text/plain");
-			//response.getWriter().print(dependencyGraph.renderDotFile(request.getParameter("root.class")));
+			response.getWriter().print(bundler.getDependencyGraph().renderDotFile(bundler.getSeedClassNameList()));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

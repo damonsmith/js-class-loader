@@ -10,7 +10,7 @@ jsviz.graph.Graph = function() {
 	this.nonscaledPosition   = {x:0, y:0};
 	this.animatedPosition = {x:0, y:0};
 	this.element = null;
-}
+};
 
 jsviz.graph.Graph.prototype = {
 	countNodes: function() {

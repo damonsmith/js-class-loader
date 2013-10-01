@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>larrymite.javascript</groupId>
+		<groupId>com.larrymite</groupId>
 		<artifactId>js-class-loader-parent</artifactId>
-		<version>1.2.4-SNAPSHOT</version>
+		<version>1.2.5-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>jscl-servlet-example</artifactId>
@@ -16,7 +16,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>larrymite.javascript</groupId>
+			<groupId>com.larrymite</groupId>
 			<artifactId>js-class-loader</artifactId>
 			<version>${pom.version}</version>
 		</dependency>

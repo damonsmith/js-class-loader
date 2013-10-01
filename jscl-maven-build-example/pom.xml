@@ -47,7 +47,7 @@
 							<graphFile>gen/graph.dot</graphFile>
 							<sourceFolders>js/src,js/lib</sourceFolders>
 							<seedClasses>Base,jsviz.JSVizRunner</seedClasses>
-							<seedFiles>conf/layout.anyoldtextfile</seedFiles>
+							<seedFiles>index.html</seedFiles>
 							
 						</configuration>
 					</execution>

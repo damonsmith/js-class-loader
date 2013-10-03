@@ -121,20 +121,18 @@ public class DependencyGraph {
 		//put in the modules on their own just in case there are no links:
 		if (moduleDone.get(moduleName) == null) {
 			moduleDone.put(moduleName, true);
-			graph.append("\"" + moduleName +"\";\n");
+			graph.append("  \"" + moduleName.replace("\\", ".") +"\";\n");
 		}
 		
-		for (ClassNode child : node.getStaticDependencies()) {
-			if (classDone.get(child) == null) {
-				classDone.put(child, true);
+		if (classDone.get(node) == null) {
+			classDone.put(node, true);
+			
+			for (ClassNode child : node.getStaticDependencies()) {
 				String childModuleName = classFileSet.getSrcDirFromClassname(child.getValue());
 				addModuleLinkToDotFile(moduleName, childModuleName, graph, linkDone);
 				addModuleDependencyToDotFile(child, graph, classDone, moduleDone, linkDone);
 			}
-		}
-		for (ClassNode child : node.getRunTimeDependencies()) {
-			if (classDone.get(child) == null) {
-				classDone.put(child, true);
+			for (ClassNode child : node.getRunTimeDependencies()) {
 				String childModuleName = classFileSet.getSrcDirFromClassname(child.getValue());
 				addModuleLinkToDotFile(moduleName, childModuleName, graph, linkDone);
 				addModuleDependencyToDotFile(child, graph, classDone, moduleDone, linkDone);
@@ -148,14 +146,15 @@ public class DependencyGraph {
 			
 			String link = parentModule + "&" + childModule;
 			
-			if (linkDone.get(link) != null) {
+			parentModule = parentModule.replace("\\", ".");
+			childModule = childModule.replace("\\", ".");
+			
+			if (linkDone.get(link) == null) {
 				linkDone.put(link, true);
 				graph.append("  \"" + parentModule + "\" -> \"" + childModule + "\";\n");
 			}
 		}
 	}
-
-	
 	
 	public ClassNode getNode(String className) {
 		return nodeMap.get(className);

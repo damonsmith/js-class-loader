@@ -1,5 +1,6 @@
 package jsclassloader;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,8 +90,10 @@ public class ClassFileSetTest
 		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree,src/test/resources/jsbundler");
 		ClassFileSet unit = new ClassFileSet(config);
 		
+		String expected = "src/test/resources/dependency-tree";
 
-		Assert.assertEquals("src/test/resources/dependency-tree", unit.getSrcDirFromClassname("ala.kazam.Zap"));
+		expected = expected.replace("/", File.separator);
+		Assert.assertEquals(expected, unit.getSrcDirFromClassname("ala.kazam.Zap"));
 		
 	}
 }

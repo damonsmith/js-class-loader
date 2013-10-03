@@ -148,7 +148,7 @@ public class DependencyGraph {
 			
 			String link = parentModule + "&" + childModule;
 			
-			if (!linkDone.get(link)) {
+			if (linkDone.get(link) != null) {
 				linkDone.put(link, true);
 				graph.append("  \"" + parentModule + "\" -> \"" + childModule + "\";\n");
 			}

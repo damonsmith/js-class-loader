@@ -136,12 +136,7 @@ public class Bundler {
 			 * .. to the relative path.
 			 */
 			String absoluteBasePath = new File(basePathString)
-					.getAbsolutePath();
-			if (absoluteBasePath.indexOf(File.separator + ".") == absoluteBasePath
-					.length() - 2) {
-				absoluteBasePath = absoluteBasePath.substring(0,
-						absoluteBasePath.length() - 2);
-			}
+					.getCanonicalPath();
 			/* ****************************************************************************************** */
 			Path basePath = Paths.get(absoluteBasePath);
 			

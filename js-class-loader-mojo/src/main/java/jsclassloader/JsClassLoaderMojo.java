@@ -151,6 +151,11 @@ public class JsClassLoaderMojo extends AbstractMojo {
 				PrintStream graphOut = new PrintStream(prepFile(graphPath));
 				graphOut.print(bundler.getDependencyGraph().renderDotFile(bundler.getSeedClassNameList()));
 				graphOut.close();
+				
+				graphOut = new PrintStream(prepFile(graphPath + ".modules"));
+				graphOut.print(bundler.getDependencyGraph().renderModuleDotFile());
+				graphOut.close();
+				
 			}
 
 		} catch (FileNotFoundException e1) {

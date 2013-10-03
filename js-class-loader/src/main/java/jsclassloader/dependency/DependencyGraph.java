@@ -85,7 +85,7 @@ public class DependencyGraph {
 		if (done.get(node) == null) {
 			done.put(node, true);
  
-			graph.append("\"" + node.getValue() + "\"\n");
+			graph.append("\"" + node.getValue() + "\";\n");
 			
 			for (ClassNode child : node.getStaticDependencies()) {
 				graph.append("edge [color=red];\n");
@@ -100,6 +100,62 @@ public class DependencyGraph {
 			}
 		}
 	}
+
+	public String renderModuleDotFile() {
+		Map<String, Boolean> moduleDone = new HashMap<String, Boolean>();
+		Map<String, Boolean> linkDone = new HashMap<String, Boolean>();
+		Map<ClassNode, Boolean> classDone = new HashMap<ClassNode, Boolean>();
+		
+		StringBuffer graph = new StringBuffer("digraph G {\n");
+		
+		for (String className : classFileSet.getAllJsClasses()) {
+			addModuleDependencyToDotFile(getNode(className), graph, classDone, moduleDone, linkDone);
+		}
+		graph.append("}\n");
+		return graph.toString();
+	};
+	
+	private void addModuleDependencyToDotFile(ClassNode node, StringBuffer graph, Map<ClassNode, Boolean> classDone, Map<String, Boolean> moduleDone, Map<String, Boolean> linkDone) {
+		String moduleName = classFileSet.getSrcDirFromClassname(node.getValue());
+		
+		//put in the modules on their own just in case there are no links:
+		if (moduleDone.get(moduleName) == null) {
+			moduleDone.put(moduleName, true);
+			graph.append("\"" + moduleName +"\";\n");
+		}
+		
+		for (ClassNode child : node.getStaticDependencies()) {
+			if (classDone.get(child) == null) {
+				classDone.put(child, true);
+				String childModuleName = classFileSet.getSrcDirFromClassname(child.getValue());
+				addModuleLinkToDotFile(moduleName, childModuleName, graph, linkDone);
+				addModuleDependencyToDotFile(child, graph, classDone, moduleDone, linkDone);
+			}
+		}
+		for (ClassNode child : node.getRunTimeDependencies()) {
+			if (classDone.get(child) == null) {
+				classDone.put(child, true);
+				String childModuleName = classFileSet.getSrcDirFromClassname(child.getValue());
+				addModuleLinkToDotFile(moduleName, childModuleName, graph, linkDone);
+				addModuleDependencyToDotFile(child, graph, classDone, moduleDone, linkDone);
+			}
+		}
+	}
+	
+	private void addModuleLinkToDotFile(String parentModule, String childModule, StringBuffer graph, Map<String, Boolean> linkDone) {
+		
+		if (!parentModule.equals(childModule)) {
+			
+			String link = parentModule + "&" + childModule;
+			
+			if (!linkDone.get(link)) {
+				linkDone.put(link, true);
+				graph.append("  \"" + parentModule + "\" -> \"" + childModule + "\";\n");
+			}
+		}
+	}
+
+	
 	
 	public ClassNode getNode(String className) {
 		return nodeMap.get(className);

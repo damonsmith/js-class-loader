@@ -89,7 +89,7 @@ public class ArgumentParser {
 			System.out.println("\nError, you must either specify a config file, like this:\n"
 					+ "--config=js-class-loader.properties\n\n"
 					+ "or specify the seedClasses/seedFiles and other options on the command line, like this:\n"
-					+ "--seedClasses=com.mine.MyApp --sourceFolders=js/modules/*/src --bundleFile=gen/bundle.js\n\n"
+					+ "--seedClasses=com.mine.MyApp " + sourcePathArg.getLongText() + "=js/modules/*/src --bundleFile=gen/bundle.js\n\n"
 					+ "use --help to see all the options, or even better,\n"
 					+ "read the Getting Started section here: at\n"
 					+ "http://github.com/damonsmith/js-class-loader/wiki.\n\n");

@@ -1,6 +1,8 @@
 package jsclassloader.classes;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +21,23 @@ public class ClassFileSet {
 	
 	private final static Logger LOG = Logger.getLogger("JS-Class-Loader");
 	
-	
+	private Path basePath;
 	private final List<File> rootDirs;
-	private Map<String, File> classnameToFilelookup = new HashMap<String, File>();
-	private Map<File, String> fileToClassnamelookup = new HashMap<File, String>();
+	private Map<String, File> classnameToFilelookup;
+	private Map<String, String> classnameToSrcDirLookup;
+	private Map<File, String> fileToClassnamelookup;
 	private List<String> allJsClasses = new ArrayList<String>();
 
-	public ClassFileSet(Config config) {
+	
+	
+	public ClassFileSet(Config config) throws IOException {
+		
+		basePath = java.nio.file.Paths.get(new File(config.getProperty(Config.PROP_BASE_FOLDER)).getCanonicalPath());
+		
+		classnameToFilelookup = new HashMap<String, File>();
+		classnameToSrcDirLookup = new HashMap<String, String>();
+		fileToClassnamelookup = new HashMap<File, String>();
+		
 		this.rootDirs = this.generateSourceFolderList(config);
 		if (this.rootDirs.size() == 0) {
 			throw new RuntimeException("Error, the source paths that you have provided don't match anything.\n"
@@ -47,30 +59,38 @@ public class ClassFileSet {
 		return classnameToFilelookup.get(classname);
 	}
 	
+	public String getSrcDirFromClassname(String classname) {
+		return classnameToSrcDirLookup.get(classname);
+	}
+	
 	public String getClassnameFromFile(File file) {
 		return fileToClassnamelookup.get(file);
 	}
-
-	private void initialize() {
+	
+	private void initialize() throws IOException {
 		for (File rootDir : rootDirs) {
 			LOG.info("Source path: " + rootDir.getAbsolutePath());
 			int rootFilenameLength = rootDir.getAbsolutePath().length();
-			findJsFiles(rootDir, rootFilenameLength);
+			
+			Path srcRootPath = basePath.relativize(java.nio.file.Paths.get(rootDir.getCanonicalPath()));
+			
+			findJsFiles(rootDir, rootFilenameLength, srcRootPath.toString());
 		}
 	}
 
-	private void findJsFiles(File directory, int rootFilenameLength) {
+	private void findJsFiles(File directory, int rootFilenameLength, String rootDir) {
 
 		File[] files = directory.listFiles();
 		if (files == null) { return; }
 		for (int i = 0; i < files.length; i++) {
 			if (files[i].isDirectory()) {
-				findJsFiles(files[i], rootFilenameLength);
+				findJsFiles(files[i], rootFilenameLength, rootDir);
 			}
 			if (files[i].getName().endsWith(".js")) {
 				String classname = generateClassnameFromFile(files[i], rootFilenameLength);
 				allJsClasses.add(classname);
 				classnameToFilelookup.put(classname, files[i]);
+				classnameToSrcDirLookup.put(classname, rootDir);
 				fileToClassnamelookup.put(files[i], classname);
 			}
 		}

@@ -76,6 +76,21 @@ public class ClassFileSetTest
 		for (String expectedItem : expected) {
 			Assert.assertTrue("all classes list must contain item: " + expectedItem, result.contains(expectedItem));
 		}
+	}
 	
+	/**
+	 * make sure we can look up which source root folder each class came from
+	 * @throws java.io.IOException
+	 */
+	@Test
+	public void testFindSrcFolderByClasses() throws IOException 
+	{
+		Config config = new Config();
+		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree,src/test/resources/jsbundler");
+		ClassFileSet unit = new ClassFileSet(config);
+		
+
+		Assert.assertEquals("src/test/resources/dependency-tree", unit.getSrcDirFromClassname("ala.kazam.Zap"));
+		
 	}
 }

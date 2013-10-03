@@ -51,6 +51,11 @@ public class CommandLineRunner {
 				out = new PrintStream(new FileOutputStream(graphFile));
 				out.print(bundler.getDependencyGraph().renderDotFile(bundler.getSeedClassNameList()));
 				out.close();
+
+				File moduleGraphFile = prepFile(graphFileConfig + ".modules");
+				out = new PrintStream(new FileOutputStream(moduleGraphFile));
+				out.print(bundler.getDependencyGraph().renderModuleDotFile());
+				out.close();
 			}
 			
 			String bundleFileConfig = config.getProperty(Config.PROP_BUNDLE_FILE);

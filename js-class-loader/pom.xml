@@ -12,7 +12,17 @@
 	<artifactId>js-class-loader</artifactId>
 	<packaging>jar</packaging>
 	<name>js-class-loader</name>
-	<url>http://maven.apache.org</url>
+	<description>JS-Class-Loader is a tool for packaging well-structured javascript codebases</description>
+	<url>https://github.com:damonsmith/js-class-loader</url>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -50,9 +60,4 @@
 		</dependency>
 	</dependencies>
 
-	<scm>
-		<url>scm:git:git@github.com:damonsmith/js-class-loader.git</url>
-		<connection>scm:git:git@github.com:damonsmith/js-class-loader.git</connection>
-		<developerConnection>scm:git:git@github.com:damonsmith/js-class-loader.git</developerConnection>
-	</scm>
 </project>

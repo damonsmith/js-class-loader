@@ -37,7 +37,7 @@ public class JSDependencyGraphTest
 
 	@Test
 	public void testLoadNormalDependency()  throws Exception {
-		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree");
+		config.setProperty(Config.PROP_SOURCE_PATHS, "src/test/resources/dependency-tree");
 		DependencyGraph loader = new DependencyGraph(config);
 		
 		assertTrue(loader.getNode("abra.cad.abra.Hat") != null);
@@ -54,7 +54,7 @@ public class JSDependencyGraphTest
 	@Test
 	public void testLoadWholeLineDependency() throws Exception { 
 		
-		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree");
+		config.setProperty(Config.PROP_SOURCE_PATHS, "src/test/resources/dependency-tree");
 		DependencyGraph loader = new DependencyGraph(config);
 		
 		assertTrue(loader.getNode("ala.kazam.Zap").hasRuntimeDependency("abra.cad.abra.Presto"));
@@ -68,7 +68,7 @@ public class JSDependencyGraphTest
 	@Test
 	public void testDependencyGraphDotOutput() throws Exception { 
 		
-		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree");
+		config.setProperty(Config.PROP_SOURCE_PATHS, "src/test/resources/dependency-tree");
 		DependencyGraph loader = new DependencyGraph(config);
 
 		List<String> classNames = new ArrayList<String>();

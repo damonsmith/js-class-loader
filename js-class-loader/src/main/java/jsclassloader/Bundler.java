@@ -45,37 +45,46 @@ public class Bundler {
 		this.dependencyGraph = new DependencyGraph(config);
 		seedClassNameList = new ArrayList<String>();
 		addedClasses = new HashMap<String, Boolean>();
-
-		String seedClassString = config.getProperty(Config.PROP_SEED_CLASSES);
-		if (seedClassString != null) {
-			String[] seedClasses = seedClassString.split(",");
-			
-			for (String className : seedClasses) {
-				ClassNode node = dependencyGraph.getNode(className);
-				if (node == null) {
-					throw new RuntimeException(
-							"Error, you have specified a seed class that doesn't exist or isn't in the correct file location: "
-									+ className);
-				}
-				seedClassNameList.add(className);
+		
+		String propAllClasses = config.getProperty(Config.PROP_ALL_CLASSES);
+		if (propAllClasses != null && propAllClasses.toLowerCase().equals("true")) {
+			classFileSet = dependencyGraph.getClassFileSet();
+			for (String className : classFileSet.getAllJsClasses()) {
 				addNode(dependencyGraph.getNode(className), classList);
 			}
 		}
+		else {
 
-		if (config.getProperty(Config.PROP_SEED_FILES) != null) {
-			try {
-				List<String> seedFileClasses = dependencyGraph
-						.getSeedClassesFromFiles(generateSeedFileList(config));
-
-				for (String seedFileClass : seedFileClasses) {
-					seedClassNameList.add(seedFileClass);
-					addNode(dependencyGraph.getNode(seedFileClass), classList);
+			String seedClassString = config.getProperty(Config.PROP_SEED_CLASSES);
+			if (seedClassString != null) {
+				String[] seedClasses = seedClassString.split(",");
+				
+				for (String className : seedClasses) {
+					ClassNode node = dependencyGraph.getNode(className);
+					if (node == null) {
+						throw new RuntimeException(
+								"Error, you have specified a seed class that doesn't exist or isn't in the correct file location: "
+										+ className);
+					}
+					seedClassNameList.add(className);
+					addNode(dependencyGraph.getNode(className), classList);
 				}
-			} catch (IOException e) {
-				throw new RuntimeException("error parsing seed files: " + e);
+			}
+			if (config.getProperty(Config.PROP_SEED_FILES) != null) {
+				try {
+					List<String> seedFileClasses = dependencyGraph
+							.getSeedClassesFromFiles(generateSeedFileList(config));
+
+					for (String seedFileClass : seedFileClasses) {
+						seedClassNameList.add(seedFileClass);
+						addNode(dependencyGraph.getNode(seedFileClass), classList);
+					}
+				} catch (IOException e) {
+					throw new RuntimeException("error parsing seed files: " + e);
+				}
 			}
 		}
-
+		
 		iterator = classList.listIterator();
 		classFileSet = dependencyGraph.getClassFileSet();
 

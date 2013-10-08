@@ -53,6 +53,10 @@ public class Argument {
 		return value;
 	}
 
+	public String getShortText() {
+		return shortText;
+	}
+	
 	public String getLongText() {
 		return longText;
 	}

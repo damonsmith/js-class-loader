@@ -4,3 +4,5 @@ ext.ends(abra.cad.abra.open.sesame.Genie)
 and will
 
 force.load("something.else.Entirely")
+
+include(something.else.Entirely)

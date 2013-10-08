@@ -13,17 +13,22 @@ import jsclassloader.Config;
  * 
  */
 public class ArgumentParser {
-
-	private static final Argument seedFilesArg = new Argument("seedFiles", "sf");
-	private static final Argument seedClassesArg = new Argument("seedClasses", "sc");
-	private static final Argument sourcePathArg = new Argument("sourcePaths", "sp");
-	private static final Argument basePathArg = new Argument("basePath", "b");
+	
+	//General config parameters
+	private static final Argument seedFilesArg = new Argument(Config.PROP_SEED_FILES, "sf");
+	private static final Argument seedClassesArg = new Argument(Config.PROP_SEED_CLASSES, "sc");
+	private static final Argument allClassesArg = new Argument(Config.PROP_ALL_CLASSES, "a");
+	private static final Argument sourcePathArg = new Argument(Config.PROP_SOURCE_PATHS, "sp");
+	private static final Argument basePathArg = new Argument(Config.PROP_BASE_FOLDER, "b");
+	private static final Argument bundleFilePathArg = new Argument(Config.PROP_BUNDLE_FILE, "o");
+	private static final Argument graphArg = new Argument(Config.PROP_GRAPH_FILE, "g");
+	private static final Argument scriptTagsArg = new Argument(Config.PROP_SCRIPT_TAGS, "t");
+	
+	//Params that only apply to the command line
 	private static final Argument configFileArg = new Argument("config", "c");
-	private static final Argument bundleFilePathArg = new Argument("bundleFile", "o");
 	private static final Argument helpArg = new Argument("help", "h");
 	private static final Argument listArg = new Argument("list", "l");
-	private static final Argument graphArg = new Argument("graphFile", "g");
-	private static final Argument scriptTagsArg = new Argument("scriptTagFile", "t");
+	
 
 	public Config parseArgs(String[] args) {
 
@@ -31,6 +36,7 @@ public class ArgumentParser {
 			if (
 				!seedFilesArg.checkAndSet(arg) &&
 				!seedClassesArg.checkAndSet(arg) &&
+				!allClassesArg.checkAndSet(arg) &&
 				!sourcePathArg.checkAndSet(arg) &&
 				!basePathArg.checkAndSet(arg) &&
 				!configFileArg.checkAndSet(arg) &&
@@ -65,7 +71,7 @@ public class ArgumentParser {
 		}
 
 		if (sourcePathArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_SOURCE_FOLDERS, sourcePathArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_SOURCE_PATHS, sourcePathArg.getValue());
 		}
 
 		if (seedFilesArg.isSet()) {
@@ -75,6 +81,15 @@ public class ArgumentParser {
 		if (seedClassesArg.isSet()) {
 			jsClassLoaderConfig.setProperty(Config.PROP_SEED_CLASSES, seedClassesArg.getValue());
 		}
+		
+		if (allClassesArg.isSet()) {
+			if (allClassesArg.getValue() != null) {
+				System.out.println("Error, you don't need to set a value for allClasses. just use -a or --" + allClassesArg.getLongText());
+				System.exit(1);
+			}
+			jsClassLoaderConfig.setProperty(Config.PROP_ALL_CLASSES, "true");
+		}
+		
 		if (bundleFilePathArg.isSet()) {
 			jsClassLoaderConfig.setProperty(Config.PROP_BUNDLE_FILE, bundleFilePathArg.getValue());
 		}
@@ -85,11 +100,11 @@ public class ArgumentParser {
 			jsClassLoaderConfig.setProperty(Config.PROP_SCRIPT_TAGS, scriptTagsArg.getValue());
 		}
 
-		if (!configFileArg.isSet() && !seedFilesArg.isSet() && !seedClassesArg.isSet()) {
+		if (!configFileArg.isSet() && !seedFilesArg.isSet() && !seedClassesArg.isSet() && !allClassesArg.isSet()) {
 			System.out.println("\nError, you must either specify a config file, like this:\n"
-					+ "--config=js-class-loader.properties\n\n"
+					+ configFileArg.getLongText() + "=js-class-loader.properties\n\n"
 					+ "or specify the seedClasses/seedFiles and other options on the command line, like this:\n"
-					+ "--seedClasses=com.mine.MyApp " + sourcePathArg.getLongText() + "=js/modules/*/src --bundleFile=gen/bundle.js\n\n"
+					+ seedClassesArg.getLongText() + "=com.mine.MyApp " + sourcePathArg.getLongText() + "=js/modules/*/src --bundleFile=gen/bundle.js\n\n"
 					+ "use --help to see all the options, or even better,\n"
 					+ "read the Getting Started section here: at\n"
 					+ "http://github.com/damonsmith/js-class-loader/wiki.\n\n");

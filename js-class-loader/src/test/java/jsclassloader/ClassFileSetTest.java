@@ -31,7 +31,7 @@ public class ClassFileSetTest
 	public void testFindAllClasses() throws IOException 
 	{
 		Config config = new Config();
-		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/jsbundler");
+		config.setProperty(Config.PROP_SOURCE_PATHS, "src/test/resources/jsbundler");
 		
 		ClassFileSet unit = new ClassFileSet(config);
 		
@@ -56,7 +56,7 @@ public class ClassFileSetTest
 	public void testFindDepTestClasses() throws IOException 
 	{
 		Config config = new Config();
-		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree");
+		config.setProperty(Config.PROP_SOURCE_PATHS, "src/test/resources/dependency-tree");
 		ClassFileSet unit = new ClassFileSet(config);
 		
 		List<String> result = unit.getAllJsClasses();
@@ -87,7 +87,7 @@ public class ClassFileSetTest
 	public void testFindSrcFolderByClasses() throws IOException 
 	{
 		Config config = new Config();
-		config.setProperty(Config.PROP_SOURCE_FOLDERS, "src/test/resources/dependency-tree,src/test/resources/jsbundler");
+		config.setProperty(Config.PROP_SOURCE_PATHS, "src/test/resources/dependency-tree,src/test/resources/jsbundler");
 		ClassFileSet unit = new ClassFileSet(config);
 		
 		String expected = "src/test/resources/dependency-tree";

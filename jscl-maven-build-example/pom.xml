@@ -45,7 +45,7 @@
 							<bundleFile>gen/bundle.js</bundleFile>
 							<scriptTagsFile>gen/jscl-script-tags.html</scriptTagsFile>
 							<graphFile>gen/graph.dot</graphFile>
-							<sourceFolders>js/src,js/lib</sourceFolders>
+							<sourcePaths>js/src,js/lib</sourcePaths>
 							<seedClasses>Base,jsviz.JSVizRunner</seedClasses>
 							<seedFiles>index.html</seedFiles>
 							

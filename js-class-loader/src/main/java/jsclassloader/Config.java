@@ -11,8 +11,9 @@ import java.util.Properties;
 public class Config {
 
 	public static final String PROP_BASE_FOLDER = "basePath";
-	public static final String PROP_SOURCE_FOLDERS = "sourceFolders";
-	
+	public static final String PROP_SOURCE_PATHS = "sourcePaths";
+
+	public static final String PROP_ALL_CLASSES = "allClasses";
 	public static final String PROP_SEED_FILES = "seedFiles";
 	public static final String PROP_SEED_CLASSES = "seedClasses";
 	

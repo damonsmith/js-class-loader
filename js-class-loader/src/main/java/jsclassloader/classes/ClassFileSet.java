@@ -42,7 +42,7 @@ public class ClassFileSet {
 		if (this.rootDirs.size() == 0) {
 			throw new RuntimeException("Error, the source paths that you have provided don't match anything.\n"
 					+ "base path: " + config.getProperty(Config.PROP_BASE_FOLDER) + "\n"
-					+ "source paths: " + config.getProperty(Config.PROP_SOURCE_FOLDERS));
+					+ "source paths: " + config.getProperty(Config.PROP_SOURCE_PATHS));
 		}
 		this.initialize();
 	}
@@ -107,10 +107,10 @@ public class ClassFileSet {
 	private List<File> generateSourceFolderList(Config config) {
 		Paths paths = new Paths();
 		
-		String sourceFolders = config.getProperty(Config.PROP_SOURCE_FOLDERS);
+		String sourcePaths = config.getProperty(Config.PROP_SOURCE_PATHS);
 		String basePath = config.getProperty(Config.PROP_BASE_FOLDER);
 		
-		for (String path : sourceFolders.split(",")) {
+		for (String path : sourcePaths.split(",")) {
 			LOG.info("Source folder string: " + basePath + ", " + path);
 			paths.glob(basePath, path);
 		}

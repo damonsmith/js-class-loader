@@ -17,11 +17,14 @@ public class CommandLineRunner {
 	static boolean usePropertiesFile;
 	static String propFileName;
 	static List<String> seedClassesFromCmdLine;
-	static String [] sourceFolders;
+	static String [] sourcePaths;
 	private final static Logger LOG = Logger.getLogger("JS-Class-Loader");
 	
 	public static void main(String[] args) throws Exception {
-		
+		execute(args, System.out);
+	}
+	
+	public static void execute(String [] args, PrintStream out) throws Exception {
 		LOG.setLevel(Level.WARNING);
 		
 		ArgumentParser parser = new ArgumentParser();
@@ -29,11 +32,9 @@ public class CommandLineRunner {
 		
 		Bundler bundler = new Bundler(config);
 		
-		PrintStream out;
-		
 		if (parser.isListMode()) {
 			for (ClassNode item : bundler.getClassList()) {
-				System.out.println(item.getValue());
+				out.println(item.getValue());
 			}
 		}
 		else {
@@ -68,7 +69,7 @@ public class CommandLineRunner {
 			else {
 				bundler.write(System.out);
 			}
-		}
+		}		
 	}
 	
 	public static File prepFile(String path) {

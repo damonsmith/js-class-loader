@@ -61,7 +61,7 @@ public class JSDependencyGraphTest
 		assertTrue(loader.getNode("ala.kazam.Zap").hasStaticDependency("abra.cad.abra.Hey"));
 		assertTrue(loader.getNode("ala.kazam.Zap").hasStaticDependency("abra.cad.abra.Hat"));
 		assertTrue(loader.getNode("ala.kazam.Zap").hasStaticDependency("abra.cad.abra.Rabbit"));
-		assertFalse(loader.getNode("ala.kazam.Zap").hasRuntimeDependency("ala.kazam.Souffle"));//There is no Souffle, Neo.
+		assertFalse(loader.getNode("ala.kazam.Zap").hasRuntimeDependency("ala.kazam.Souffle"));
 		assertTrue(loader.getNode("ala.kazam.Zap").hasStaticDependency("ala.kazam.Fizzle"));
 	}
 	

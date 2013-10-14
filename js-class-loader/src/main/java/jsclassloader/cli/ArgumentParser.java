@@ -15,23 +15,38 @@ import jsclassloader.Config;
 public class ArgumentParser {
 	
 	//General config parameters
-	private static final Argument seedFilesArg = new Argument(Config.PROP_SEED_FILES, "sf");
-	private static final Argument seedClassesArg = new Argument(Config.PROP_SEED_CLASSES, "sc");
-	private static final Argument allClassesArg = new Argument(Config.PROP_ALL_CLASSES, "a");
-	private static final Argument sourcePathArg = new Argument(Config.PROP_SOURCE_PATHS, "sp");
-	private static final Argument basePathArg = new Argument(Config.PROP_BASE_FOLDER, "b");
-	private static final Argument bundleFilePathArg = new Argument(Config.PROP_BUNDLE_FILE, "o");
-	private static final Argument graphArg = new Argument(Config.PROP_GRAPH_FILE, "g");
-	private static final Argument scriptTagsArg = new Argument(Config.PROP_SCRIPT_TAGS, "t");
+	private final Argument seedFilesArg;
+	private final Argument seedClassesArg;
+	private final Argument allClassesArg;
+	private final Argument sourcePathArg;
+	private final Argument basePathArg;
+	private final Argument bundleFilePathArg;
+	private final Argument graphArg;
+	private final Argument scriptTagsArg;
 	
 	//Params that only apply to the command line
-	private static final Argument configFileArg = new Argument("config", "c");
-	private static final Argument helpArg = new Argument("help", "h");
-	private static final Argument listArg = new Argument("list", "l");
+	private final Argument configFileArg;
+	private final Argument helpArg;
+	private final Argument listArg;
 	
+	public ArgumentParser() {
+		seedFilesArg = new Argument(Config.PROP_SEED_FILES, "sf");
+		seedClassesArg = new Argument(Config.PROP_SEED_CLASSES, "sc");
+		allClassesArg = new Argument(Config.PROP_ALL_CLASSES, "a");
+		sourcePathArg = new Argument(Config.PROP_SOURCE_PATHS, "sp");
+		basePathArg = new Argument(Config.PROP_BASE_FOLDER, "b");
+		bundleFilePathArg = new Argument(Config.PROP_BUNDLE_FILE, "o");
+		graphArg = new Argument(Config.PROP_GRAPH_FILE, "g");
+		scriptTagsArg = new Argument(Config.PROP_SCRIPT_TAGS, "t");
+
+		//Params that only apply to the command line
+		configFileArg = new Argument("config", "c");
+		helpArg = new Argument("help", "h");
+		listArg = new Argument("list", "l");
+	}
 
 	public Config parseArgs(String[] args) {
-
+		
 		for (String arg : args) {
 			if (
 				!seedFilesArg.checkAndSet(arg) &&
@@ -138,7 +153,7 @@ public class ArgumentParser {
 		return bundleFilePathArg.getValue();
 	}
 
-	private static void printHelp() {
+	private void printHelp() {
 		System.out
 				.println("Javascript class loader - see http://github.com/damonsmith/js-class-loader for more info.\n\n"
 						+ "Usage: \n\n"

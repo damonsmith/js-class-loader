@@ -140,8 +140,11 @@ public class JsClassLoaderMojo extends AbstractMojo {
 				config.setProperty(Config.PROP_GRAPH_FILE, graphFile);
 			}
 			
-			
-			PrintStream bundleOut = new PrintStream(prepFile(config.getProperty(Config.PROP_BUNDLE_FILE)));
+			String outFilePath = config.getProperty(Config.PROP_BUNDLE_FILE);
+			if (outFilePath == null) {
+				throw new MojoExecutionException("You need to configure bundleFile=<path-where-you-want-it> in your config file.");
+			}
+			PrintStream bundleOut = new PrintStream(prepFile(outFilePath));
 			Bundler bundler = new Bundler(config);
 			bundler.write(bundleOut);
 			bundleOut.close();

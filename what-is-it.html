@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset='utf-8' />
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<meta name="description"
+	content="Js-class-loader : (Java) Fast Javascript aggegator / bundler, with dependency detection." />
+
+<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+<title>JS-Class-Loader - What is it?</title>
+</head>
+
+<body>
+
+	<!-- HEADER -->
+	<div id="header_wrap" class="outer">
+		<header class="inner">
+			<a id="forkme_banner" href="https://github.com/damonsmith/js-class-loader">View on GitHub</a>
+
+			<a href=".">
+			<h1 id="project_title">What is JS-Class-Loader?</h1>
+			</a>
+
+			<section id="downloads">
+				<a class="zip_download_link" href="https://github.com/damonsmith/js-class-loader/releases/download/js-class-loader-parent-1.2.7/js-class-loader-1.2.7.jar">
+					Download the latest release jar file
+				</a> 
+				<a class="tar_download_link" href="https://github.com/damonsmith/js-class-loader/tarball/master">
+					Download this project as a tar.gz file
+				</a>
+			</section>
+		</header>
+	</div>
+
+	<!-- MAIN CONTENT -->
+	<div id="main_content_wrap" class="outer">
+		<section id="main_content" class="inner">
+
+			<p>(Java) A Free Software tool for bundling and serving large Javascript codebases with
+				automatic dependency detection. It is fast, tested, easy to integrate and does not use the words
+				rockstar or ninja, or have a website filled with big gradient icons of robot kittens playing
+				banjos. (but then it's not a javascript layout framework so I suppose it wouldn't anyway.)</p>
+			
+			<p>Developers working on large javascript codebases will know that if you are doing more than
+				just a couple of jquery data-tables, some rollovers and menus, if you are actually building
+				a domain model and using object oriented concepts then your javascript codebase can very
+				quickly get messy and become hard to manage. Things that work for the impressive 2 week prototype
+				often turn into a mess when the codebase grows. This tool imposes code conventions that keep your
+				code neat, clean and easy to manage and find no matter how large it gets. 
+				It uses these conventions to detect dependencies
+				and bundle your code for you, so that you can add, remove and refactor code and files without
+				having to do anything to your script tags. It is fast enough even on large codebases that it
+				allows you to make a change, reload the browser and see the change.</p>
+			
+			<p>If your project is a java webapp already then this tool will integrate seamlessly as either a 
+				runtime servlet or a build time task. If your project is any other sort of application then
+				you can use JS-Class-Loader from your editor and your build to manage your javascript code
+				quickly and simply.
+			</p>
+			
+			<h1>Principles</h1>
+			
+			<p>
+				JS-Class-Loader was designed with the following requirements in mind:
+			</p>
+			<ul>
+				<li><b>Must allow the developer to make a change, reload the browser and see the change in a way that 
+				does not take any significant time</b><br />
+				even on very large codebases (target: ~3,000 source files, 3MB of source)</li>
+				
+				<li><b>Must allow the developer to debug at the correct source line</b><br />
+				currently this means development mode has individual script tags, in future this may be implemented with
+				source maps and/or just breaking out individual modules into script tags.</li>
+				
+				<li><b>It must work seamlessly from the IDE without requiring any non-java tools or software</b><br />
+				e.g: must not require the developer to run V8, NodeJS and Grunt just to bundle the code for my java apps.
+				This reduces the number of moving parts and points of failure, and allows new developers to get up and 
+				developing on your project quicker.</li>
+
+				<li><b>Must integrate with existing project structures</b><br />
+				For anything other that the simplest use (bundle all files), JS-Class-Loader <b>does</b> impose structure rules on 
+				code in order to do dependency detection. It requires
+				the concepts of namespaces and names, and for code to be referenced that way when it is used, but it
+				will always be completely configurable about where and how many source trees there are, how you define your
+				names, and if you use inheritance then you will always be able to configure JS-Class-Loader to work with it.</li>
+				
+				<li><b>Must be well documented, have good defaults and excellent error messages</b><br />
+				The developer should be able to run the jar and muddle their way along to successfully setting up their project purely
+				by reading the help and error messages and then setting the settings. The docs must cover all basic setup
+				procedures and provide examples and tutorials, and these must be kept up to date. It must <b>NEVER</b> fail silently
+				or provide blank or misleading error messages.</li>
+			</ul>			
+			<h2>
+				<a name="rules-of-js-class-loader" class="anchor" href="#rules-of-js-class-loader"><span
+					class="octicon octicon-link"></span></a>Rules of JS-Class-Loader
+			</h2>
+
+			<ol>
+				<li><b>Class names must match file names</b><br />
+				Whether it's a class, a static object, a function or anything else, the thing in the file must 
+				match the name of the file. This is so that when you reference the thing, JS-Class-Loader knows 
+				to include the file.</li>
+				
+				<li><b>Folder structure must match package structure</b><br />
+				This is the tried and tested code convention that Java uses, and allows you to separate your
+				code into modules and groupings. You can still have that big messy util file in the root namespace
+				if you want but JS-Class-Loader allows and encourages you to use proper code structure in your javascript.
+				</li>
+				<li><b>File names must not have extra dots in them</b><br />
+				JS-Class-Loader uses dots for namespaces and gets confused when a filename has dots in it. This may be 
+				fixed in future (by converting them to underscores) but for now, no dots in filenames apart from the .js extension.
+				(dashes and underscores in filenames are ok though, we recommend converting dots to underscores)</li>
+			</ol>
+			
+			
+			<p>Having said that, you can still include 3rd party libraries and modules in your bundle
+				that don't conform to this scheme. You just need to explicitly include them in your code
+				somewhere, you can't just rely on dependency detection to work out that you need them. There are plenty of
+				examples in this site of how to include the most common js frameworks and libraries in your codebase</p>
+
+			<section class="mini_links">
+				<h2>Next</h2>
+				<a class="button_link" href="how-to-use-it.html">How to use it</a>	
+				<a class="button_link" href="how-it-works.html">How it works</a>	
+				<a class="button_link" href=".">Home</a>	
+				
+			
+				<div class="clear"></div>
+			</section>
+			
+			
+
+
+		</section>
+	</div>
+
+</body>
+</html>

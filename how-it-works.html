@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset='utf-8' />
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<meta name="description"
+	content="Js-class-loader : (Java) Fast Javascript aggegator / bundler, with dependency detection." />
+
+<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+<title>JS-Class-Loader - How it works</title>
+</head>
+
+<body>
+
+	<!-- HEADER -->
+	<div id="header_wrap" class="outer">
+		<header class="inner">
+			<a id="forkme_banner" href="https://github.com/damonsmith/js-class-loader">View on GitHub</a>
+
+			<a href=".">
+			<h1 id="project_title">How JS-Class-Loader works</h1>
+			</a>
+
+			<section id="downloads">
+				<a class="zip_download_link" href="https://github.com/damonsmith/js-class-loader/releases/download/js-class-loader-parent-1.2.7/js-class-loader-1.2.7.jar">
+					Download the latest release jar file
+				</a> 
+				<a class="tar_download_link" href="https://github.com/damonsmith/js-class-loader/tarball/master">
+					Download this project as a tar.gz file
+				</a>
+			</section>
+		</header>
+	</div>
+
+	<!-- MAIN CONTENT -->
+	<div id="main_content_wrap" class="outer">
+		<section id="main_content" class="inner">
+
+			<p>JS-Class-Loader's main concerns are <b>parse-time dependencies</b> and <b>run-time dependencies</b>. 
+				A parse time dependency means that when a file is parsed - when it's code is loaded into the page -
+				it references code from another file. So it isn't just that it has functions that call code from other files, 
+				it has things like inheritance functions that need a superclass to already have been defined in the
+				page before the subclass can even be loaded.
+			</p>
+			<p>
+				For example, if the code in file Dog.js uses the code from file Animal.js 
+				outside of any function or object, then the file Animal.js must appear in the bundle first, 
+				otherwise when the browser parses file Dog.js it will complain that things from Animal.js aren't defined. 
+				So JS-Class-Loader (in it's default config), will scan files for things like this:
+			</p>
+			<code>extend(com.example.SubClass, com.example.SuperClass) </code>
+			<p>
+				and when it finds them it makes sure that SuperClass appears in the bundle before Subclass. 
+			</p>
+			<p>
+				<b>Note on the extend, implement and namespace functions</b><br />
+				You can configure JS-Class-Loader to recognise your own function for these things, if they are named
+				differently or have a different structure. Or you can get a copy of the functions that are used in
+				all the JS-Class-Loader examples if you want to use them.<br /> 
+				(The extend function is in all the examples and is a basic version of the intermediate pattern constructor.)
+			</p>
+			
+			<h1>Basic process</h1>				
+			<ul>
+				<li>First, it turns the files and folders in your source trees into a list of package and class names, so
+					a file in a source root that is com/example/MyClass.js is added to the list as com.example.MyClass.
+					JS-Class-Loader always reads all file names and builds a complete list of all available classes.
+				</li>
+				<li>Second, it starts with the seed files and scans for dependencies. If the config says allClasses=true
+					then the bundler will add all files. Otherwise it will only add files that it finds as it scans down
+					the dependency tree. Unused files will not be added.
+				</li>
+				<li>As it does the scanning, if it detects a parse-time dependency in a file, it adds that file to the 
+					list first and scans it, after that it adds the current file and any run-time dependencies that the
+					current file has.
+				</li>
+			</ul>	
+
+			<p>This fairly simple process means that the list of files will always contain parse-time dependencies in the
+				bundle first.
+			</p>
+			
+			<h1>Example codebase</h1>
+
+<div class="pure-g-r">
+    <div class="pure-u-1-3">
+
+        <h2>Module tree view</h2>
+        <h3>module: lib</h3>
+        <ul class="litree">
+            <li class="dir"><div><span></span>box2d</div><ul>
+                <li><div>box2d.js</div></li>
+            </ul></li>
+
+            <li class="dir"><div><span></span>prototype</div><ul>
+                <li><div>prototype.js</div></li>
+            </ul></li>
+        </ul>
+
+        <h3>module: src</h3>
+        <ul class="litree">
+            <li><div>Base.js</div></li>
+
+            <li class="dir"><div><span></span>jssynth</div><ul>
+
+                <li class="dir rolledUp"><div><span></span>player</div><ul style="display: none">
+                    <li><div>AmigaLowPassFilter.js</div></li>
+                    <li><div>Effects.js</div></li>
+                    <li><div>MODLoader.js</div></li>
+                    <li><div>MODPlayer.js</div></li>
+                    <li><div>NoteData.js</div></li>
+                    <li><div>S3MLoader.js</div></li>
+                </ul></li>
+
+                <li><div>Global.js</div></li>
+                <li><div>Instrument.js</div></li>
+                <li><div>Mixer.js</div></0li>
+                <li><div>Sample.js</div></li>
+                <li><div>WebAudioOutput.js</div></li>
+                <li><div>WebkitAudioPatch.js</div></li>
+
+            </ul></li>
+
+            <li class="dir"><div><span></span>games</div><ul>
+
+                <li class="dir rolledUp"><div><span></span>app</div><ul style="display: none">
+                    <li class="dir"><div><span></span>event</div><ul>
+                        <li><div>AppEventAdapter.js</div></li>
+                    </ul></li>
+
+                    <li><div>Util.js</div></li>
+                </ul></li>
+
+                <li class="dir rolledUp"><div><span></span>audio</div><ul style="display: none">
+                    <li><div>Audio.js</div></li>
+                </ul></li>
+
+                <li class="dir rolledUp"><div><span></span>box2d</div><ul style="display: none">
+                    <li><div>WorldRenderer0.js</div></li>
+                    <li><div>WorldRunner.js</div></li>
+                </ul></li>
+
+                <li class="dir rolledUp"><div><span></span>effect</div><ul style="display: none">
+                    <li><div>ParticleFire.js</div></li>
+                </ul></li>
+
+                <li class="dir rolledUp"><div><span></span>scenario</div><ul style="display: none">
+                    <li><div><span class="dir"></span>event</div><ul>
+                        <li><div>ZoomHandler.js</div></li>
+                    </ul></li>
+
+                    <li><div>Drums.js</div></li>
+                    <li><div>RocketLander.js</div></li>
+                    <li><div>Scenario.js</div></li>
+                    <li><div>Trebuchet.js</div></li>
+                </ul></li>
+
+                <li class="dir rolledUp"><div><span></span>svg</div><ul style="display: none">
+                    <li><div>SVGToBox2D.js</div></li>
+                </ul></li>
+
+            </ul></li>
+
+        </ul>
+    </div>
+
+    <div class="pure-u-1-3">
+        <h2>List of all classes</h2>
+
+        <div>box2d.box2d</div>
+        <div>prototype.prototype</div>
+        <div>Base</div>
+        <div>jssynth.player.AmigaLowPassFilter</div>
+        <div>jssynth.player.Effects</div>
+        <div>jssynth.player.MODLoader</div>
+        <div>jssynth.player.MODPlayer</div>
+        <div>jssynth.player.NoteData</div>
+        <div>jssynth.player.S3MLoader</div>
+        <div>jssynth.Global</div>
+        <div>jssynth.Instrument</div>
+        <div>jssynth.Mixer</div>
+        <div>jssynth.Sample</div>
+        <div>jssynth.WebAudioOutput</div>
+        <div>jssynth.WebkitAudioPatch</div>
+        <div>games.app.event.AppEventAdapter</div>
+        <div>games.app.Util</div>
+        <div>games.audio.Audio</div>
+        <div>games.box2d.WorldRenderer</div>
+        <div>games.box2d.WorldRunner</div>
+        <div>games.effect.ParticleFire</div>
+        <div>games.scenario.event.ZoomHandler</div>
+        <div>games.scenario.Drums</div>
+        <div>games.scenario.RocketLander</div>
+        <div>games.scenario.Scenario</div>
+        <div>games.scenario.Trebuchet</div>
+        <div>games.svg.SVGToBox2D</div>
+    </div>
+
+    <div class="pure-u-1-3">
+        <h2>Dependency ordering</h2>
+        <div>Base</div>ZoomAndScrollEventHandler 
+        <div>games.scenario.Scenario</div>
+        <div>prototype.prototype</div>
+        <div>box2d.box2d</div>
+        <div>games.box2d.WorldRunner</div>
+        <div>games.svg.SVGToBox2D</div>
+        <div>games.app.event.AppEventAdapter</div>
+        <div>games.box2d.WorldRenderer</div>
+        <div>games.scenario.RocketLander</div>
+        <div>games.scenario.event.ZoomHandler</div>
+        <div>games.effect.ParticleFire</div>
+        <div>games.scenario.Drums</div>
+        <div>jssynth.Sample</div>
+        <div>jssynth.Global</div>
+        <div>jssynth.Mixer</div>
+        <div>jssynth.WebAudioOutput</div>
+        <div>games.scenario.Trebuchet</div>
+        <div>games.audio.Audio</div>
+        <div>jssynth.player.MODLoader</div>
+        <div>jssynth.player.NoteData</div>
+        <div>jssynth.Instrument</div>
+        <div>jssynth.player.Effects</div>
+        <div>jssynth.player.MODPlayer</div>
+        <div>jssynth.player.AmigaLowPassFilter</div>
+
+        <div>games.app.Util</div>
+    </div>
+
+</div> 
+			
+			
+			<section class="mini_links">
+				<h2>Next</h2>
+				<a class="button_link" href="comparison.html">Comparison</a>
+				<a class="button_link" href="advanced-config.html">Advanced config</a>
+				<a class="button_link" href=".">Home</a>	
+				
+			
+				<div class="clear"></div>
+			</section>
+		</section>
+	</div>
+
+</body>
+</html>

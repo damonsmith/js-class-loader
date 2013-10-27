@@ -217,6 +217,10 @@ ul.litree > li:last-child,
 	clear: both;
 }
 
+iframe {
+	width: 100%;
+}
+
 #main_content a.button_link:hover {
   cursor: pointer;
   color: #eee;

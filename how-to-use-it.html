@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset='utf-8' />
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<meta name="description"
+	content="Js-class-loader : (Java) Fast Javascript aggegator / bundler, with dependency detection." />
+
+<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+<title>JS-Class-Loader - How to use it</title>
+</head>
+
+<body>
+
+	<!-- HEADER -->
+	<div id="header_wrap" class="outer">
+		<header class="inner">
+			<a id="forkme_banner" href="https://github.com/damonsmith/js-class-loader">View on GitHub</a>
+
+			<a href=".">
+			<h1 id="project_title">How to use JS-Class-Loader</h1>
+			</a>
+
+			<section id="downloads">
+				<a class="zip_download_link" href="https://github.com/damonsmith/js-class-loader/releases/download/js-class-loader-parent-1.2.7/js-class-loader-1.2.7.jar">
+					Download the latest release jar file
+				</a> 
+				<a class="tar_download_link" href="https://github.com/damonsmith/js-class-loader/tarball/master">
+					Download this project as a tar.gz file
+				</a>
+				
+			</section>
+		</header>
+	</div>
+
+	<!-- MAIN CONTENT -->
+	<div id="main_content_wrap" class="outer">
+		<section id="main_content" class="inner">
+
+			<p>The simplest way to try out the tool is to download the
+				jar file and run it on the command line, telling it where your source tree is. Like this:
+			</p>
+			
+			<code>java -jar js-class-loader.jar --sourcePaths=path/to/my/source/tree</code>
+			
+			<p>This will bundle all js files in your source trees. Then there are various ways to use it in a
+				development project. One or more of these:
+			</p>
+			
+			<ul>
+				<li><b>In the build</b><br>
+				Run it from Maven, Ant, Gradle or anything else. See the examples, docs and tutorials.
+				</li>
+				<li><b>In the IDE</b><br>
+				Setup Eclipse, IntelliJ and various other IDEs to run the bundler as part of the build. See the 
+				docs and video tutorials for ways to do this.
+				</li>
+				<li><b>At run time</b><br />
+				JS-Class-Loader can also run as a servlet in java web apps.
+				</li>
+			</ul>
+			
+			<h1>Tutorial videos</h1>
+			<p>
+			There are loads of ways you could integrate JS-Class-Loader into your project. Here are some run-throughs
+			of the simplest methods. You should watch them fullscreen at highest quality to see the text, and the
+			captions have been set properly too if you don't want sound.
+			</p>
+					
+			<h2><a href="//www.youtube.com/watch?v=i2zjd0JRGNM">In an Eclipse Static web project</a></h2>
+			<p>
+				This video runs through setting up JS-Class-Loader as a builder, which then generates bundles
+				and script-tag lists every time you build (which can be every time you save a file). 
+			</p>
+			
+			<h2><a href="//www.youtube.com/watch?v=jJg8xZ6pD2Y">As a Java servlet in an Eclipse web app project</a></h2>
+			<p>
+				A run through of setting up a very basic java web app in eclipse, and adding JS-Class-Loader as a servlet
+				which then bundles your javascript at request time.
+			</p>
+			
+			<section class="mini_links">
+				<h2>Next</h2>
+				<a class="button_link" href="comparison.html">Comparison</a>
+				<a class="button_link" href="advanced-config.html">Advanced config</a>
+				<a class="button_link" href=".">Home</a>	
+				
+			
+				<div class="clear"></div>
+			</section>
+		</section>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset='utf-8' />
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<meta name="description"
+	content="Js-class-loader : (Java) Fast Javascript aggegator / bundler, with dependency detection." />
+
+<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+<title>JS-Class-Loader - Comparison with other tools</title>
+</head>
+
+<body>
+
+	<!-- HEADER -->
+	<div id="header_wrap" class="outer">
+		<header class="inner">
+			<a id="forkme_banner" href="https://github.com/damonsmith/js-class-loader">View on GitHub</a>
+
+			<a href=".">
+			<h1 id="project_title">Comparison with other tools</h1>
+			</a>
+
+			<section id="downloads">
+				<a class="zip_download_link" href="https://github.com/damonsmith/js-class-loader/releases/download/js-class-loader-parent-1.2.7/js-class-loader-1.2.7.jar">
+					Download the latest release jar file
+				</a> 
+				<a class="tar_download_link" href="https://github.com/damonsmith/js-class-loader/tarball/master">
+					Download this project as a tar.gz file
+				</a>
+				
+			</section>
+		</header>
+	</div>
+
+	<!-- MAIN CONTENT -->
+	<div id="main_content_wrap" class="outer">
+		<section id="main_content" class="inner">
+
+			<p>RequireJS is a popular tool for doing this sort of thing. This project addresses the same problem as
+				RequireJS but in a different way. That problem is described very nicely
+				<a href="http://www.requirejs.org/docs/why.html">here</a>.</p>
+
+			<p>This project has a very different approach to RequireJS. JS-Class-Loader forces you to use a set, well
+				understood file/class/namespace structure, which means it does not need to understand javascript or read JS 
+				config blocks, which means it doesn't need to run a js interpreter with all of the complexity,
+				overhead and extreme lack of performance that that entails.
+			</p>
+			
+			<p>RequireJS and similar tools go to great lengths to make it easy to
+				include libraries that are a simple 5 minute process to include (e.g: JQuery) yet make it
+				costly and painful to organise your own code into lots of neatly separated classes and namespaces.
+				Every dependency must be listed and managed by hand, and no IDEs will take care of this for you
+				as they would with Java. And probably never will until an IDE comes along that is written in Javascript
+				itself.
+			</p>
+			
+			<p>So this tool is aimed primarily at javascript developers working in the Java application
+				environment, because they already have Java installed, know how to execute Jar files and 
+				will be familiar with properties files, servlets and project structure conventions. However, it has been
+				packaged and documented in a way that will hopefully make it useful to non Java developers too. 
+			</p>
+
+			<section class="mini_links">
+				<h2>Next</h2>
+				<a class="button_link" href="what-is-it.html">What is it?</a>
+				<a class="button_link" href="how-it-works.html">How it works</a>
+				<a class="button_link" href=".">Home</a>	
+				
+			
+				<div class="clear"></div>
+			</section>
+		</section>
+	</div>
+
+</body>
+</html>

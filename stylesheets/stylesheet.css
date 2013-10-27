@@ -127,7 +127,6 @@ header.inner {
   border-bottom-right-radius: 2px;
   text-shadow: none;
   display: block;
-  float: left;
   margin: 0.2em 0;
   clear: both;
   width: 100%;
@@ -137,6 +136,7 @@ header.inner {
 
 #main_content .mini_links .button_link {
   font-size: 1.3em;
+  float: left;
   width: 12em;
   clear: none;
   margin-right: 1em/* *** Litree turns nested lists into a tree structure *** */

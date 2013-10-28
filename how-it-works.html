@@ -56,10 +56,11 @@
 			</p>
 			<p>
 				<b>Note on the extend, implement and namespace functions</b><br />
-				You can configure JS-Class-Loader to recognise your own function for these things, if they are named
+				You can configure JS-Class-Loader to recognise your own functions for these things, if they are named
 				differently or have a different structure. Or you can get a copy of the functions that are used in
 				all the JS-Class-Loader examples if you want to use them.<br /> 
-				(The extend function is in all the examples and is a basic version of the intermediate pattern constructor.)
+				(The extend function is in all the examples and is a simple implementation that uses an 
+				intermediate function constructor.)
 			</p>
 			
 			<h1>Basic process</h1>				
@@ -200,7 +201,8 @@
 
     <div class="pure-u-1-3">
         <h2>Dependency ordering</h2>
-        <div>Base</div>ZoomAndScrollEventHandler 
+        <div>Base</div>
+        <div>ZoomHandler</div> 
         <div>games.scenario.Scenario</div>
         <div>prototype.prototype</div>
         <div>box2d.box2d</div>

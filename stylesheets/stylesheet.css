@@ -196,7 +196,8 @@ ul.litree > li:last-child,
 
 .dir span {
     display: inline-block;
-    background: url(images/arrow.png) no-repeat center center ;
+    background-image: url(../images/file-tree-arrow.png);
+    background-repeat: no-repeat;
     background-size: 0.7em 0.7em;
     width: 0.8em;
     height: 0.8em;
@@ -296,75 +297,4 @@ iframe {
   padding-top: 40px;
 }
 
-/* *** Litree turns nested lists into a tree structure *** */
-ul.litree, .litree ul {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-    position: relative;
-    overflow: hidden;
-}
-
-.litree li {
-    list-style-type: none;
-    border-left: 2px solid #000;
-    margin-left: 1.5em;
-    float: left;
-    clear: both;
-}
-
-.litree li div {
-    padding-left: 1em;
-    position: relative;
-}
-
-.litree li div:hover {
-    background-color: #eee;
-}
-
-.litree li div::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -2px;
-    bottom: 50%;
-    width: 0.75em;
-    border: 2px solid #000;
-    border-top: 0 none transparent;
-    border-right: 0 none transparent;
-}
-
-ul.litree > li:last-child,
-.litree ul > li:last-child {
-    border-left: 2px solid transparent;
-}
-
-.litree li.rolledUp > ul {
-}
-
-/* *** End litree *** */
-
-/* a style for directories in the tree */
-.dir > div {
-    cursor: pointer;
-}
-
-.dir span {
-    display: inline-block;
-    background: url(../images/file-tree-arrow.png) no-repeat center center ;
-    background-size: 0.7em 0.7em;
-    width: 0.8em;
-    height: 0.8em;
-    margin-right: 0.3em;
-    -webkit-transition:all 0.5s ease-in-out;
-    transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
-}
-
-.rolledUp.dir span {
-    transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-} 
 

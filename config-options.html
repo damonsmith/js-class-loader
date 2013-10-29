@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset='utf-8' />
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<meta name="description"
+	content="Js-class-loader : (Java) Fast Javascript aggegator / bundler, with dependency detection." />
+
+<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+<link rel="shortcut icon" href="favicon.ico" />
+<title>JS-Class-Loader - Config options</title>
+</head>
+
+<body>
+
+	<!-- HEADER -->
+	<div id="header_wrap" class="outer">
+		<header class="inner">
+			<a id="forkme_banner" href="https://github.com/damonsmith/js-class-loader">View on GitHub</a>
+
+			<a href=".">
+			<h1 id="project_title">JS-Class-Loader config options</h1>
+			</a>
+
+			<div id="downloads">
+				<a class="zip_download_link" href="https://github.com/damonsmith/js-class-loader/releases/download/js-class-loader-parent-1.2.7/js-class-loader-1.2.7.jar">
+					Download the latest release jar file
+				</a> 
+				<a class="tar_download_link" href="https://github.com/damonsmith/js-class-loader/tarball/master">
+					Download this project as a tar.gz file
+				</a>
+				
+			</div>
+		</header>
+	</div>
+
+	<!-- MAIN CONTENT -->
+	<div id="main_content_wrap" class="outer">
+		<section id="main_content" class="inner">
+			<h1>Options</h1>
+			<p>These options apply from either the command line, maven, servlet config or anywhere else.</p>
+
+			<ul>
+				<li><b>basePath</b>
+					<p>
+						This is the directory that the bundle file path and other paths will be relative to.
+						It defaults to the current working directory.
+					</p>
+				</li>
+				
+				<li><b>sourcePaths</b>
+					<p>
+						This is a list of paths or wildcards that tells JS-Class-Loader the locations of
+						each of your source trees. For the simplest project this might just be a single folder,
+						and for the most complex it might be a set of modules each with it's own source tree
+						and then other locations for third party libraries. Here are some examples:
+					</p>
+					<ul>
+						<li><b><code>sourcePaths=js</code></b> - a single source tree based in the folder called js</li>
+						<li><b><code>sourcePaths=js/src/*,js/lib</code></b> - each folder in <code>js/src</code> is the base of a
+						a source tree and <code>js/lib</code> is also a source tree.
+						</li>
+						<li><b><code>sourcePaths=js/lib,js/modules/*/src,addons/*</code></b> each folder in modules
+						has a <code>src</code> folder which is the base of a source tree, <code>js/lib</code>
+						is the base of a source tree and each folder in <code>addons</code> is a source tree.
+						</li>
+					</ul>
+						The list is comma separated and each entry can have wildcards. 
+				</li>
+				
+				<li><b>allClasses (=true)</b>
+					<p>
+						Set this to true to parse and bundle all javascript files in your source trees. The classes
+						will still be in dependency order.
+					</p>
+				</li>
+				
+				<li><b>seedClasses</b>
+					<p>
+						If you are not using allClasses this is one way to tell JS-Class-Loader where your
+						tree should start from. This should be a comma separated list of the class or classes 
+						that are the entry point of the application, in namespace format, such as 
+						<code>com.example.myapp.MyApplication,com.examle.myapp.AlternateApp</code>. 
+						That way the dependency tree will contain everything your app needs to run.
+					</p>
+				</li>
+				
+				<li><b>seedFiles</b>
+					<p>
+						Some apps define which javascript classes to run in XML or other config file formats,
+						this config option tells JS-Class-Loader to parse those files for classnames and
+						use those classes to start the dependency trees. You can use this alongside seedClasses,
+						seedClasses can define classes that must always be loaded and this option can then add
+						any dynamic classes that are defined in config.
+					</p>
+				</li>
+				
+				<li><b>list</b>
+					<p>
+						(command line only) list the classes that would appear in the bundle
+					</p>
+				</li>
+				
+				<li><b>config</b>
+					<p>
+						Set the path of a config properties file to use. This can be used from the command line too.
+					</p>
+				</li>
+				
+				<li><b>scriptTagsFile</b>
+					<p>
+						This option tells JS-Class-Loader to also generate an html snippet with script tag entries for
+						each class in the bundle. The script tags file can then be included in a site in development
+						mode to allow the developer to see source at the correct line.
+					</p>
+				</li>
+				
+				<li><b>graphFile</b>
+					<p>
+						JS-Class-Loader can generate a GraphViz format DOT file of all classes and their dependencies.
+						It is usually a bit too busy to be really useful but future work on groupings and visualisers
+						may make this more useful for large projects.
+					</p>
+				</li>
+				
+				<li><b>bundleFile</b>
+					<p>
+						File to write the bundle to, if this isn't set then print to stdout.
+					</p>
+				</li>
+			</ul>
+			
+			
+			<section class="mini_links">
+				<h2>Related reading</h2>
+				<a class="button_link" href="how-to-use-it.html">How to use it</a>
+				<a class="button_link" href="how-it-works.html">How it works</a>
+				<a class="button_link" href=".">Home</a>	
+				
+			
+				<div class="clear"></div>
+			</section>
+		</section>
+	</div>
+
+</body>
+</html>

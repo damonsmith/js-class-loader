@@ -9,7 +9,7 @@
 
 <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 <link rel="shortcut icon" href="favicon.ico" />
-<title>JS-Class-Loader - Feedback</title>
+<title>JS-Class-Loader - How to use it</title>
 </head>
 
 <body>
@@ -20,7 +20,7 @@
 			<a id="forkme_banner" href="https://github.com/damonsmith/js-class-loader">View on GitHub</a>
 
 			<a href=".">
-			<h1 id="project_title">Feedback on JS-Class-Loader</h1>
+			<h1 id="project_title">How to use JS-Class-Loader</h1>
 			</a>
 
 			<div id="downloads">
@@ -38,14 +38,318 @@
 	<!-- MAIN CONTENT -->
 	<div id="main_content_wrap" class="outer">
 		<section id="main_content" class="inner">
-			<h1>Feedback</h1>
-			<p>This project is hosted on Github, please see the 
-			<a href="https://github.com/damonsmith/js-class-loader/issues">Issues tracker</a> for bug reports and fixes,
-			and the <a href="https://github.com/damonsmith/js-class-loader/wiki">wiki</a> for discussion.
+			<h1>Usage</h1>
+			<p>The simplest way to try out the tool is to download the
+				jar file and run it on the command line, telling it where your source tree is. Like this:
 			</p>
+			
+			<code>java -jar js-class-loader.jar --sourcePaths=path/to/my/source/tree</code>
+			
+			<p>This will bundle all js files in your source trees. Then there are various ways to use it in a
+				development project. One or more of these:
+			</p>
+			
+			<ul>
+				<li><b>In the build</b><br>
+				Run it from Maven, Ant, Gradle or anything else. See the examples, docs and tutorials.
+				</li>
+				<li><b>In the IDE</b><br>
+				Setup Eclipse, IntelliJ and various other IDEs to run the bundler as part of the build. See the 
+				docs and video tutorials for ways to do this.
+				</li>
+				<li><b>At run time</b><br />
+				JS-Class-Loader can also run as a servlet in java web apps.
+				</li>
+			</ul>
+			
+			<h1>Tutorial videos</h1>
+			<p>
+			There are loads of ways you could integrate JS-Class-Loader into your project. Here are some run-throughs
+			of the simplest methods. You should watch them fullscreen at highest quality to see the text, and the
+			captions have been set properly too if you don't want sound.
+			</p>
+					
+			<h2><a href="//www.youtube.com/watch?v=i2zjd0JRGNM">In an Eclipse Static web project</a></h2>
+			<p>
+				This video runs through setting up JS-Class-Loader as a builder, which then generates bundles
+				and script-tag lists every time you build (which can be every time you save a file). 
+			</p>
+			
+			<h2><a href="//www.youtube.com/watch?v=jJg8xZ6pD2Y">As a Java servlet in an Eclipse web app project</a></h2>
+			<p>
+				A run through of setting up a very basic java web app in eclipse, and adding JS-Class-Loader as a servlet
+				which then bundles your javascript at request time.
+			</p>
+			
+			<h1>Setup guides</h1>			
+			<p>Basic properties:</p>
+<code>
+sourcePaths=js/*
+allClasses=true
+bundleFile=gen/bundle.js
+scriptTagsFile=gen/script-tags.html
+</code>
+
+			<h2>Setting up an Eclipse project with a JS-Class-Loader builder</h2>
+
+			<h3>Super quick steps</h3>
+			<ol>
+				<li>Create project</li>
+				<li>Create config file</li>
+				<li>Get the jar</li>
+				<li>Add builder to project</li>
+			</ol>
+
+			<h3>Quick steps</h3>
+			
+			<ol>
+				<li>Take a new or existing web project</li>
+				<li>create a conf folder and js-class-loader.properties inside it</li>
+				<li>define standard properties as above and customise to your structure</li>
+				<li>download the latest jar file from the link at the top of this page, save it somewhere permanent.</li>
+				<li>Add a new builder for your project</li>
+				<li>Set exec to /usr/bin/java or \Program Files\Java\Java.x.x.x\bin\java.exe</li>
+				<li>Set arguments to -jar path/to/js-class-loader-x.x.x.jar -c="/path/to/js-class-loader.properties"</li>
+				<li>Save the builder and build the project once</li>
+				<li>Set builder refresh to refresh your generated folder contents</li>
+				<li>Add some code, build, setup complete.</li>
+			</ol>
+			
+			
+			<h3>Steps with descriptions</h3>
+
+			<ol>
+				<li><b>Create a new project</b><br />
+					You can use any type of project in eclipse, the examples use a Static Web Project because it has the
+					web content in a subfolder so you can create a conf file in the base and keep your web content separate
+					but it really doesn't matter what sort of project you use.
+				</li>
+				
+				<li><b>Create the config file</b><br />
+					JS-Class-Loader needs to know where your source tree or trees live and where you want the output file to
+					go. There is some basic example config above that should work for starters. The sourcePaths argument
+					in the example (sourcePaths=js/*) tells js-class-loader to consider each folder under js/ as a source
+					root, which allows you to start off with a simple js/src folder for now and expand it out to more modules
+					later without having to change your config.		
+				</li>
+				
+				<li><b>Download the latest jar file</b><br />
+					There is a download link at the top of this page for the latest jar. Save this somewhere permanent,
+					you will be referencing this location when you set up the Eclipse builder.
+				</li>	
+				
+				
+				<li><b>Add a new builder</b><br />
+					<ul>
+						<li>Right click on your project, go to Builders, New.</li>
+						<li>Select "Program"</li>
+						<li>In the name, enter JS-Class-Loader</li>
+						<li>In location you need to put in your system java executable file. For linux that is:
+							/usr/bin/java<br />
+							In windows it is something like: \Program Files\Java\Java.x.x.x\bin\java.exe
+						</li>
+						<li>
+							Working Directory needs to be set to where the base of your web content is, so for an Eclipse Static Web
+							project, that means the WebContent folder in your project. You can use variables to make this simpler,
+							set it to ${project_loc}/WebContent. Or if the content is served from the base of your project, just set
+							it to ${project_loc}
+						</li>
+							
+						<li>
+							Arguments should be set to:<br />
+							<code>						
+							-jar path/to/js-class-loader-x.x.x.jar -c="/path/to/js-class-loader.properties"
+							</code><br />
+							Customise the path to where you saved the JS-Class-Loader jar, and then you can use properties
+							again to set the config file. So it might look like this:
+							<code>	
+							-jar /home/user/workspace/js-class-loader-1.2.7.jar -c="${project_loc}/conf/js-class-loader.properties"
+							</code><br />
+							If you paths or project name has spaces in it then wrap the value in quotes too as shown here.
+						</li>
+					</ul>
+				</li>
+						
+				<li><b>build it once</b><br />
+					Now before we set up the refresh we should create the folders and run the bundler once.
+					<ul>
+						<li>create js/src in your web project content</li>
+						<li>create a new js file in there called whatever you like.</li>
+						<li>build the project (if you don't have build automatically enabled, press ctrl-b)</li>
+						<li>refresh the project - you should see a gen folder appeared with a bundle.js file in it</li>
+					</ul>
+				</li>
+						
+				<li><b>Setup refresh</b>
+					<ul>
+						<li>Now go back to the project builders, select your builder and edit it.</li>
+						<li>Go to the Refresh tab,</li>
+						<li>enable refresh resources on completion,</li>
+						<li>select Specific Resources</li>
+						<li>click Specify resources</li>
+						<li>select your gen folder.</li>
+					</ul>	
+				</li>
+			</ol>
+			
+			And that it for the basic setup. Follow the next steps for how to use the script-tags file
+			and for more advanced usage.
+
+				
+			<h2>Setting up an Eclipse web app with a JS-Class-Loader servlet</h2>
+
+			<h3>Super quick steps</h3>
+			<ol>
+				<li>Create java web app project</li>
+				<li>download latest js-class-loader jar, save into WEB-INF/lib</li>
+				<li>create config file</li>
+				<li>add servlet config to web.xml</li>
+			</ol>
+			
+			<h3>Quick steps</h3>
+			
+			<ol>
+				<li>Open a new or existing java web application project in eclipse</li>
+				<li>Download the jar file from the link at top of page, save into WEB-INF/lib</li>
+				<li>Create WEB-INF/classes/js-class-loader.properties</li>
+				<li>Set sourcePaths up and set allClasses=true</li>
+				<li>Edit web.xml, add servlet definition and mapping as per example above</li>
+			</ol>
+			
+			<h2>Setting up an Eclipse Maven web app project with the JS-Class-Loader maven plugin</h2>
+
+			<h3>Super quick steps</h3>
+			<ol>
+				<li>Create or open a maven web app</li>
+				<li>Add plugin to build->plugins tag in pom.xml</li>
+				<li>Add pluginManagement section to build tag in pom.xml</li>
+				<li>Create and customise config in src/main/resources</li>
+				<li>Create source folders and files, build</li>
+				<li>Check your built folder in target, see the generated files</li>
+			</ol>
+			
+			
+			<h3>Quick steps</h3>
+			<ol>
+				<li>Create or open a maven web app</li>
+				<li>Edit the pom file, in build->plugins add:<br />
+					<code>
+						&lt;plugin&gt;
+						    &lt;groupId&gt;com.larrymite&lt;/groupId&gt;
+						    &lt;artifactId&gt;js-class-loader-mojo&lt;/artifactId&gt;
+						    &lt;version&gt;1.x.x&lt;/version&gt;
+						    &lt;executions&gt;
+						        &lt;execution&gt;
+						            &lt;goals&gt;&lt;goal&gt;generate-js-bundle&lt;/goal&gt;&lt;/goals&gt;
+						        &lt;/execution&gt;
+						    &lt;/executions&gt;
+						&lt;/plugin&gt;
+					</code>
+				</li>
+
+				<li>Customise the version number in the version tag to the latest release.</li>
+				<li>Now add the following to the build tag in the pom:<br />
+					<code>
+					... force war refresh xml ...
+					</code>
+				</li>
+				<li>Create a file in src/main/resources called js-class-loader.properties</li>
+				<li>edit this file, add sourcePaths and bundleFile settings, set allClasses=true</li>
+				<li>create source folder and a source file, build</li>
+				<li>Check your built folder in target, see the generated files</li>
+			</ol>
+			
+			<h3>Steps with description</h3>
+			<p>
+				In spite of our best efforts, there just aren't any good ways to get
+				Eclipse M2E with WTP to generate new web content
+				on the fly and add it to it's own Deployed Resources folder. Instead these steps
+				set up in a way that tells M2E to update your target folder, so that at least you
+				can start an application server at your exploded war location and it will update dynamically
+				as you change code and build.	
+			</p>
+			<p>
+				In fact, we're not really sure why they don't always just update the target folder.
+			</p>
+			
+			<ol>
+				<li><b>Create or open a maven web app</b><br />
+					In eclipse, create or open a project with the maven-web-app archetype.
+				</li>
+				
+				<li><b>Add plugin to build->plugins tag in pom.xml</b><br />
+					<code>
+						&lt;plugin&gt;
+						    &lt;groupId&gt;com.larrymite&lt;/groupId&gt;
+						    &lt;artifactId&gt;js-class-loader-mojo&lt;/artifactId&gt;
+						    &lt;version&gt;1.x.x&lt;/version&gt;
+						    &lt;executions&gt;
+						        &lt;execution&gt;
+						            &lt;goals&gt;&lt;goal&gt;generate-js-bundle&lt;/goal&gt;&lt;/goals&gt;
+						        &lt;/execution&gt;
+						    &lt;/executions&gt;
+						&lt;/plugin&gt;
+					</code>
+					<br />
+					
+					This adds the generate-js-bundle goal to your project and is the basic
+					config you need for maven to generate js bundles at build time.
+				</li>
+			
+			
+				<li><b>Add pluginManagement section to build tag in pom.xml</b>
+					<p>
+					This step is purely to force Eclipse-M2E and WTP to update the target
+					build folder when an eclipse build runs. It's a shame to have to
+					pollute your pom with IDE config but it's the simplest and least
+					invasive way to get Eclipse-M2E-WTP to update web content like this.
+					</p>
+					<code>
+					... force war refresh xml ...
+					</code>
+				</li>
+				<li><b>Create config file at src/main/resources/js-class-loader.properties</b>
+					<p>
+						This is the config for JS-Class-Loader, it will be read by either
+						the maven build or servlets, in this case maven builds.
+					</p>
+					<p>Add this to the config file:</p>
+					<code>
+						sourcePaths=js/*
+						allClasses=true
+						bundleFile=gen/bundle.js
+					</code>
+				</li>
+				
+				<li><b>Create source folders and files, build</b>
+					<p>
+						.. add description here..
+					</p>
+				</li>
+				
+				<li><b>Check your built folder in target, see the generated files</b>
+					<p>
+						.. add description here..
+					</p>
+				</li>
+				
+			</ol>
+			
+			<h2>Setting up an IntelliJ maven web app with the JS-Class-Loader maven plugin</h2>
+
+			<h2>Using the development script tags list in a php web project</h2>
+			<h2>Using the development script tags list in java web project</h2>
+
+			<h2>Using the development script tags list in java web app with servlet</h2>
+
+			<h2>Setting up the base of your dependency tree</h2>
+
+			<h2>Fun with graphs and visualisations</h2>
+			
 			
 			<section class="mini_links">
 				<h2>Related reading</h2>
+				<a class="button_link" href="comparison.html">Comparison</a>
 				<a class="button_link" href="config-options.html">Config options</a>
 				<a class="button_link" href=".">Home</a>	
 				

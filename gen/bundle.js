@@ -17,6 +17,17 @@ Roller.load = function() {
 		return false;
 	}); 
 	
+	var tocContent = $("#toc-content");
+	tocContent.html(HTML5Outline(document.body).asHTML(true));
+	$(".toc button").click(function() {
+		if (tocContent.is(":visible")) {
+			tocContent.slideUp();
+		}
+		else {
+			tocContent.slideDown();
+		}
+	});
+	
 };
 
 document.addEventListener("DOMContentLoaded", Roller.load, false);
@@ -49,5 +60,5 @@ u[o]&&(delete u[o],c?delete n[l]:typeof n.removeAttribute!==i?n.removeAttribute(
 1;b<=6;b++){if(a.getElementsByTagName("H"+b).length>0)return-b}else return-parseInt(b.substr(1))},n=function(a){return o(a.sections)},o=function(a){return a[a.length-1]};HTML5Outline=function(a){s=0;t=a.ownerDocument||window.document;d=e=null;g=[];w(a,x,y);return e!=null?e.outline:null}})();
 
 
-var JSCL_UNIQUE_BUNDLE_HASH='664b79c85c94ef68436b2dab8d5936cf';
+var JSCL_UNIQUE_BUNDLE_HASH='cc42c50b09e486eb3b2c57de49069d15';
 

@@ -297,4 +297,6 @@ iframe {
   padding-top: 40px;
 }
 
-
+#toc-content {
+	display: none;
+}

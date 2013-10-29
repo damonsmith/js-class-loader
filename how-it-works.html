@@ -23,21 +23,21 @@
 			<h1 id="project_title">How JS-Class-Loader works</h1>
 			</a>
 
-			<section id="downloads">
+			<div id="downloads">
 				<a class="zip_download_link" href="https://github.com/damonsmith/js-class-loader/releases/download/js-class-loader-parent-1.2.7/js-class-loader-1.2.7.jar">
 					Download the latest release jar file
 				</a> 
 				<a class="tar_download_link" href="https://github.com/damonsmith/js-class-loader/tarball/master">
 					Download this project as a tar.gz file
 				</a>
-			</section>
+			</div>
 		</header>
 	</div>
 
 	<!-- MAIN CONTENT -->
 	<div id="main_content_wrap" class="outer">
 		<section id="main_content" class="inner">
-
+			<h1>Basics</h1>
 			<p>JS-Class-Loader's main concerns are <b>parse-time dependencies</b> and <b>run-time dependencies</b>. 
 				A parse time dependency means that when a file is parsed - when it's code is loaded into the page -
 				it references code from another file. So it isn't just that it has functions that call code from other files, 
@@ -63,19 +63,21 @@
 				intermediate function constructor.)
 			</p>
 			
-			<h1>Basic process</h1>				
+			<h1>The process</h1>				
 			<ul>
-				<li>First, it turns the files and folders in your source trees into a list of package and class names, so
-					a file in a source root that is com/example/MyClass.js is added to the list as com.example.MyClass.
-					JS-Class-Loader always reads all file names and builds a complete list of all available classes.
+				<li>Each time it runs, it reads the files and folders in your source trees and stores them as a list of 
+				package and class names, so a file in a source root that is com/example/MyClass.js is added to the list 
+				as com.example.MyClass.	JS-Class-Loader always reads all file names and builds a complete list of all 
+				available classes.
 				</li>
 				<li>Second, it starts with the seed files and scans for dependencies. If the config says allClasses=true
 					then the bundler will add all files. Otherwise it will only add files that it finds as it scans down
 					the dependency tree. Unused files will not be added.
 				</li>
 				<li>As it does the scanning, if it detects a parse-time dependency in a file, it adds that file to the 
-					list first and scans it, after that it adds the current file and any run-time dependencies that the
-					current file has.
+					output list first and continues scanning from that file, then it returns to the current file and 
+					any run-time dependencies that the current file has. This ensures that parse-time dependencies will
+					always appear in the bundle first.
 				</li>
 			</ul>	
 

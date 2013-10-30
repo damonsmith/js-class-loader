@@ -107,6 +107,15 @@ header.inner {
   border-bottom-right-radius: 2px;
 }
 
+.pure-g-r .strapline {
+	font-family: Helvetica;
+	font-style: italic;
+	color: #888;
+	margin-top: 15px;
+	font-size: 2.4em;
+	text-align: center;
+}
+
 .menu {
 	max-width: 850px;
 	margin: auto;

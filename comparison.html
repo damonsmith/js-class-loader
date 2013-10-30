@@ -41,6 +41,7 @@
 			<div class="toc"><button>Table of contents</button>
 				<div id="toc-content"></div>
 			</div>
+			<h1>RequireJS</h1>
 			<p>RequireJS is a popular tool for doing this sort of thing. This project addresses the same problem as
 				RequireJS but in a different way. That problem is described very nicely
 				<a href="http://www.requirejs.org/docs/why.html">here</a>.</p>
@@ -58,6 +59,25 @@
 				as they would with Java. And probably never will until an IDE comes along that is written in Javascript
 				itself.
 			</p>
+			
+			<h1>Solving the wrong problem</h1>
+			
+			<p>Most of the tools out there to manage javascript try to solve the problem of installing pre-bundled
+				3rd party libraries into a web app. Few if any of them make it simple to build a large codebase of object
+				oriented code. However, managing a large codebase in javascript takes a million times more work than
+				installing some libraries. Here's how the situation generally works for large javascript development teams:</p>
+			
+			<div class="pure-g-r">
+				<div class="pure-u-1-2"><img src="images/dev-comparison.svg" /></div>
+				<div class="pure-u-1-2"><img src="images/dev-comparison-key.svg" /></div>
+			</div>
+			
+			<p><b>A javascript developer does not need a suite of massively complex tooling to help with the trivial 
+				task of downloading and installing a 3rd party js library. Developers needs a tool that helps
+				manage complexity in their own codebase, and reduce the time it takes to locate and manage classes.</b>
+			</p>
+			
+			<h1>GWT</h1>
 			
 			<p>GWT is another tool that has advanced javascript bundling capabilities. While
 				GWT is packed full of great tools, none of them seem to be easily separable from the core and

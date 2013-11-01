@@ -18,7 +18,6 @@ Theme Styles
 body {
   box-sizing: border-box;
   color:#373737;
-  background: #212121;
   font-size: 16px;
   font-family: 'Myriad Pro', Calibri, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -83,6 +82,10 @@ Full-Width Styles
 
 header.inner {
 	max-width: 850px;
+}
+
+#header_wrap {
+	background: #212121;
 }
 
 .inner {
@@ -299,7 +302,6 @@ iframe {
 #main_content_wrap {
   background: #f2f2f2;
   border-top: 1px solid #111;
-  border-bottom: 1px solid #111;
 }
 
 #main_content {

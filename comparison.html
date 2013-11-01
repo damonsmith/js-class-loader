@@ -23,7 +23,7 @@
 			<h1 id="project_title">Comparison with other tools</h1>
 			</a>
 
-			<section id="downloads">
+			<div id="downloads">
 				<a class="zip_download_link" href="https://github.com/damonsmith/js-class-loader/releases/download/js-class-loader-parent-1.2.7/js-class-loader-1.2.7.jar">
 					Download the latest release jar file
 				</a> 
@@ -31,7 +31,7 @@
 					Download this project as a tar.gz file
 				</a>
 				
-			</section>
+			</div>
 		</header>
 	</div>
 
@@ -41,23 +41,40 @@
 			<div class="toc"><button>Table of contents</button>
 				<div id="toc-content"></div>
 			</div>
+
+			<h1>Dojo / CommonJS / AMD</h1>
+			<p>Posts like
+			<a href="http://tagneto.blogspot.com.au/2011/04/on-inventing-js-module-formats-and.html">this</a> 
+			argue that there should not be any more script loaders, that the problem has been solved. 
+			Regardless, JS-Class-Loader exists for more serious developers who want to 
+			build object-oriented codebases without having to turn every single little class into a module definition,
+			wrap it inside an anonymous function, manually manage it's dependencies and define a function to return an
+			instance of it. 
+			</p>
+			<p>
+			Individual classes are not modules and you should not have to define a module definition for each one. 
+			JS-Class-Loader will in future support optional AMD wrapping for sections of your codebase - 
+			either the whole thing, individual source trees in your project or branches of your namespace, but it
+			will always use dependency detection and naming conventions to make coding inside your own codebase
+			fast, simple and reliable.
+			</p>
+			
 			<h1>RequireJS</h1>
 			<p>RequireJS is a popular tool for doing this sort of thing. This project addresses the same problem as
 				RequireJS but in a different way. That problem is described very nicely
 				<a href="http://www.requirejs.org/docs/why.html">here</a>.</p>
 
-			<p>This project has a very different approach to RequireJS. JS-Class-Loader forces you to use a set, well
+			<p>JS-Class-Loader has a very different approach to RequireJS. JS-Class-Loader forces you to use a set, well
 				understood file/class/namespace structure, which means it does not need to understand javascript or read JS 
 				config blocks, which means it doesn't need to run a js interpreter with all of the complexity,
 				overhead and extreme lack of performance that that entails.
 			</p>
 			
-			<p>RequireJS and similar tools go to great lengths to make it easy to
-				include libraries that are a simple 5 minute process to include (e.g: JQuery) yet make it
-				costly and painful to organise your own code into lots of neatly separated classes and namespaces.
-				Every dependency must be listed and managed by hand, and no IDEs will take care of this for you
-				as they would with Java. And probably never will until an IDE comes along that is written in Javascript
-				itself.
+			<p>RequireJS and similar tools are designed for the web developer who is mainly concerned with including
+				well known libraries and plugins into their site. If your app mainly involves JQuery, JQuery plugins,
+				a layout framework, validation libraries and your code is a bit of config and a few definitions to lay out
+				the page then RequireJS may well solve your problem. This tool was built to support web trading front ends,
+				where there are thousands of javascript classes defining domain models and libraries.
 			</p>
 			
 			<h1>Solving the wrong problem</h1>

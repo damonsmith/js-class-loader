@@ -19,9 +19,7 @@
 		<header class="inner">
 			<a id="forkme_banner" href="https://github.com/damonsmith/js-class-loader">View on GitHub</a>
 
-			<a href=".">
-			<h1 id="project_title">Comparison with other tools</h1>
-			</a>
+			<h1 id="project_title"><a href=".">JS-Class-Loader</a> in comparison with other tools</h1>
 
 			<div id="downloads">
 				<a class="zip_download_link" href="https://github.com/damonsmith/js-class-loader/releases/download/js-class-loader-parent-1.2.7/js-class-loader-1.2.7.jar">
@@ -44,19 +42,26 @@
 
 			<h1>Dojo / CommonJS / AMD</h1>
 			<p>Posts like
-			<a href="http://tagneto.blogspot.com.au/2011/04/on-inventing-js-module-formats-and.html">this</a> 
+			<a href="http://tagneto.blogspot.com.au/2011/04/on-inventing-js-module-formats-and.html">this one</a> 
 			argue that there should not be any more script loaders, that the problem has been solved. 
-			Regardless, JS-Class-Loader exists for more serious developers who want to 
+			Regardless, JS-Class-Loader exists for serious javascript developers who want to 
 			build an object-oriented codebase without having to turn every single little class into a module definition,
 			wrap it inside an anonymous function, manually manage it's dependencies and define a function to return an
-			instance of it. 
+			instance of it. Or even worse, put all of your classes into a few massive files.
 			</p>
+			
 			<p>
 			Individual classes are not modules and you should not have to define a module definition for each one. 
 			JS-Class-Loader will in future support optional AMD wrapping for sections of your codebase - 
 			either the whole thing, individual source trees in your project or branches of your namespace, but it
 			will always use dependency detection and naming conventions to make coding inside your own codebase
 			fast, simple and reliable.
+			</p>
+			
+			<p>
+			Some developers will claim that object oriented concepts are not useful in javascript, they should perhaps 
+			consider that the reason why people shy away from it is that the tooling never existed to organise code into
+			neat classes and not that decades of collected computer science wisdom is completely incorrect.
 			</p>
 			
 			<h1>RequireJS</h1>
@@ -73,8 +78,10 @@
 			<p>RequireJS and similar tools are designed for the web developer who is mainly concerned with including
 				well known libraries and plugins into their site. If your app mainly involves JQuery, JQuery plugins,
 				a layout framework, validation libraries and your code is a bit of config and a few definitions to lay out
-				the page then RequireJS may well solve your problem. This tool was built to support web trading front ends,
-				where there are thousands of javascript classes defining domain models and libraries.
+				the page then RequireJS may well solve your problem. JS-Class loader was built to support web trading front ends,
+				where there are thousands of javascript classes defining domain models and libraries. It is most useful
+				in projects where the developers are building their own novel javascript code, not just including and
+				configuring other people's libraries.
 			</p>
 			
 			<h1>Solving the wrong problem</h1>
@@ -96,14 +103,14 @@
 			
 			<h1>GWT</h1>
 			
-			<p>GWT is another tool that has advanced javascript bundling capabilities. While
+			<p>GWT has advanced javascript bundling capabilities. While
 				GWT is packed full of great tools, none of them seem to be easily separable from the core and
 				you need to lock yourself in to GWT's IDE tools, build tools and config completely to use it,
 				which does not appeal to a great deal of developers.
 			</p>
 			
 			<p>JS-Class-Loader aims to be a simple tool to do one task well, while integrating with any and 
-				all IDEs and development processes. 
+				all IDEs and development processes.
 			</p>
 
 			<section class="mini_links">

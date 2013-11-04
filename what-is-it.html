@@ -19,9 +19,7 @@
 		<header class="inner">
 			<a id="forkme_banner" href="https://github.com/damonsmith/js-class-loader">View on GitHub</a>
 
-			<a href=".">
-			<h1 id="project_title">What is JS-Class-Loader?</h1>
-			</a>
+			<h1 id="project_title">What <a href=".">JS-Class-Loader</a> is</h1>
 
 			<div id="downloads">
 				<a class="zip_download_link" href="https://github.com/damonsmith/js-class-loader/releases/download/js-class-loader-parent-1.2.7/js-class-loader-1.2.7.jar">
@@ -41,19 +39,18 @@
 				<div id="toc-content"></div>
 			</div>
 			<h1>Brief</h1>
-			<p>(Java) A Free Software tool for bundling and serving large Javascript codebases with
-				automatic dependency detection. It is fast, tested, easy to integrate and does not use the words
-				rockstar or ninja, or have a website filled with big gradient icons of robot kittens playing
-				banjos. (but then it's not a javascript layout framework so I suppose it wouldn't anyway.)</p>
-			
-			<p>It can be used as either a dev tool that runs in your IDE and generates a bundle file
-				for a website, or integrate it into an enterprise scale webapp, either in the build system or as a
-				servlet.
+			<p>JS-Class-Loader reads a codebase of javascript class files and generates a single 
+			module file of code. It uses name and folder conventions to detect dependencies and automatically 
+			put the code into the correct order.
 			</p>
 			
-			<p>Developers working on large javascript codebases will know that if you are doing more than
-				just a couple of jquery data-tables, some rollovers and menus, if you are actually building
-				a domain model and using object oriented concepts then your javascript codebase can very
+			<p>It is written in Java (and is simple to integrate with Java web apps) but is also useful with
+			static web sites (you can use it in your IDE), other scripting languages or any build tool.
+			</p>
+			
+			<h1>Less brief</h1>
+			<p>Developers working on large javascript codebases will know that if you are writing serious amounts of 
+				javascript your codebase can very
 				quickly get messy and become hard to manage. Things that work for a rapid prototype
 				often turn into a mess when the codebase grows. This tool imposes code conventions that keep your
 				code neat, clean and easy to manage no matter how large it gets. 
@@ -64,7 +61,7 @@
 			
 			<p>If your project is a java webapp already then this tool will integrate seamlessly as either a 
 				runtime servlet or a build time task. If your project is any other sort of application then
-				you can use JS-Class-Loader from your editor and your build to manage your javascript code
+				you can use JS-Class-Loader from your IDE or your build to manage your javascript code
 				quickly and simply.
 			</p>
 			
@@ -92,7 +89,8 @@
 				code in order to do dependency detection. It requires
 				the concepts of namespaces and names, and for code to be referenced that way when it is used, but it
 				will always be completely configurable about where and how many source trees there are, how you define your
-				names, and if you use inheritance then you will always be able to configure JS-Class-Loader to work with it.</li>
+				names, and if you use inheritance then it must be possible to configure JS-Class-Loader to recognize it
+				and use it for dependency management.</li>
 				
 				<li><b>Must be well documented, have good defaults and excellent error messages</b><br />
 				The developer should be able to run the jar and muddle their way along to successfully setting up their project purely
@@ -120,7 +118,7 @@
 			</ol>
 			
 			
-			<p>Having said that, you can still include 3rd party libraries and modules in your bundle
+			<p>Having said that, you can still include files, 3rd party libraries and modules in your bundle
 				that don't conform to this scheme. You just need to explicitly include them in your code
 				somewhere, you can't just rely on dependency detection to work out that you need them. There are plenty of
 				examples in this site of how to include the most common js frameworks and libraries in your codebase</p>

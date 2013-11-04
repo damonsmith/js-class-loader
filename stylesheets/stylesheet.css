@@ -52,6 +52,14 @@ p {
   margin: 10px 0 15px 0;
 }
 
+h1 a {
+	color: #00CEEF;
+}
+
+h1 a:hover {
+	color: #88f0ff;
+}
+
 
 a {
   text-decoration: none;

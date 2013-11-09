@@ -24,6 +24,12 @@ public class DependencyGraph {
 		return classFileSet;
 	}
 
+	//TODO: add a watcher to base path, if any source paths or
+	//seed files change then update the class set and the graph
+	//do this by: adding and removing any classes from the class file set,
+	//parse and update the dependencies of any classes that are modified
+	//(in linux you always get a create and then a modify so it might
+	//be ok to only update on a modify, need to test in win and macos).
 	public DependencyGraph(Config config) throws IOException {
 		classFileSet = new ClassFileSet(config);
 

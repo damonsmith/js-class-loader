@@ -113,7 +113,7 @@ public class CommandLineRunnerTest {
 		
 		Assert.assertTrue(
 				"Trebuchet extends Scenario so must appear after:", 
-				appearsBefore(lines, "larrymite.scenario.Trebuchet", "larrymite.scenario.RocketLander"));
+				appearsBefore(lines, "larrymite.scenario.Scenario", "larrymite.scenario.Trebuchet"));
 		
 	}
 	
@@ -134,7 +134,7 @@ public class CommandLineRunnerTest {
 				beforeFound = true;
 			}
 		}
-		throw new Exception("Either or both items were not found in the list");
+		throw new Exception("One or both items were not found in the list");
 	}
 	
 }

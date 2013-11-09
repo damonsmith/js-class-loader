@@ -47,7 +47,7 @@ public class JsBundleReaderTest {
 		List<ClassNode> bundle = new Bundler(config).getClassList();
 
 		assertTrue(bundle.size() == 1);
-		assertEquals(bundle.get(0).getValue(), "abra.cad.abra.Presto");
+		assertEquals("abra.cad.abra.Presto", bundle.get(0).getValue());
 	}
 
 	@Test
@@ -56,8 +56,8 @@ public class JsBundleReaderTest {
 
 		List<ClassNode> bundle = new Bundler(config).getClassList();
 		assertTrue(bundle.size() == 2);
-		assertEquals(bundle.get(0).getValue(), "abra.cad.abra.open.sesame.Lamp");
-		assertEquals(bundle.get(1).getValue(), "abra.cad.abra.Rabbit");
+		assertEquals("abra.cad.abra.open.sesame.Lamp", bundle.get(0).getValue());
+		assertEquals("abra.cad.abra.Rabbit",           bundle.get(1).getValue());
 	}
 
 	@Test
@@ -67,12 +67,12 @@ public class JsBundleReaderTest {
 		Bundler reader = new Bundler(config);
 		List<ClassNode> bundle = reader.getClassList();
 
-		assertEquals(bundle.get(0).getValue(), "abra.cad.abra.open.sesame.Genie");
-		assertEquals(bundle.get(1).getValue(), "abra.cad.abra.open.sesame.Lamp");
-		assertEquals(bundle.get(2).getValue(), "abra.cad.abra.Rabbit");
-		assertEquals(bundle.get(3).getValue(), "something.else.Entirely");
-		assertEquals(bundle.get(4).getValue(), "abra.cad.abra.Hey");
-		assertEquals(bundle.get(5).getValue(), "abra.cad.abra.Hat");
+		assertEquals("abra.cad.abra.open.sesame.Genie", bundle.get(0).getValue());
+		assertEquals("abra.cad.abra.open.sesame.Lamp",  bundle.get(1).getValue());
+		assertEquals("abra.cad.abra.Rabbit",            bundle.get(2).getValue());
+		assertEquals("something.else.Entirely",         bundle.get(3).getValue());
+		assertEquals("abra.cad.abra.Hey",               bundle.get(4).getValue());
+		assertEquals("abra.cad.abra.Hat",               bundle.get(5).getValue());
 	}
 
 	@Test
@@ -82,16 +82,16 @@ public class JsBundleReaderTest {
 		Bundler reader = new Bundler(config);
 		List<ClassNode> bundle = reader.getClassList();
 
-		assertEquals(bundle.get(0).getValue(), "abra.cad.abra.open.sesame.Lamp");
-		assertEquals(bundle.get(1).getValue(), "abra.cad.abra.Rabbit");
-		assertEquals(bundle.get(2).getValue(), "abra.cad.abra.open.sesame.Genie");
-		assertEquals(bundle.get(3).getValue(), "abra.cad.abra.Presto");
-		assertEquals(bundle.get(4).getValue(), "something.else.Entirely");
-		assertEquals(bundle.get(5).getValue(), "abra.cad.abra.Hey");
-		assertEquals(bundle.get(6).getValue(), "abra.cad.abra.Hat");
-		assertEquals(bundle.get(7).getValue(), "ala.kazam.Fizzle");
-		assertEquals(bundle.get(8).getValue(), "ala.kazam.Zap");
-		assertEquals(bundle.get(9).getValue(), "ala.kazam.smoke.Mirrors");
+		assertEquals("abra.cad.abra.open.sesame.Genie", bundle.get(0).getValue());
+		assertEquals("abra.cad.abra.open.sesame.Lamp",  bundle.get(1).getValue());
+		assertEquals("abra.cad.abra.Rabbit",            bundle.get(2).getValue());
+		assertEquals("something.else.Entirely",         bundle.get(3).getValue());
+		assertEquals("abra.cad.abra.Hey",               bundle.get(4).getValue());
+		assertEquals("abra.cad.abra.Hat",               bundle.get(5).getValue());
+		assertEquals("abra.cad.abra.Presto",            bundle.get(6).getValue());
+		assertEquals("ala.kazam.Fizzle",                bundle.get(7).getValue());
+		assertEquals("ala.kazam.Zap",                   bundle.get(8).getValue());
+		assertEquals("ala.kazam.smoke.Mirrors",         bundle.get(9).getValue());
 	}
 
 }

@@ -118,6 +118,8 @@ public class CommandLineRunnerTest {
 	}
 	
 	
+	
+	
 	private boolean appearsBefore(List<String> items, String before, String after) throws Exception {
 		boolean beforeFound = false;
 				

@@ -23,6 +23,7 @@ public class ArgumentParser {
 	private final Argument bundleFilePathArg;
 	private final Argument graphArg;
 	private final Argument scriptTagsArg;
+	private final Argument watchFilesArg;
 	
 	//Params that only apply to the command line
 	private final Argument configFileArg;
@@ -38,6 +39,7 @@ public class ArgumentParser {
 		bundleFilePathArg = new Argument(Config.PROP_BUNDLE_FILE, "o");
 		graphArg = new Argument(Config.PROP_GRAPH_FILE, "g");
 		scriptTagsArg = new Argument(Config.PROP_SCRIPT_TAGS, "t");
+		watchFilesArg = new Argument(Config.PROP_WATCH_FILES, "w");
 
 		//Params that only apply to the command line
 		configFileArg = new Argument("config", "c");
@@ -59,7 +61,8 @@ public class ArgumentParser {
 				!listArg.checkAndSet(arg) &&
 				!scriptTagsArg.checkAndSet(arg) &&
 				!graphArg.checkAndSet(arg) &&
-				!bundleFilePathArg.checkAndSet(arg)) {
+				!bundleFilePathArg.checkAndSet(arg) &&
+				!watchFilesArg.checkAndSet(arg)) {
 				
 				System.out.println("Error, unknown argument: " + arg);
 				System.exit(1);
@@ -72,7 +75,7 @@ public class ArgumentParser {
 		}
 
 		Config jsClassLoaderConfig = new Config();
-
+		
 		if (configFileArg.isSet()) {
 			try {
 				jsClassLoaderConfig.loadPropertiesFromStream(new FileInputStream(configFileArg.getValue()));
@@ -95,6 +98,10 @@ public class ArgumentParser {
 
 		if (seedClassesArg.isSet()) {
 			jsClassLoaderConfig.setProperty(Config.PROP_SEED_CLASSES, seedClassesArg.getValue());
+		}
+		
+		if (watchFilesArg.isSet()) {
+			jsClassLoaderConfig.setProperty(Config.PROP_WATCH_FILES, watchFilesArg.getValue());
 		}
 		
 		if (allClassesArg.isSet()) {

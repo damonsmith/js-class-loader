@@ -46,9 +46,11 @@ public class CommandLineRunner implements GraphUpdateListener {
 		else {
 			generate();
 			
-			//FileChangeWatcher watcher = new FileChangeWatcher(bundler);
-			//watcher.addUpdateListener(this);
-			//watcher.processEvents();
+			if (config.getProperty(Config.PROP_WATCH_FILES).equals("true")) {
+				FileChangeWatcher watcher = new FileChangeWatcher(bundler);
+				watcher.addUpdateListener(this);
+				watcher.processEvents();
+			}
 		}
 	}
 	

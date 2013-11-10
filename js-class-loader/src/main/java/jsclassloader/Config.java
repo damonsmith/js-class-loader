@@ -16,6 +16,7 @@ public class Config {
 	public static final String PROP_ALL_CLASSES = "allClasses";
 	public static final String PROP_SEED_FILES = "seedFiles";
 	public static final String PROP_SEED_CLASSES = "seedClasses";
+	public static final String PROP_WATCH_FILES = "watchFiles";
 	
 	public static final String PROP_IMPLEMENT = "regex.implement";
 	public static final String PROP_EXTEND = "regex.extend";

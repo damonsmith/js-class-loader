@@ -17,7 +17,7 @@ public class CommandLineRunnerTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		String args = "--list --allClasses --sourcePaths=src/test/resources/dependency-tree";
 		
-		CommandLineRunner.execute(args.split(" "), new PrintStream(out));
+		new CommandLineRunner(args.split(" "), new PrintStream(out));
 		
 		List<String> lines = Arrays.asList(out.toString().split("\n"));
 		
@@ -42,7 +42,7 @@ public class CommandLineRunnerTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		String args = "--list --allClasses --sourcePaths=src/test/resources/dependency-tree";
 		
-		CommandLineRunner.execute(args.split(" "), new PrintStream(out));
+		new CommandLineRunner(args.split(" "), new PrintStream(out));
 		
 		List<String> lines = Arrays.asList(out.toString().split("\n"));
 
@@ -61,7 +61,7 @@ public class CommandLineRunnerTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		String args = "--list --basePath=src/test/resources/multimodule --config=src/test/resources/multimodule/js-class-loader-multi.properties";
 		
-		CommandLineRunner.execute(args.split(" "), new PrintStream(out));
+		new CommandLineRunner(args.split(" "), new PrintStream(out));
 		
 		List<String> lines = Arrays.asList(out.toString().split("\n"));
 
@@ -103,7 +103,7 @@ public class CommandLineRunnerTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		String args = "--list --basePath=src/test/resources/multimodule --config=src/test/resources/multimodule/js-class-loader-multi.properties";
 		
-		CommandLineRunner.execute(args.split(" "), new PrintStream(out));
+		new CommandLineRunner(args.split(" "), new PrintStream(out));
 		
 		List<String> lines = Arrays.asList(out.toString().split("\n"));
 

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import jsclassloader.Bundler;
 import jsclassloader.Config;
-import jsclassloader.dependency.DependencyGraph;
+import jsclassloader.dependency.DependencyGraphVisualizer;
 
 @SuppressWarnings("serial")
 public class JsClassVisualizerServlet extends HttpServlet {
@@ -38,7 +38,8 @@ public class JsClassVisualizerServlet extends HttpServlet {
 		try {
 			Bundler bundler = new Bundler(jsClassLoaderConfig);
 			response.setContentType("text/plain");
-			response.getWriter().print(bundler.getDependencyGraph().renderDotFile(bundler.getSeedClassNameList()));
+			DependencyGraphVisualizer vis = new DependencyGraphVisualizer(bundler.getDependencyGraph());
+			response.getWriter().print(vis.renderDotFile(bundler.getSeedClassNameList()));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

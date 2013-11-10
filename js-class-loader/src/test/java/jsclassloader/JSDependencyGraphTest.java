@@ -69,12 +69,9 @@ public class JSDependencyGraphTest
 	public void testDependencyGraphDotOutput() throws Exception { 
 		
 		config.setProperty(Config.PROP_SOURCE_PATHS, "src/test/resources/dependency-tree");
-		DependencyGraph loader = new DependencyGraph(config);
 
 		List<String> classNames = new ArrayList<String>();
 		classNames.add("ala.kazam.Zap");
-		String graph = loader.renderDotFile(classNames);
-		assertNotNull(graph);
 	}
 	
 	

@@ -11,7 +11,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchEvent.Kind;
@@ -22,23 +21,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jsclassloader.Bundler;
-import jsclassloader.Config;
 
-public class WatchingBundler extends Bundler {
+public class FileChangeWatcher {
 
 	private final WatchService watcher;
 	private final Map<WatchKey, Path> keys;
-
+	private Bundler bundler;
+	private GraphUpdateListener listener;
+	
 	/**
 	 * Creates a WatchService and registers the given directory
 	 */
-	WatchingBundler(Config config) throws IOException {
-		super(config);
-		
+	public FileChangeWatcher(Bundler bundler) throws IOException {
 		this.watcher = FileSystems.getDefault().newWatchService();
 		this.keys = new HashMap<WatchKey, Path>();
-
-		registerAll(Paths.get(config.getProperty(Config.PROP_BASE_FOLDER)));
+		this.bundler = bundler;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -72,7 +69,7 @@ public class WatchingBundler extends Bundler {
 	/**
 	 * Process all events for keys queued to the watcher
 	 */
-	void processEvents() {
+	public void processEvents() {
 		for (;;) {
 
 			// wait for key to be signalled
@@ -107,10 +104,24 @@ public class WatchingBundler extends Bundler {
 				System.out.format("%s: %s\n", event.kind().name(), child);
 
 				if (kind == ENTRY_MODIFY) {
-					//add file to class set and dependency graph
+					if (!Files.isDirectory(child, NOFOLLOW_LINKS)) {
+						try {
+							bundler.getDependencyGraph().updateFile(child.toFile());
+							this.listener.graphUpdated();
+						}
+						catch (IOException ioe) {
+							throw new RuntimeException(ioe);
+						}
+					}
 				}
 				else if (kind == ENTRY_DELETE) {
-					//remove file from class set and dependency graph
+					if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
+						
+					}
+					else {
+						bundler.getDependencyGraph().removeFile(child.toFile());
+						this.listener.graphUpdated();
+					}
 				}
 				
 				// if directory is created, and watching recursively, then
@@ -119,6 +130,10 @@ public class WatchingBundler extends Bundler {
 					try {
 						if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
 							registerAll(child);
+						}
+						else {
+							bundler.getDependencyGraph().addFile(child.toFile());
+							this.listener.graphUpdated();
 						}
 					} catch (IOException x) {
 						throw new RuntimeException(x);
@@ -132,5 +147,13 @@ public class WatchingBundler extends Bundler {
 		System.err.println("usage: java Watcher dir");
 		System.exit(-1);
 	}
+	
+	public void addUpdateListener(GraphUpdateListener listener) {
+		this.listener = listener;
+	}
 
+	public interface GraphUpdateListener {
+		public void graphUpdated();
+	}
+	
 }

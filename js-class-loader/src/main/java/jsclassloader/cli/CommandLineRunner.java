@@ -2,6 +2,7 @@ package jsclassloader.cli;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.logging.Level;
@@ -10,9 +11,12 @@ import java.util.logging.Logger;
 import jsclassloader.Bundler;
 import jsclassloader.Config;
 import jsclassloader.dependency.ClassNode;
+import jsclassloader.dependency.DependencyGraphVisualizer;
+import jsclassloader.watcher.FileChangeWatcher;
+import jsclassloader.watcher.FileChangeWatcher.GraphUpdateListener;
 
 
-public class CommandLineRunner {
+public class CommandLineRunner implements GraphUpdateListener {
 
 	static boolean usePropertiesFile;
 	static String propFileName;
@@ -20,17 +24,19 @@ public class CommandLineRunner {
 	static String [] sourcePaths;
 	private final static Logger LOG = Logger.getLogger("JS-Class-Loader");
 	
+	private Bundler bundler;
+	private Config config;
+	private PrintStream out;
+	
 	public static void main(String[] args) throws Exception {
-		execute(args, System.out);
+		new CommandLineRunner(args, System.out);
 	}
 	
-	public static void execute(String [] args, PrintStream out) throws Exception {
-		LOG.setLevel(Level.WARNING);
-		
+	public CommandLineRunner(String [] args, PrintStream out) throws Exception {
 		ArgumentParser parser = new ArgumentParser();
-		Config config = parser.parseArgs(args);
-		
-		Bundler bundler = new Bundler(config);
+		config = parser.parseArgs(args);
+		bundler = new Bundler(config);
+		this.out = out;
 		
 		if (parser.isListMode()) {
 			for (ClassNode item : bundler.getClassList()) {
@@ -38,38 +44,48 @@ public class CommandLineRunner {
 			}
 		}
 		else {
-			String scriptTagFileConfig = config.getProperty(Config.PROP_SCRIPT_TAGS);
-			if (scriptTagFileConfig != null) {
-				File scriptTagFile = prepFile(scriptTagFileConfig);
-				out = new PrintStream(new FileOutputStream(scriptTagFile));
-				bundler.writeScriptTags(out, config);
-				out.close();
-			}
+			generate();
 			
-			String graphFileConfig = config.getProperty(Config.PROP_GRAPH_FILE);
-			if (graphFileConfig != null) {
-				File graphFile = prepFile(graphFileConfig);
-				out = new PrintStream(new FileOutputStream(graphFile));
-				out.print(bundler.getDependencyGraph().renderDotFile(bundler.getSeedClassNameList()));
-				out.close();
+			//FileChangeWatcher watcher = new FileChangeWatcher(bundler);
+			//watcher.addUpdateListener(this);
+			//watcher.processEvents();
+		}
+	}
+	
+	void generate() throws IOException {
+		String scriptTagFileConfig = config.getProperty(Config.PROP_SCRIPT_TAGS);
+		if (scriptTagFileConfig != null) {
+			File scriptTagFile = prepFile(scriptTagFileConfig);
+			PrintStream tagsOut = new PrintStream(new FileOutputStream(scriptTagFile));
+			bundler.writeScriptTags(tagsOut, config);
+			tagsOut.close();
+		}
+		
+		String graphFileConfig = config.getProperty(Config.PROP_GRAPH_FILE);
+		if (graphFileConfig != null) {
+			File graphFile = prepFile(graphFileConfig);
+			PrintStream graphOut = new PrintStream(new FileOutputStream(graphFile));
+			DependencyGraphVisualizer vis = new DependencyGraphVisualizer(bundler.getDependencyGraph());
+			
+			graphOut.print(vis.renderDotFile(bundler.getSeedClassNameList()));
+			graphOut.close();
 
-				File moduleGraphFile = prepFile(graphFileConfig + ".modules");
-				out = new PrintStream(new FileOutputStream(moduleGraphFile));
-				out.print(bundler.getDependencyGraph().renderModuleDotFile());
-				out.close();
-			}
-			
-			String bundleFileConfig = config.getProperty(Config.PROP_BUNDLE_FILE);
-			if (bundleFileConfig != null) {
-				File bundleFile = prepFile(bundleFileConfig);
-				out = new PrintStream(new FileOutputStream(bundleFile));
-				bundler.write(out);
-				out.close();	
-			}
-			else {
-				bundler.write(System.out);
-			}
-		}		
+			File moduleGraphFile = prepFile(graphFileConfig + ".modules");
+			PrintStream modGraphOut = new PrintStream(new FileOutputStream(moduleGraphFile));
+			modGraphOut.print(vis.renderModuleDotFile());
+			modGraphOut.close();
+		}
+		
+		String bundleFileConfig = config.getProperty(Config.PROP_BUNDLE_FILE);
+		if (bundleFileConfig != null) {
+			File bundleFile = prepFile(bundleFileConfig);
+			PrintStream bundleOut = new PrintStream(new FileOutputStream(bundleFile));
+			bundler.write(bundleOut);
+			bundleOut.close();	
+		}
+		else {
+			bundler.write(out);
+		}
 	}
 	
 	public static File prepFile(String path) {
@@ -78,5 +94,16 @@ public class CommandLineRunner {
 			file.getParentFile().mkdirs();
 		}
 		return file;
+	}
+
+	@Override
+	public void graphUpdated() {
+		try {
+			generate();
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 }

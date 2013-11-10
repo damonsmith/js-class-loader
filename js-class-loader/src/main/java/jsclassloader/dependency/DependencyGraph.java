@@ -24,12 +24,6 @@ public class DependencyGraph {
 		return classFileSet;
 	}
 
-	//TODO: add a watcher to base path, if any source paths or
-	//seed files change then update the class set and the graph
-	//do this by: adding and removing any classes from the class file set,
-	//parse and update the dependencies of any classes that are modified
-	//(in linux you always get a create and then a modify so it might
-	//be ok to only update on a modify, need to test in win and macos).
 	public DependencyGraph(Config config) throws IOException {
 		classFileSet = new ClassFileSet(config);
 
@@ -75,95 +69,31 @@ public class DependencyGraph {
 		}
 	}
 	
-	public String renderDotFile(List<String> classNames) {
-		Map<ClassNode, Boolean> done = new HashMap<ClassNode, Boolean>();
-		StringBuffer graph = new StringBuffer("digraph G {\n");
-		
-		for (String className : classNames) {
-			ClassNode parentNode = getNode(className);
-			addNodeToDotFile(parentNode, graph, done);
-		}
-		graph.append("}\n");
-		return graph.toString();
-	};
-	
-	private void addNodeToDotFile(ClassNode node, StringBuffer graph, Map<ClassNode, Boolean> done) {
-		if (done.get(node) == null) {
-			done.put(node, true);
- 
-			graph.append("\"" + node.getValue() + "\";\n");
-			
-			for (ClassNode child : node.getStaticDependencies()) {
-				graph.append("edge [color=red];\n");
-				graph.append("\"" + node.getValue() + "\" -> \"" + child.getValue() + "\";\n");
-				addNodeToDotFile(child, graph, done);
-			}
-			
-			for (ClassNode child : node.getRunTimeDependencies()) {
-				graph.append("edge [color=black];\n");
-				graph.append("\"" +node.getValue() + "\" -> \"" + child.getValue() + "\";\n");
-				addNodeToDotFile(child, graph, done);
-			}
-		}
-	}
-
-	public String renderModuleDotFile() {
-		Map<String, Boolean> moduleDone = new HashMap<String, Boolean>();
-		Map<String, Boolean> linkDone = new HashMap<String, Boolean>();
-		Map<ClassNode, Boolean> classDone = new HashMap<ClassNode, Boolean>();
-		
-		StringBuffer graph = new StringBuffer("digraph G {\n");
-		
-		for (String className : classFileSet.getAllJsClasses()) {
-			addModuleDependencyToDotFile(getNode(className), graph, classDone, moduleDone, linkDone);
-		}
-		graph.append("}\n");
-		return graph.toString();
-	};
-	
-	private void addModuleDependencyToDotFile(ClassNode node, StringBuffer graph, Map<ClassNode, Boolean> classDone, Map<String, Boolean> moduleDone, Map<String, Boolean> linkDone) {
-		String moduleName = classFileSet.getSrcDirFromClassname(node.getValue());
-		
-		//put in the modules on their own just in case there are no links:
-		if (moduleDone.get(moduleName) == null) {
-			moduleDone.put(moduleName, true);
-			graph.append("  \"" + moduleName.replace("\\", ".") +"\";\n");
-		}
-		
-		if (classDone.get(node) == null) {
-			classDone.put(node, true);
-			
-			for (ClassNode child : node.getStaticDependencies()) {
-				String childModuleName = classFileSet.getSrcDirFromClassname(child.getValue());
-				addModuleLinkToDotFile(moduleName, childModuleName, graph, linkDone);
-				addModuleDependencyToDotFile(child, graph, classDone, moduleDone, linkDone);
-			}
-			for (ClassNode child : node.getRunTimeDependencies()) {
-				String childModuleName = classFileSet.getSrcDirFromClassname(child.getValue());
-				addModuleLinkToDotFile(moduleName, childModuleName, graph, linkDone);
-				addModuleDependencyToDotFile(child, graph, classDone, moduleDone, linkDone);
-			}
-		}
-	}
-	
-	private void addModuleLinkToDotFile(String parentModule, String childModule, StringBuffer graph, Map<String, Boolean> linkDone) {
-		
-		if (!parentModule.equals(childModule)) {
-			
-			String link = parentModule + "&" + childModule;
-			
-			parentModule = parentModule.replace("\\", ".");
-			childModule = childModule.replace("\\", ".");
-			
-			if (linkDone.get(link) == null) {
-				linkDone.put(link, true);
-				graph.append("  \"" + parentModule + "\" -> \"" + childModule + "\";\n");
-			}
-		}
-	}
-	
 	public ClassNode getNode(String className) {
 		return nodeMap.get(className);
+	}
+	
+	public void addFile(File file) {
+		if (file.getName().endsWith(".js")) {
+			classFileSet.addClassFile(file);
+			String className = classFileSet.getClassnameFromFile(file);
+			ClassNode node = new ClassNode(className);
+			nodeMap.put(className, node);
+		}
+	}
+	
+	public void updateFile(File file) throws IOException {
+		String className = classFileSet.getClassnameFromFile(file);
+		processDependencies(nodeMap.get(className));
+	}
+	
+	public void removeFile(File file) {
+		if (classFileSet.containsFile(file)) {
+			String className = classFileSet.getClassnameFromFile(file);
+			nodeMap.get(className).destroy();
+			classFileSet.removeClassFile(file);
+			nodeMap.remove(className);
+		}
 	}
 	
 	public List<String> getSeedClassesFromFiles(List<File> seedSources) throws IOException {

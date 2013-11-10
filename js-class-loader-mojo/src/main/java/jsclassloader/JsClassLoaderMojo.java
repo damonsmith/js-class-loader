@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import jsclassloader.dependency.DependencyGraphVisualizer;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -161,11 +163,12 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			
 			if (graphPath != null) {
 				PrintStream graphOut = new PrintStream(prepFile(graphPath));
-				graphOut.print(bundler.getDependencyGraph().renderDotFile(bundler.getSeedClassNameList()));
+				DependencyGraphVisualizer vis = new DependencyGraphVisualizer(bundler.getDependencyGraph());
+				graphOut.print(vis.renderDotFile(bundler.getSeedClassNameList()));
 				graphOut.close();
 				
 				graphOut = new PrintStream(prepFile(graphPath + ".modules"));
-				graphOut.print(bundler.getDependencyGraph().renderModuleDotFile());
+				graphOut.print(vis.renderModuleDotFile());
 				graphOut.close();
 				
 			}

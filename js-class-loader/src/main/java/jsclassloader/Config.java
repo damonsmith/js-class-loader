@@ -25,6 +25,7 @@ public class Config {
 	public static final String PROP_WHOLE_FORCE = "regex.whole.force";
 	
 	public static final String PROP_BUNDLE_FILE = "bundleFile";
+	public static final String PROP_SOURCE_MAP_FILE = "sourceMapFile";
 	public static final String PROP_SCRIPT_TAGS = "scriptTagsFile";
 	public static final String PROP_GRAPH_FILE = "graphFile";
 	public static final String PROP_SCRIPT_TAG_BASE_PATH = "scriptTagsBasePath";

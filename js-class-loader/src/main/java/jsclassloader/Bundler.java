@@ -22,6 +22,11 @@ import jsclassloader.classes.ClassFileSet;
 import jsclassloader.dependency.ClassNode;
 import jsclassloader.dependency.DependencyGraph;
 
+import com.milens3.utility.sourcemap.encoder.Mapping;
+import com.milens3.utility.sourcemap.encoder.Position;
+import com.milens3.utility.sourcemap.encoder.SourceMapEncoderV3;
+import com.milens3.utility.sourcemap.encoder.SourceMapV3;
+
 public class Bundler {
 	
 	private final static Logger LOG = Logger.getLogger("JS-Class-Loader");
@@ -34,6 +39,7 @@ public class Bundler {
 	private Map<String, Boolean> addedClasses;
 	private DependencyGraph dependencyGraph;
 	private List<String> seedClassNameList;
+	private List<Mapping> mappings;
 	
 	public List<ClassNode> getClassList() {
 		return classList;
@@ -88,12 +94,13 @@ public class Bundler {
 		iterator = classList.listIterator();
 		classFileSet = dependencyGraph.getClassFileSet();
 
-		contentLength = 0;
+		
+		contentLength = getSourceMappingUrlString(config).length();
+		
 		while (iterator.hasNext()) {
 			File file = classFileSet.getFileFromClassname(iterator.next()
 					.getValue());
 			contentLength += file.length();
-			contentLength += ("\n\n//File: " + file.getPath() + "\n").length();
 		}
 	}
 
@@ -158,7 +165,11 @@ public class Bundler {
 
 	}
 	
-	public void write(OutputStream out) throws IOException {
+	private String getSourceMappingUrlString(Config config) {
+		return "//# sourceMappingURL=" + config.getProperty(Config.PROP_SOURCE_MAP_FILE) + "\n";
+	}
+	
+	public List<Mapping> write(OutputStream out, Config config) throws IOException {
 		MessageDigest md5 = null;
 		iterator = classList.listIterator();
 		try {
@@ -167,43 +178,196 @@ public class Bundler {
 		catch (NoSuchAlgorithmException nsae) {
 			throw new RuntimeException("Java doesn't have MD5 hashing for some reason. JSCL needs it to create a unique id of the content. Aborting.");
 		}
+		
+		mappings = new ArrayList<Mapping>();
+		
+		out.write(getSourceMappingUrlString(config).getBytes());
+		
+		int lineNumber = 2;
 		while (iterator.hasNext()) {
 			currentNode = iterator.next();
 			File file = classFileSet.getFileFromClassname(currentNode
 					.getValue());
-			out.write(("\n\n//File: " + file.getName() + "\n").getBytes());
-			Bundler.copy(new FileInputStream(file), out, md5);
+			
+			lineNumber = Bundler.copyLinesAndStripComments(file, out, md5, lineNumber, mappings, config);
 		}
 		
 		String md5String = new BigInteger(1, md5.digest()).toString(16);
 		
 		out.write(("\n\nvar JSCL_UNIQUE_BUNDLE_HASH=" + "'" + md5String + "';\n\n").getBytes());
+		
+		return mappings;
 	}
 
 	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-	public static int copy(InputStream input, OutputStream output, MessageDigest md5)
-			throws IOException {
-		long count = copyLarge(input, output, md5);
-		if (count > Integer.MAX_VALUE) {
-			return -1;
+	/**
+	 * Reads a File byte by byte and writes it to an OutputStream, stripping out comments.
+	 * 
+	 * @param inputFile
+	 * @param output
+	 * @param md5
+	 * @param outputFileLineNumber
+	 * @return
+	 * @throws IOException
+	 */
+	public static int copyLinesAndStripComments(File inputFile, OutputStream output, MessageDigest md5, int outputFileLineNumber, List<Mapping> mappings, Config config) 
+	       throws IOException {
+		
+		InputStream input = new FileInputStream(inputFile);
+		
+		String inputFileName = inputFile.getPath();
+		
+		boolean isInString = false;
+		boolean isInSingleQuoteString = false;
+		boolean isInDoubleQuoteString = false;
+		boolean isInComment = false;
+		boolean isInDoubleSlashComment = false;
+		boolean wasInSlashStarComment = false;
+		boolean isInSlashStarComment = false;
+
+		byte prev = (byte)input.read();
+		byte curr = (byte)input.read();
+		
+		int sourceFileLineNumber = 1;
+		int sourceColumn = 1;
+		int outputColumn = 1;
+		
+		while (true) {
+			
+			
+			if (prev == '\n' || prev == -1) {
+				if (!isInSlashStarComment) {
+					mappings.add(new Mapping(inputFileName, new Position(sourceFileLineNumber, 0), new Position(outputFileLineNumber, 0)));
+					if (prev == '\n') {
+						outputFileLineNumber++;
+					}
+					outputColumn = 1;
+				}
+				sourceFileLineNumber++;
+				sourceColumn = 1;
+			}
+			
+			if (prev == -1) {
+				break;
+			}
+			
+			if (!isInComment) {
+				if (isInString) {
+					if (isInSingleQuoteString) {
+						//if we're in a single quote string and the current 
+						//is a newline or the current is an unescaped single quote, end string.
+						if (curr == '\n' || (curr == '\'' && prev != '\\')) {
+							isInSingleQuoteString = false;
+							isInString = false;
+						}
+					}
+					else if (isInDoubleQuoteString) {
+						//if we're in a double quote string and the current 
+						//is a newline or the current is an unescaped double quote, end string.
+						if (curr == '\n' || (curr == '\"' && prev != '\\')) {
+							isInDoubleQuoteString = false;
+							isInString = false;
+						}
+					}
+				}
+				else {
+					//If we're not in a string or comment and we are at an unescaped single quote, start
+					//single quote string
+					if (prev != '\\' && curr == '\'') {
+						isInSingleQuoteString = true;
+						isInString = true;
+					}
+					//If we're not in a string or comment and we at an unescaped double quote, start
+					//double quote string
+					else if (prev != '\\' && curr == '\"') {
+						isInDoubleQuoteString = true;
+						isInString = true;
+					}
+					//If we're not in a string or comment and we are at a double forward slash, start
+					//double forward slash comment
+					else if (prev == '/' && curr == '/') {
+						isInDoubleSlashComment = true;
+						isInComment = true;
+					}
+					//If we're not in a string or comment and we are at a forward slash and asterisk, start
+					//a slash-star comment
+					else if (prev == '/' && curr == '*') {
+						isInSlashStarComment = true;
+						isInComment = true;
+					}
+				}
+				
+				//if we weren't in a comment beforehand and we are still not after looking at the current char,
+				//write the prev char to output:
+				if (!isInComment && !wasInSlashStarComment) {
+					output.write(prev);
+					outputColumn++;
+				}
+				wasInSlashStarComment = false;
+			}
+			else {
+				if (isInDoubleSlashComment) {
+					//if we're in a double slash comment and the current 
+					//is a newline then end comment
+					if (curr == '\n') {
+						isInDoubleSlashComment = false;
+						isInComment = false;
+					}
+				}
+				if (isInSlashStarComment) {
+					//if we're in a slash star comment and the current and prev
+					//are an asterisk and forward slash, end slash-star comment
+					if (curr == '/' && prev == '*') {
+						isInSlashStarComment = false;
+						wasInSlashStarComment = true;
+						isInComment = false;
+					}
+				}
+			}
+				
+			prev = curr;
+			curr = (byte)input.read();
+			sourceColumn++;
 		}
-		return (int) count;
+		
+		output.write('\n');
+		outputFileLineNumber++;
+		
+		input.close();
+		
+		return outputFileLineNumber;
 	}
 
-	public static long copyLarge(InputStream input, OutputStream output, MessageDigest md5)
-			throws IOException {
-		byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-		long count = 0;
-		int n = 0;
-		while (-1 != (n = input.read(buffer))) {
-			md5.update(buffer);
-			output.write(buffer, 0, n);
-			count += n;
-		}
-		return count;
-	}
+	public void writeSourceMap(OutputStream out, String bundleFileName) 
+	        throws IOException {
+		out.write(("{\n" 
+		        + "\tversion: 3,\n"
+		        + "\tfile: \"" + bundleFileName + "\",\n"
+		        + "\tsourceRoot: \"\",\n").getBytes());
+		        
+		SourceMapEncoderV3 encoder = new SourceMapEncoderV3(mappings);
+		SourceMapV3 map = encoder.encode();
 
+		out.write(("\tsources: [").getBytes());
+		
+		List<String> sources = map.getSources();
+		
+		for (int i=0; i<sources.size(); i++) {
+			out.write(("\"" + sources.get(i) + "\"").getBytes());
+			if (i != sources.size() - 1) {
+				out.write(", ".getBytes());
+			}
+		}
+		
+		out.write("],\n".getBytes());
+		
+		
+		out.write(("\tmappings: \"").getBytes());
+		out.write(map.getMappings().getBytes());
+		out.write(("\"\n}\n").getBytes());
+	}
+	
 	private List<File> generateSeedFileList(Config config) {
 		List<File> seedFileList = new ArrayList<File>();
 

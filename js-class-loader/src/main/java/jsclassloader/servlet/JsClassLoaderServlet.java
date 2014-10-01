@@ -33,7 +33,7 @@ public class JsClassLoaderServlet extends HttpServlet {
 			response.setContentType("text/javascript");
 			
 			response.setContentLength(bundler.getContentLength());
-			bundler.write(response.getOutputStream());
+			bundler.write(response.getOutputStream(), config);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -46,7 +46,9 @@ public class CommandLineRunner implements GraphUpdateListener {
 		else {
 			generate();
 			
-			if (config.getProperty(Config.PROP_WATCH_FILES).equals("true")) {
+			if (config.getProperty(Config.PROP_WATCH_FILES) != null 
+			    && config.getProperty(Config.PROP_WATCH_FILES).equals("true")) {
+				
 				FileChangeWatcher watcher = new FileChangeWatcher(bundler);
 				watcher.addUpdateListener(this);
 				watcher.processEvents();
@@ -82,11 +84,18 @@ public class CommandLineRunner implements GraphUpdateListener {
 		if (bundleFileConfig != null) {
 			File bundleFile = prepFile(bundleFileConfig);
 			PrintStream bundleOut = new PrintStream(new FileOutputStream(bundleFile));
-			bundler.write(bundleOut);
+			bundler.write(bundleOut, config);
 			bundleOut.close();	
 		}
 		else {
-			bundler.write(out);
+			bundler.write(out, config);
+		}
+		
+		String sourceMapFileConfig = config.getProperty(Config.PROP_SOURCE_MAP_FILE);
+		if (sourceMapFileConfig != null) {
+			File sourceMapFile = prepFile(new File(bundleFileConfig).getParent() + File.separatorChar + sourceMapFileConfig);
+			PrintStream sourceMapOut = new PrintStream(new FileOutputStream(sourceMapFile));
+			bundler.writeSourceMap(sourceMapOut, bundleFileConfig);
 		}
 	}
 	

@@ -13,23 +13,24 @@ import jsclassloader.Config;
  * 
  */
 public class ArgumentParser {
-	
-	//General config parameters
+
+	// General config parameters
 	private final Argument seedFilesArg;
 	private final Argument seedClassesArg;
 	private final Argument allClassesArg;
 	private final Argument sourcePathArg;
 	private final Argument basePathArg;
 	private final Argument bundleFilePathArg;
+	private final Argument sourceMapFilePathArg;
 	private final Argument graphArg;
 	private final Argument scriptTagsArg;
 	private final Argument watchFilesArg;
-	
-	//Params that only apply to the command line
+
+	// Params that only apply to the command line
 	private final Argument configFileArg;
 	private final Argument helpArg;
 	private final Argument listArg;
-	
+
 	public ArgumentParser() {
 		seedFilesArg = new Argument(Config.PROP_SEED_FILES, "sf");
 		seedClassesArg = new Argument(Config.PROP_SEED_CLASSES, "sc");
@@ -37,33 +38,33 @@ public class ArgumentParser {
 		sourcePathArg = new Argument(Config.PROP_SOURCE_PATHS, "sp");
 		basePathArg = new Argument(Config.PROP_BASE_FOLDER, "b");
 		bundleFilePathArg = new Argument(Config.PROP_BUNDLE_FILE, "o");
+		sourceMapFilePathArg = new Argument(Config.PROP_SOURCE_MAP_FILE, "m");
 		graphArg = new Argument(Config.PROP_GRAPH_FILE, "g");
 		scriptTagsArg = new Argument(Config.PROP_SCRIPT_TAGS, "t");
 		watchFilesArg = new Argument(Config.PROP_WATCH_FILES, "w");
 
-		//Params that only apply to the command line
+		// Params that only apply to the command line
 		configFileArg = new Argument("config", "c");
 		helpArg = new Argument("help", "h");
 		listArg = new Argument("list", "l");
 	}
 
 	public Config parseArgs(String[] args) {
-		
+
 		for (String arg : args) {
-			if (
-				!seedFilesArg.checkAndSet(arg) &&
-				!seedClassesArg.checkAndSet(arg) &&
-				!allClassesArg.checkAndSet(arg) &&
-				!sourcePathArg.checkAndSet(arg) &&
-				!basePathArg.checkAndSet(arg) &&
-				!configFileArg.checkAndSet(arg) &&
-				!helpArg.checkAndSet(arg) &&
-				!listArg.checkAndSet(arg) &&
-				!scriptTagsArg.checkAndSet(arg) &&
-				!graphArg.checkAndSet(arg) &&
-				!bundleFilePathArg.checkAndSet(arg) &&
-				!watchFilesArg.checkAndSet(arg)) {
-				
+			if (!seedFilesArg.checkAndSet(arg)
+					&& !seedClassesArg.checkAndSet(arg)
+					&& !allClassesArg.checkAndSet(arg)
+					&& !sourcePathArg.checkAndSet(arg)
+					&& !basePathArg.checkAndSet(arg)
+					&& !configFileArg.checkAndSet(arg)
+					&& !helpArg.checkAndSet(arg) && !listArg.checkAndSet(arg)
+					&& !scriptTagsArg.checkAndSet(arg)
+					&& !graphArg.checkAndSet(arg)
+					&& !bundleFilePathArg.checkAndSet(arg)
+					&& !sourceMapFilePathArg.checkAndSet(arg)
+					&& !watchFilesArg.checkAndSet(arg)) {
+
 				System.out.println("Error, unknown argument: " + arg);
 				System.exit(1);
 			}
@@ -75,61 +76,89 @@ public class ArgumentParser {
 		}
 
 		Config jsClassLoaderConfig = new Config();
-		
+
 		if (configFileArg.isSet()) {
 			try {
-				jsClassLoaderConfig.loadPropertiesFromStream(new FileInputStream(configFileArg.getValue()));
+				jsClassLoaderConfig
+						.loadPropertiesFromStream(new FileInputStream(
+								configFileArg.getValue()));
 			} catch (IOException e) {
-				System.err.println("Error, the specified config file does not exist: " + configFileArg.getValue());
+				System.err
+						.println("Error, the specified config file does not exist: "
+								+ configFileArg.getValue());
 			}
 		}
 
 		if (basePathArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_BASE_FOLDER, basePathArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_BASE_FOLDER,
+					basePathArg.getValue());
 		}
 
 		if (sourcePathArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_SOURCE_PATHS, sourcePathArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_SOURCE_PATHS,
+					sourcePathArg.getValue());
 		}
 
 		if (seedFilesArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_SEED_FILES, seedFilesArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_SEED_FILES,
+					seedFilesArg.getValue());
 		}
 
 		if (seedClassesArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_SEED_CLASSES, seedClassesArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_SEED_CLASSES,
+					seedClassesArg.getValue());
 		}
-		
+
 		if (watchFilesArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_WATCH_FILES, watchFilesArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_WATCH_FILES,
+					watchFilesArg.getValue());
 		}
-		
+
 		if (allClassesArg.isSet()) {
 			if (allClassesArg.getValue() != null) {
-				System.out.println("Error, you don't need to set a value for allClasses. just use -a or --" + allClassesArg.getLongText());
+				System.out
+						.println("Error, you don't need to set a value for allClasses. just use -a or --"
+								+ allClassesArg.getLongText());
 				System.exit(1);
 			}
 			jsClassLoaderConfig.setProperty(Config.PROP_ALL_CLASSES, "true");
 		}
-		
+
 		if (bundleFilePathArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_BUNDLE_FILE, bundleFilePathArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_BUNDLE_FILE,
+					bundleFilePathArg.getValue());
+		}
+		if (sourceMapFilePathArg.isSet()) {
+			jsClassLoaderConfig.setProperty(Config.PROP_SOURCE_MAP_FILE,
+					sourceMapFilePathArg.getValue());
 		}
 		if (graphArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_GRAPH_FILE, graphArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_GRAPH_FILE,
+					graphArg.getValue());
 		}
 		if (scriptTagsArg.isSet()) {
-			jsClassLoaderConfig.setProperty(Config.PROP_SCRIPT_TAGS, scriptTagsArg.getValue());
+			jsClassLoaderConfig.setProperty(Config.PROP_SCRIPT_TAGS,
+					scriptTagsArg.getValue());
 		}
 
-		if (!configFileArg.isSet() && !seedFilesArg.isSet() && !seedClassesArg.isSet() && !allClassesArg.isSet()) {
-			System.out.println("\nError, you must either specify a config file, like this:\n"
-					+ configFileArg.getLongText() + "=js-class-loader.properties\n\n"
-					+ "or specify the seedClasses/seedFiles and other options on the command line, like this:\n"
-					+ seedClassesArg.getLongText() + "=com.mine.MyApp " + sourcePathArg.getLongText() + "=js/modules/*/src --bundleFile=gen/bundle.js\n\n"
-					+ "use --help to see all the options, or even better,\n"
-					+ "read the Getting Started section here: at\n"
-					+ "http://github.com/damonsmith/js-class-loader/wiki.\n\n");
+		if (!configFileArg.isSet() && !seedFilesArg.isSet()
+				&& !seedClassesArg.isSet() && !allClassesArg.isSet()) {
+			System.out
+					.println("\nError, you must either specify a config file, like this:\n"
+							+ configFileArg.getLongText()
+							+ "=js-class-loader.properties\n\n"
+							+ "or specify the seedClasses/seedFiles and other options on the command line, like this:\n"
+							+ "\t" + seedClassesArg.getLongText()
+							+ "=com.mine.MyApp \\\n"
+							+ "\t" + sourcePathArg.getLongText()
+							+ "=js/modules/*/src \\\n"
+							+ "\t" + bundleFilePathArg.getLongText() 
+							+ "=gen/bundle.js \\\n"
+							+ "\t" + sourceMapFilePathArg.getLongText() 
+							+ "=gen/bundle.map\n\n"
+							+ "use --help to see all the options, or even better,\n"
+							+ "read the Getting Started section here: at\n"
+							+ "http://github.com/damonsmith/js-class-loader/wiki.\n\n");
 			System.exit(1);
 		}
 
@@ -143,11 +172,11 @@ public class ArgumentParser {
 	public boolean isscriptTagFileEnabled() {
 		return scriptTagsArg.isSet();
 	}
-	
+
 	public boolean isGraphOutputEnabled() {
 		return graphArg.isSet();
 	}
-	
+
 	public String getGraphOutputFilePath() {
 		return graphArg.getValue();
 	}
@@ -212,6 +241,8 @@ public class ArgumentParser {
 						+ "= - path of the dot file graph to generate.\n"
 						+ "-g=, "
 						+ bundleFilePathArg.getLongText()
-						+ "= - File to write the bundle to, if not set then print to stdout.\n");
+						+ "= - File to write the bundle to, if not set then print to stdout.\n"
+						+ sourceMapFilePathArg.getLongText()
+						+ "= - File to write the source map to.");
 	}
 }

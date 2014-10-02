@@ -342,14 +342,14 @@ public class Bundler {
 	public void writeSourceMap(OutputStream out, String bundleFileName) 
 	        throws IOException {
 		out.write(("{\n" 
-		        + "\tversion: 3,\n"
-		        + "\tfile: \"" + bundleFileName + "\",\n"
-		        + "\tsourceRoot: \"\",\n").getBytes());
+		        + "\t\"version\": 3,\n"
+		        + "\t\"file\": \"" + bundleFileName + "\",\n"
+		        + "\t\"sourceRoot\": \"\",\n").getBytes());
 		        
 		SourceMapEncoderV3 encoder = new SourceMapEncoderV3(mappings);
 		SourceMapV3 map = encoder.encode();
 
-		out.write(("\tsources: [").getBytes());
+		out.write(("\t\"sources\": [").getBytes());
 		
 		List<String> sources = map.getSources();
 		
@@ -363,7 +363,7 @@ public class Bundler {
 		out.write("],\n".getBytes());
 		
 		
-		out.write(("\tmappings: \"").getBytes());
+		out.write(("\t\"mappings\": \"").getBytes());
 		out.write(map.getMappings().getBytes());
 		out.write(("\"\n}\n").getBytes());
 	}

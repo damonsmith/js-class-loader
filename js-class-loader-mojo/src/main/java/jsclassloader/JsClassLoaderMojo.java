@@ -155,7 +155,7 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			
 			if (scriptTagsPath != null) {
 				PrintStream tagsOut = new PrintStream(prepFile(scriptTagsPath));
-				bundler.writeScriptTags(tagsOut, config);
+				bundler.writeScriptTags(tagsOut);
 				tagsOut.close();
 			}
 			

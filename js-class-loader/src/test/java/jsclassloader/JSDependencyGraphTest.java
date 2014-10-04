@@ -2,6 +2,7 @@ package jsclassloader;
 
 import static org.junit.Assert.*;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class JSDependencyGraphTest
 	@Test
 	public void testLoadNormalDependency()  throws Exception {
 		config.setProperty(Config.PROP_SOURCE_PATHS, "src/test/resources/dependency-tree");
+		
 		DependencyGraph loader = new DependencyGraph(config);
 		
 		assertTrue(loader.getNode("abra.cad.abra.Hat") != null);

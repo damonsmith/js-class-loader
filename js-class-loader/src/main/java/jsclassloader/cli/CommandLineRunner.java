@@ -61,7 +61,7 @@ public class CommandLineRunner implements GraphUpdateListener {
 		if (scriptTagFileConfig != null) {
 			File scriptTagFile = prepFile(scriptTagFileConfig);
 			PrintStream tagsOut = new PrintStream(new FileOutputStream(scriptTagFile));
-			bundler.writeScriptTags(tagsOut, config);
+			bundler.writeScriptTags(tagsOut);
 			tagsOut.close();
 		}
 		
@@ -84,18 +84,18 @@ public class CommandLineRunner implements GraphUpdateListener {
 		if (bundleFileConfig != null) {
 			File bundleFile = prepFile(bundleFileConfig);
 			PrintStream bundleOut = new PrintStream(new FileOutputStream(bundleFile));
-			bundler.write(bundleOut, config);
+			bundler.write(bundleOut);
 			bundleOut.close();	
 		}
 		else {
-			bundler.write(out, config);
+			bundler.write(out);
 		}
 		
 		String sourceMapFileConfig = config.getProperty(Config.PROP_SOURCE_MAP_FILE);
 		if (sourceMapFileConfig != null) {
-			File sourceMapFile = prepFile(new File(bundleFileConfig).getParent() + File.separatorChar + sourceMapFileConfig);
+			File sourceMapFile = prepFile(File.separatorChar + sourceMapFileConfig);
 			PrintStream sourceMapOut = new PrintStream(new FileOutputStream(sourceMapFile));
-			bundler.writeSourceMap(sourceMapOut, bundleFileConfig);
+			bundler.writeSourceMap(sourceMapOut);
 		}
 	}
 	

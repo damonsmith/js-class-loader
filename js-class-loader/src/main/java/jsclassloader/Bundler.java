@@ -40,6 +40,8 @@ public class Bundler {
 	private DependencyGraph dependencyGraph;
 	private List<String> seedClassNameList;
 	private List<Mapping> mappings;
+	private Config config;
+	
 	
 	public List<ClassNode> getClassList() {
 		return classList;
@@ -47,6 +49,7 @@ public class Bundler {
 
 	public Bundler(Config config) throws IOException {
 		classList = new LinkedList<ClassNode>();
+		this.config = config;
 
 		this.dependencyGraph = new DependencyGraph(config);
 		seedClassNameList = new ArrayList<String>();
@@ -95,7 +98,7 @@ public class Bundler {
 		classFileSet = dependencyGraph.getClassFileSet();
 
 		
-		contentLength = getSourceMappingUrlString(config).length();
+		contentLength = 35;//getSourceMappingUrlString().length();
 		
 		while (iterator.hasNext()) {
 			File file = classFileSet.getFileFromClassname(iterator.next()
@@ -136,7 +139,7 @@ public class Bundler {
 		}
 	}
 
-	public void writeScriptTags(OutputStream out, Config config)
+	public void writeScriptTags(OutputStream out)
 			throws IOException {
 
 		String basePathString = config.getProperty(Config.PROP_SCRIPT_TAG_BASE_PATH);
@@ -164,12 +167,16 @@ public class Bundler {
 		}
 
 	}
-	
-	private String getSourceMappingUrlString(Config config) {
-		return "//# sourceMappingURL=" + config.getProperty(Config.PROP_SOURCE_MAP_FILE) + "\n";
+
+	public String getSourceMappingUrlString() {
+		
+		File bundleFile = new File(config.getProperty(Config.PROP_BUNDLE_FILE)).getAbsoluteFile();
+		File sourceMapFile = new File(config.getProperty(Config.PROP_SOURCE_MAP_FILE)).getAbsoluteFile();
+		Path pathBase = Paths.get(bundleFile.getParent());
+		return "//# sourceMappingURL=" + pathBase.relativize(Paths.get(sourceMapFile.getPath())) + "\n";
 	}
 	
-	public List<Mapping> write(OutputStream out, Config config) throws IOException {
+	public List<Mapping> write(OutputStream out) throws IOException {
 		MessageDigest md5 = null;
 		iterator = classList.listIterator();
 		try {
@@ -181,7 +188,7 @@ public class Bundler {
 		
 		mappings = new ArrayList<Mapping>();
 		
-		out.write(getSourceMappingUrlString(config).getBytes());
+		out.write(getSourceMappingUrlString().getBytes());
 		
 		int lineNumber = 2;
 		while (iterator.hasNext()) {
@@ -189,7 +196,7 @@ public class Bundler {
 			File file = classFileSet.getFileFromClassname(currentNode
 					.getValue());
 			
-			lineNumber = Bundler.copyLinesAndStripComments(file, out, md5, lineNumber, mappings, config);
+			lineNumber = Bundler.copyLinesAndStripComments(file, config.getProperty(Config.PROP_SOURCE_MAP_FILE), out, md5, lineNumber, mappings, config);
 		}
 		
 		String md5String = new BigInteger(1, md5.digest()).toString(16);
@@ -204,19 +211,23 @@ public class Bundler {
 	/**
 	 * Reads a File byte by byte and writes it to an OutputStream, stripping out comments.
 	 * 
-	 * @param inputFile
-	 * @param output
-	 * @param md5
-	 * @param outputFileLineNumber
+	 * @param inputFile the input javascript file to comment strip and write to output
+	 * @param sourcemapPath this is used to build relative paths in the sourcemap, as each file entry in the sourcemap must be relative to it.
+	 * @param output comment-stripped js source is written to this output stream
+	 * @param md5 this md5 is updated with the stripped code
+	 * @param outputFileLineNumber this is the running total number of lines in the bundle so far, each call to this ad
 	 * @return
 	 * @throws IOException
 	 */
-	public static int copyLinesAndStripComments(File inputFile, OutputStream output, MessageDigest md5, int outputFileLineNumber, List<Mapping> mappings, Config config) 
+	public static int copyLinesAndStripComments(File inputFile, String sourcemapPath, OutputStream output, MessageDigest md5, int outputFileLineNumber, List<Mapping> mappings, Config config) 
 	       throws IOException {
 		
 		InputStream input = new FileInputStream(inputFile);
-		
-		String inputFileName = inputFile.getPath();
+		//Get the path to the input file relative to the folder that the source map is in.
+		String sourceMapFolderPath = new File(sourcemapPath).getAbsoluteFile().getParentFile().getAbsolutePath();
+        Path inputFilePath = Paths.get(inputFile.getAbsolutePath());
+        Path pathBase = Paths.get(sourceMapFolderPath);
+        Path pathRelative = pathBase.relativize(inputFilePath);
 		
 		boolean isInString = false;
 		boolean isInSingleQuoteString = false;
@@ -238,7 +249,7 @@ public class Bundler {
 			
 			if (prev == '\n' || prev == -1) {
 				if (!isInSlashStarComment) {
-					mappings.add(new Mapping(inputFileName, new Position(sourceFileLineNumber, 0), new Position(outputFileLineNumber, 0)));
+					mappings.add(new Mapping(pathRelative.toString(), new Position(sourceFileLineNumber, 0), new Position(outputFileLineNumber, 0)));
 					if (prev == '\n') {
 						outputFileLineNumber++;
 					}
@@ -339,8 +350,11 @@ public class Bundler {
 		return outputFileLineNumber;
 	}
 
-	public void writeSourceMap(OutputStream out, String bundleFileName) 
+	public void writeSourceMap(OutputStream out) 
 	        throws IOException {
+		
+		String bundleFileName = config.getProperty(Config.PROP_BUNDLE_FILE);
+		
 		out.write(("{\n" 
 		        + "\t\"version\": 3,\n"
 		        + "\t\"file\": \"" + bundleFileName + "\",\n"

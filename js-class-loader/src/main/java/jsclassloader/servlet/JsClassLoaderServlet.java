@@ -18,22 +18,36 @@ import jsclassloader.Config;
 public class JsClassLoaderServlet extends HttpServlet {
 
 	private String propFileName = "js-class-loader.properties";
+	
 	private Config config;
+	
+	private Bundler bundler;
+	
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(servletConfig);
-		this.config = getConfig(servletConfig.getServletContext());
-		
+		config = getConfig(servletConfig.getServletContext());
+		try {
+		bundler = new Bundler(config);
+		}
+		catch (IOException ioe) {
+			throw new ServletException(ioe);
+		}
 	}
 	
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) {
 		try {
-			Bundler bundler = new Bundler(config);
-			response.setContentType("text/javascript");
+			if (request.getContextPath().indexOf(".map") != -1) {
+				bundler.writeSourceMap(response.getOutputStream());
+			}
+			else {
+				response.setContentType("text/javascript");
+				
+				response.setContentLength(bundler.getContentLength());
+				bundler.write(response.getOutputStream());
+			}
 			
-			response.setContentLength(bundler.getContentLength());
-			bundler.write(response.getOutputStream(), config);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

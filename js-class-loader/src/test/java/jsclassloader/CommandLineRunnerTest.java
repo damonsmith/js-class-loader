@@ -37,25 +37,6 @@ public class CommandLineRunnerTest {
 		Assert.assertEquals("There must be the same number of listed classes as in the source tree", expected.size(), lines.size());
 	}
 
-	public void testAllClassesListOrder() throws Exception {
-
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		String args = "--list --allClasses --sourcePaths=src/test/resources/dependency-tree";
-		
-		new CommandLineRunner(args.split(" "), new PrintStream(out));
-		
-		List<String> lines = Arrays.asList(out.toString().split("\n"));
-
-		Assert.assertTrue(
-				"Hat has a parse-time dependency on Genie, so Genie must appear before it", 
-				appearsBefore(lines, "abra.cad.abra.open.sesame.Genie", "abra.cad.abra.Hat"));
-		
-		Assert.assertTrue(
-				"Zap has a parse-time dependency on Fizzle, so Fizzle must appear before it",
-				appearsBefore(lines, "ala.kazam.Zap", "ala.kazam.Fizzle"));
-		
-	}
-	
 	@Test
 	public void testAllClassesInMixedMultiModule() throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

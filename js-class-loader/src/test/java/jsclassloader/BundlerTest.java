@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,44 @@ import org.junit.Test;
 import com.milens3.utility.sourcemap.encoder.Mapping;
 
 public class BundlerTest {
+	
+	@Test
+	public void testBundleMapLocationStringInSameFolder() throws Exception {
+		
+		Config config = new Config();
+		config.setProperty(Config.PROP_BUNDLE_FILE, "gen/bundle.js");
+		config.setProperty(Config.PROP_SOURCE_MAP_FILE, "gen/bundle.js.map");
+		
+		String mapString = (new Bundler(config)).getSourceMappingUrlString();
+		
+		Assert.assertEquals("//# sourceMappingURL=bundle.js.map\n", mapString);
+	}
+
+	@Test
+	public void testBundleMapLocationStringInDifferentFolders() throws Exception {
+		
+		Config config = new Config();
+		config.setProperty(Config.PROP_BUNDLE_FILE, "gen/bundle.js");
+		config.setProperty(Config.PROP_SOURCE_MAP_FILE, "out/files/bundle.js.map");
+		
+		String mapString = (new Bundler(config)).getSourceMappingUrlString();
+		
+		Assert.assertEquals("//# sourceMappingURL=../out/files/bundle.js.map\n", mapString);
+	}
+	
+	@Test
+	public void testBundleMapLocationStringInBaseFolder() throws Exception {
+		
+		Config config = new Config();
+		config.setProperty(Config.PROP_BUNDLE_FILE, "bundle.js");
+		config.setProperty(Config.PROP_SOURCE_MAP_FILE, "bundle.js.map");
+		
+		String mapString = (new Bundler(config)).getSourceMappingUrlString();
+		
+		Assert.assertEquals("//# sourceMappingURL=bundle.js.map\n", mapString);
+	}
+
+	
 	@Test
 	public void testStripComments() throws Exception {
 		
@@ -27,7 +67,7 @@ public class BundlerTest {
 		
 		List<Mapping> mappings = new ArrayList<Mapping>();
 		
-		Bundler.copyLinesAndStripComments(sourceFile, baos, md5, 1, mappings, config);
+		Bundler.copyLinesAndStripComments(sourceFile, "gen/bundle.js.map", baos, md5, 1, mappings, config);
 		
 		InputStream input = new FileInputStream(expectedFile);
 		
@@ -54,6 +94,7 @@ public class BundlerTest {
 	public void testGenerateMappings() throws Exception {
 		
 		File sourceFile = new File("src/test/resources/code-comments/test1-source-code.js");
+		File sourceMapFile = new File("gen/bundle.js.map");
 		
 		Config config = new Config();
 		
@@ -62,36 +103,41 @@ public class BundlerTest {
 		
 		List<Mapping> mappings = new ArrayList<Mapping>();
 		
-		int outputLineNumber = Bundler.copyLinesAndStripComments(sourceFile, baos, md5, 1, mappings, config);
+		int outputLineNumber = Bundler.copyLinesAndStripComments(sourceFile, sourceMapFile.getPath(), baos, md5, 1, mappings, config);
 		
-		checkMapping(mappings, 0, 1,  1);
-		checkMapping(mappings, 1, 2,  2);
-		checkMapping(mappings, 2, 3,  3);
-		checkMapping(mappings, 3, 4,  4);
-		checkMapping(mappings, 4, 5,  5);
-		checkMapping(mappings, 5, 12, 6);
-		checkMapping(mappings, 6, 13, 7);
-		checkMapping(mappings, 7, 14, 8);
-		checkMapping(mappings, 8, 15, 9);
-		checkMapping(mappings, 9, 16, 10);
-		checkMapping(mappings, 10, 17, 11);
-		checkMapping(mappings, 11, 18, 12);
-		checkMapping(mappings, 12, 27, 13);
-		checkMapping(mappings, 13, 28, 14);
-		checkMapping(mappings, 14, 29, 15);
-		checkMapping(mappings, 15, 30, 16);
-		checkMapping(mappings, 16, 31, 17);
-		checkMapping(mappings, 17, 32, 18);
-		checkMapping(mappings, 18, 33, 19);
-		checkMapping(mappings, 19, 34, 20);
-		checkMapping(mappings, 20, 35, 21);
+		String expectedMappingSourcePath = "../src/test/resources/code-comments/test1-source-code.js";
+		
+		checkMapping(mappings, 0, 1,  1, expectedMappingSourcePath);
+		checkMapping(mappings, 1, 2,  2, expectedMappingSourcePath);
+		checkMapping(mappings, 2, 3,  3, expectedMappingSourcePath);
+		checkMapping(mappings, 3, 4,  4, expectedMappingSourcePath);
+		checkMapping(mappings, 4, 5,  5, expectedMappingSourcePath);
+		checkMapping(mappings, 5, 12, 6, expectedMappingSourcePath);
+		checkMapping(mappings, 6, 13, 7, expectedMappingSourcePath);
+		checkMapping(mappings, 7, 14, 8, expectedMappingSourcePath);
+		checkMapping(mappings, 8, 15, 9, expectedMappingSourcePath);
+		checkMapping(mappings, 9, 16, 10, expectedMappingSourcePath);
+		checkMapping(mappings, 10, 17, 11, expectedMappingSourcePath);
+		checkMapping(mappings, 11, 18, 12, expectedMappingSourcePath);
+		checkMapping(mappings, 12, 27, 13, expectedMappingSourcePath);
+		checkMapping(mappings, 13, 28, 14, expectedMappingSourcePath);
+		checkMapping(mappings, 14, 29, 15, expectedMappingSourcePath);
+		checkMapping(mappings, 15, 30, 16, expectedMappingSourcePath);
+		checkMapping(mappings, 16, 31, 17, expectedMappingSourcePath);
+		checkMapping(mappings, 17, 32, 18, expectedMappingSourcePath);
+		checkMapping(mappings, 18, 33, 19, expectedMappingSourcePath);
+		checkMapping(mappings, 19, 34, 20, expectedMappingSourcePath);
+		checkMapping(mappings, 20, 35, 21, expectedMappingSourcePath);
 		
 		Assert.assertEquals(22, outputLineNumber); 
 	}
 
-	private void checkMapping(List<Mapping> mappings, int mappingNum, int sourceLineNumber, int outputLineNumber) {
+	private void checkMapping(List<Mapping> mappings, int mappingNum, int sourceLineNumber, int outputLineNumber, String expectedSourcePath) {
 		Assert.assertEquals(sourceLineNumber, mappings.get(mappingNum).getSourcePosition().getLine());
 		Assert.assertEquals(outputLineNumber, mappings.get(mappingNum).getMappedPosition().getLine());
+		Assert.assertEquals(expectedSourcePath, mappings.get(mappingNum).getSourceFile());
 	}
+	
+	
 	
 }

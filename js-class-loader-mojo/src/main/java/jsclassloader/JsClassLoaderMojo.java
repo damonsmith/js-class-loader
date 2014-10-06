@@ -93,6 +93,14 @@ public class JsClassLoaderMojo extends AbstractMojo {
 	 */
 	private String scriptTagsBasePath;
 	
+	
+	/**
+	 * Where to write the source map
+	 * @parameter
+	 */
+	private String sourceMapFile;
+	
+	
 	/**
 	 * Where the dependency graph file will be written to
 	 * @parameter
@@ -132,6 +140,9 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			if (bundleFile != null) {
 				config.setProperty(Config.PROP_BUNDLE_FILE, bundleFile);
 			}
+			if (sourceMapFile != null) {
+				config.setProperty(Config.PROP_SOURCE_MAP_FILE, sourceMapFile);
+			}
 			if (scriptTagsFile != null) {
 				config.setProperty(Config.PROP_SCRIPT_TAGS, scriptTagsFile);
 			}
@@ -155,6 +166,12 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			
 			if (scriptTagsPath != null) {
 				PrintStream tagsOut = new PrintStream(prepFile(scriptTagsPath));
+				bundler.writeScriptTags(tagsOut);
+				tagsOut.close();
+			}
+			
+			if (sourceMapFile != null) {
+				PrintStream tagsOut = new PrintStream(prepFile(sourceMapFile));
 				bundler.writeScriptTags(tagsOut);
 				tagsOut.close();
 			}

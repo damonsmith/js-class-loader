@@ -93,7 +93,7 @@ public class CommandLineRunner implements GraphUpdateListener {
 		
 		String sourceMapFileConfig = config.getProperty(Config.PROP_SOURCE_MAP_FILE);
 		if (sourceMapFileConfig != null) {
-			File sourceMapFile = prepFile(File.separatorChar + sourceMapFileConfig);
+			File sourceMapFile = prepFile(sourceMapFileConfig);
 			PrintStream sourceMapOut = new PrintStream(new FileOutputStream(sourceMapFile));
 			bundler.writeSourceMap(sourceMapOut);
 		}

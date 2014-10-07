@@ -171,9 +171,9 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			}
 			
 			if (sourceMapFile != null) {
-				PrintStream tagsOut = new PrintStream(prepFile(sourceMapFile));
-				bundler.writeScriptTags(tagsOut);
-				tagsOut.close();
+				PrintStream sourceMapOut = new PrintStream(prepFile(sourceMapFile));
+				bundler.writeSourceMap(sourceMapOut);
+				sourceMapOut.close();
 			}
 			
 			String graphPath = config.getProperty(Config.PROP_GRAPH_FILE);

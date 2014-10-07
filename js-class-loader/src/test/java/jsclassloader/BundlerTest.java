@@ -67,7 +67,9 @@ public class BundlerTest {
 		
 		List<Mapping> mappings = new ArrayList<Mapping>();
 		
-		Bundler.copyLinesAndStripComments(sourceFile, "gen/bundle.js.map", baos, md5, 1, mappings, config);
+		Bundler bundler = new Bundler(config);
+		
+		bundler.copyLinesAndStripComments(sourceFile, baos, md5, 1, mappings);
 		
 		InputStream input = new FileInputStream(expectedFile);
 		
@@ -93,17 +95,20 @@ public class BundlerTest {
 	@Test
 	public void testGenerateMappings() throws Exception {
 		
-		File sourceFile = new File("src/test/resources/code-comments/test1-source-code.js");
-		File sourceMapFile = new File("gen/bundle.js.map");
-		
 		Config config = new Config();
+		config.setProperty(Config.PROP_BUNDLE_FILE, "gen/bundle.js");
+		config.setProperty(Config.PROP_SOURCE_MAP_FILE, "gen/bundle.js.map");
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		MessageDigest md5 = MessageDigest.getInstance("MD5");
 		
 		List<Mapping> mappings = new ArrayList<Mapping>();
 		
-		int outputLineNumber = Bundler.copyLinesAndStripComments(sourceFile, sourceMapFile.getPath(), baos, md5, 1, mappings, config);
+		Bundler bundler = new Bundler(config);
+		
+		File sourceFile = new File("src/test/resources/code-comments/test1-source-code.js");
+		
+		int outputLineNumber = bundler.copyLinesAndStripComments(sourceFile, baos, md5, 1, mappings);
 		
 		String expectedMappingSourcePath = "../src/test/resources/code-comments/test1-source-code.js";
 		

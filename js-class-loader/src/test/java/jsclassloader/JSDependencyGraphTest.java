@@ -1,8 +1,8 @@
 package jsclassloader;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 

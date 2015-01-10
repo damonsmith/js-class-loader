@@ -3,12 +3,14 @@ package jsclassloader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -136,6 +138,49 @@ public class BundlerTest {
 		
 		Assert.assertEquals(22, outputLineNumber); 
 	}
+	
+	
+	@Test
+	public void testGenerateMultiFileMappings() throws Exception {
+		
+		Config config = new Config();
+		config.setProperty(Config.PROP_SOURCE_PATHS, "src/test/resources/sourcemap");
+		config.setProperty(Config.PROP_SEED_CLASSES, "box2d,nsone.sourceOne");
+		config.setProperty(Config.PROP_BUNDLE_FILE, "gen/bundle.js");
+		config.setProperty(Config.PROP_SOURCE_MAP_FILE, "gen/bundle.js.map");
+		
+		Logger.getGlobal().setLevel(Level.FINE);
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		MessageDigest md5 = MessageDigest.getInstance("MD5");
+		
+		Bundler bundler = new Bundler(config);
+		
+		File outfile = File.createTempFile("bundler-test","js");
+		List<Mapping> mappings = bundler.write(new FileOutputStream(outfile));
+
+		checkSourceAndTargetLines(mappings, 9678,  9890);
+		checkSourceAndTargetLines(mappings, 9683,  4);
+	}
+	
+	
+	private void checkSourceAndTargetLines(List<Mapping> mappings, int outputLineNumber, int sourceLineNumber) {
+		for (int i=0; i<mappings.size(); i++) {
+			if (mappings.get(i).getMappedPosition().getLine() == outputLineNumber) {
+				Assert.assertEquals(sourceLineNumber, mappings.get(i).getSourcePosition().getLine());
+				return;
+			}
+		}
+		Assert.assertTrue("couldn't find line number in mapped file: " + outputLineNumber, false);
+	}
+	
+	private void testListOfMappings(List<Mapping> mappings, int[] sourceLineNumbers, int[] outputLineNumbers) {
+		for (int i=0; i<mappings.size(); i++) {
+			Assert.assertEquals(sourceLineNumbers[i], mappings.get(i).getSourcePosition().getLine());
+			Assert.assertEquals(outputLineNumbers[i], mappings.get(i).getMappedPosition().getLine());
+		}
+	}
+	
 
 	private void checkMapping(List<Mapping> mappings, int mappingNum, int sourceLineNumber, int outputLineNumber, String expectedSourcePath) {
 		Assert.assertEquals(sourceLineNumber, mappings.get(mappingNum).getSourcePosition().getLine());

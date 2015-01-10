@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jsclassloader.classes.ClassFileSet;
@@ -41,7 +42,7 @@ public class Bundler {
 	private List<String> seedClassNameList;
 	private List<Mapping> mappings;
 	private Config config;
-	
+	private boolean isGeneratingSourceMap;
 	
 	public List<ClassNode> getClassList() {
 		return classList;
@@ -50,6 +51,7 @@ public class Bundler {
 	public Bundler(Config config) throws IOException {
 		classList = new LinkedList<ClassNode>();
 		this.config = config;
+		isGeneratingSourceMap = (config.getProperty(Config.PROP_SOURCE_MAP_FILE) != null);
 
 		this.dependencyGraph = new DependencyGraph(config);
 		seedClassNameList = new ArrayList<String>();
@@ -106,7 +108,7 @@ public class Bundler {
 			contentLength += file.length();
 		}
 	}
-
+	
 	public int getContentLength() {
 		return contentLength;
 	}
@@ -188,7 +190,9 @@ public class Bundler {
 		
 		mappings = new ArrayList<Mapping>();
 		
-		out.write(getSourceMappingUrlString().getBytes());
+		if (isGeneratingSourceMap) {
+			out.write(getSourceMappingUrlString().getBytes());
+		}
 		
 		int lineNumber = 2;
 		while (iterator.hasNext()) {
@@ -196,7 +200,7 @@ public class Bundler {
 			File file = classFileSet.getFileFromClassname(currentNode
 					.getValue());
 			
-			lineNumber = Bundler.copyLinesAndStripComments(file, config.getProperty(Config.PROP_SOURCE_MAP_FILE), out, md5, lineNumber, mappings, config);
+			lineNumber = copyLinesAndStripComments(file, out, md5, lineNumber, mappings);
 		}
 		
 		String md5String = new BigInteger(1, md5.digest()).toString(16);
@@ -219,16 +223,26 @@ public class Bundler {
 	 * @return
 	 * @throws IOException
 	 */
-	public static int copyLinesAndStripComments(File inputFile, String sourcemapPath, OutputStream output, MessageDigest md5, int outputFileLineNumber, List<Mapping> mappings, Config config) 
+	public int copyLinesAndStripComments(File inputFile, OutputStream output, MessageDigest md5, int outputFileLineNumber, List<Mapping> mappings) 
 	       throws IOException {
+		
+		LOG.log(Level.INFO, "writing file: " + inputFile.getPath() + " at line: " + outputFileLineNumber);
 		
 		InputStream input = new FileInputStream(inputFile);
 		//Get the path to the input file relative to the folder that the source map is in.
-		String sourceMapFolderPath = new File(sourcemapPath).getAbsoluteFile().getParentFile().getAbsolutePath();
-        Path inputFilePath = Paths.get(inputFile.getAbsolutePath());
-        Path pathBase = Paths.get(sourceMapFolderPath);
-        Path pathRelative = pathBase.relativize(inputFilePath);
+		String sourceMapFolderPath = null;
+        Path inputFilePath = null;
+        Path pathBase = null;
+        Path pathRelative = null;
 		
+        if (isGeneratingSourceMap) {
+        	//Get the path to the input file relative to the folder that the source map is in.
+    		sourceMapFolderPath = new File(config.getProperty(Config.PROP_SOURCE_MAP_FILE)).getAbsoluteFile().getParentFile().getAbsolutePath();
+            inputFilePath = Paths.get(inputFile.getAbsolutePath());
+            pathBase = Paths.get(sourceMapFolderPath);
+            pathRelative = pathBase.relativize(inputFilePath);
+        }
+        
 		boolean isInString = false;
 		boolean isInSingleQuoteString = false;
 		boolean isInDoubleQuoteString = false;
@@ -241,22 +255,24 @@ public class Bundler {
 		byte curr = (byte)input.read();
 		
 		int sourceFileLineNumber = 1;
-		int sourceColumn = 1;
-		int outputColumn = 1;
+//		int sourceColumn = 1;
+//		int outputColumn = 1;
 		
 		while (true) {
 			
 			
 			if (prev == '\n' || prev == -1) {
 				if (!isInSlashStarComment) {
-					mappings.add(new Mapping(pathRelative.toString(), new Position(sourceFileLineNumber, 0), new Position(outputFileLineNumber, 0)));
+					if (isGeneratingSourceMap) {
+						mappings.add(new Mapping(pathRelative.toString(), new Position(sourceFileLineNumber, 0), new Position(outputFileLineNumber, 0)));
+					}
 					if (prev == '\n') {
 						outputFileLineNumber++;
 					}
-					outputColumn = 1;
+					//outputColumn = 1;
 				}
 				sourceFileLineNumber++;
-				sourceColumn = 1;
+				//sourceColumn = 1;
 			}
 			
 			if (prev == -1) {
@@ -313,7 +329,7 @@ public class Bundler {
 				//write the prev char to output:
 				if (!isInComment && !wasInSlashStarComment) {
 					output.write(prev);
-					outputColumn++;
+					//outputColumn++;
 				}
 				wasInSlashStarComment = false;
 			}
@@ -339,7 +355,7 @@ public class Bundler {
 				
 			prev = curr;
 			curr = (byte)input.read();
-			sourceColumn++;
+			//sourceColumn++;
 		}
 		
 		output.write('\n');
@@ -380,6 +396,10 @@ public class Bundler {
 		out.write(("\t\"mappings\": \"").getBytes());
 		out.write(map.getMappings().getBytes());
 		out.write(("\"\n}\n").getBytes());
+		
+//		for (Mapping mapping : mappings) {
+//			System.out.println(mapping.getMappedPosition().getLine() + ", " + mapping.getSourcePosition().getLine() + ", " + mapping.getSourceFile());
+//		}
 	}
 	
 	private List<File> generateSeedFileList(Config config) {

@@ -163,32 +163,6 @@ public class BundlerTest {
 	
 	
 	@Test
-	public void testSmallSourceFiles() throws Exception {
-		
-		Config config = new Config();
-		config.setProperty(Config.PROP_SOURCE_PATHS, "small/lib");
-		config.setProperty(Config.PROP_SEED_CLASSES, "once.Global");
-		config.setProperty(Config.PROP_BUNDLE_FILE, "gen/bundle.js");
-		config.setProperty(Config.PROP_SOURCE_MAP_FILE, "gen/bundle.js.map");
-		config.setProperty(Config.PROP_BASE_FOLDER, "src/test/resources");
-		
-		Logger.getGlobal().setLevel(Level.FINE);
-		
-		Bundler bundler = new Bundler(config);
-		
-		File outfile = File.createTempFile("bundler-test","js");
-		List<Mapping> mappings = bundler.write(new FileOutputStream(outfile));
-
-		checkSourceAndTargetLines(mappings, 2, 5, "../src/test/resources/small/lib/once/file1.js");
-		checkSourceAndTargetLines(mappings, 3, 6, "../src/test/resources/small/lib/once/file1.js");
-		checkSourceAndTargetLines(mappings, 4, 8, "../src/test/resources/small/lib/once/file1.js");
-		checkSourceAndTargetLines(mappings, 5, 9, "../src/test/resources/small/lib/once/file1.js");
-		checkSourceAndTargetLines(mappings, 6, 10, "../src/test/resources/small/lib/once/file1.js");
-		checkSourceAndTargetLines(mappings, 9, 15, "../src/test/resources/small/lib/once/file1.js");
-	}
-	
-	
-	@Test
 	public void testLargeSourceFiles() throws Exception {
 		
 		Config config = new Config();

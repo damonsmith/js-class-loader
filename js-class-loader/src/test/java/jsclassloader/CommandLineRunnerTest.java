@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import jsclassloader.cli.CommandLineRunner;
 
@@ -16,7 +15,7 @@ public class CommandLineRunnerTest {
 	@Test
 	public void testListAllClasses() throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		String args = "--list --allClasses --sourcePaths=src/test/resources/dependency-tree";
+		String args = "--list --sourcePaths=src/test/resources/dependency-tree --seedClasses=ala.kazam.Zap";
 		
 		new CommandLineRunner(args.split(" "), new PrintStream(out));
 		
@@ -75,7 +74,9 @@ public class CommandLineRunnerTest {
 				"jssynth.Instrument"
 		});
 		
-		Assert.assertTrue("Listed classes must contain all classes in source tree", lines.containsAll(expected));
+		for (String expectedLine : expected) {
+			Assert.assertTrue("error, list doesn't contain: " + expectedLine, lines.contains(expectedLine));
+		}
 		Assert.assertEquals("There must be the same number of listed classes as in the source tree", expected.size(), lines.size());
 	}
 	

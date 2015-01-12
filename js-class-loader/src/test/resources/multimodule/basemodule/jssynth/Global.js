@@ -13,4 +13,6 @@ jssynth.Global.makeArrayOf = function (value, length) {
 };
 
 jssynth.Global.additiveSynth = function(length, sampleRate, baseFreq, harmonics, globalVolume, state) {
+	new jssynth.player.S3MLoader();
+	new jssynth.Instrument();
 };

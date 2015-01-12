@@ -65,11 +65,6 @@ public class JsClassLoaderMojo extends AbstractMojo {
 	
 	
 	/**
-	 * A flag to tell JS-Class-Loader to include all files in dependency order
-	 */
-	private String allClasses;
-	
-	/**
 	 * Location of the script sources 
 	 * @parameter
 	 */
@@ -130,9 +125,6 @@ public class JsClassLoaderMojo extends AbstractMojo {
 			}
 			if (seedClasses != null) {
 				config.setProperty(Config.PROP_SEED_CLASSES, seedClasses);
-			}
-			if (allClasses != null && allClasses.toLowerCase().equals("true")) {
-				config.setProperty(Config.PROP_ALL_CLASSES, "true");
 			}
 			if (sourcePaths != null) {
 				config.setProperty(Config.PROP_SOURCE_PATHS, sourcePaths);

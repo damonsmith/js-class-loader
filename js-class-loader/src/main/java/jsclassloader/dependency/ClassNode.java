@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ClassNode {
+public class ClassNode implements Comparable<ClassNode> {
 	private Map<String, ClassNode> runtimeDependencies;
 	private Map<String, ClassNode> staticDependencies;
 	private Set<ClassNode> reverseDependencies;
@@ -32,7 +32,7 @@ public class ClassNode {
 	public boolean isProcessed() {
 		return processed;
 	}
-
+	
 	public void setProcessed(boolean processed) {
 		this.processed = processed;
 	}
@@ -129,5 +129,10 @@ public class ClassNode {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public int compareTo(ClassNode o) {
+		return value.compareTo(o.value);
 	}
 }

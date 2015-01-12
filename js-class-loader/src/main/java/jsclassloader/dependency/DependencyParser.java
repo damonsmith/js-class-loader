@@ -33,8 +33,6 @@ public class DependencyParser {
 		this.extendRegex = Pattern.compile(config.getProperty(Config.PROP_EXTEND));
 		this.implementRegex = Pattern.compile(config.getProperty(Config.PROP_IMPLEMENT));
 		this.forceLoadRegex = Pattern.compile(config.getProperty(Config.PROP_FORCE));
-		this.startOfWholeLineForceLoadRegex = Pattern.compile(config.getProperty(Config.PROP_START_FORCE));
-		this.wholeLineForceLoadRegex = Pattern.compile(config.getProperty(Config.PROP_WHOLE_FORCE));
 	}
 	
 	public void setClassFileSet(ClassFileSet fileSet) {
@@ -129,10 +127,7 @@ public class DependencyParser {
 		
 		String line = sinceStartOfLine.toString();
 		
-		if(startOfWholeLineForceLoadRegex.matcher(line).find()) {
-			match.setReadAheadRequired(true);
-		}
-		else if(implementRegex.matcher(line).find()){
+		if(implementRegex.matcher(line).find()){
 			match.setStaticDependency(true);
 		}
 		else if(extendRegex.matcher(line).find()){

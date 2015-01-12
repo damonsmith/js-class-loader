@@ -16,8 +16,6 @@ public class JsBundleReaderTest {
 	private String forceLoadRegex = ".*force\\.load\\s*\\(.*";
 	private String implementRegex = ".*imp\\.lements\\s*\\(.*";
 	private String extendRegex = ".*ext\\.ends\\s*\\(.*";
-	private String startOfWholeLineForceLoadRegex = ".*inc\\.lude\\s*\\(.*";
-	private String wholeLineForceLoadRegex = ".*inc\\.lude\\s*\\(.*,\\s*true\\s*\\).*";
 
 	Config config;
 	DependencyGraph depGraph;
@@ -31,8 +29,6 @@ public class JsBundleReaderTest {
 		config.setProperty(Config.PROP_FORCE, forceLoadRegex);
 		config.setProperty(Config.PROP_IMPLEMENT, implementRegex);
 		config.setProperty(Config.PROP_EXTEND, extendRegex);
-		config.setProperty(Config.PROP_START_FORCE, startOfWholeLineForceLoadRegex);
-		config.setProperty(Config.PROP_WHOLE_FORCE, wholeLineForceLoadRegex);
 
 		config.setProperty(Config.PROP_SOURCE_PATHS, "src/test/resources/dependency-tree");
 	}
@@ -74,24 +70,4 @@ public class JsBundleReaderTest {
 		assertEquals("abra.cad.abra.Hey",               bundle.get(4).getValue());
 		assertEquals("abra.cad.abra.Hat",               bundle.get(5).getValue());
 	}
-
-	@Test
-	public void testAllClassesList() throws Exception {
-		config.setProperty(Config.PROP_ALL_CLASSES, "true");
-		
-		Bundler reader = new Bundler(config);
-		List<ClassNode> bundle = reader.getClassList();
-
-		assertEquals("abra.cad.abra.open.sesame.Genie", bundle.get(0).getValue());
-		assertEquals("abra.cad.abra.open.sesame.Lamp",  bundle.get(1).getValue());
-		assertEquals("abra.cad.abra.Rabbit",            bundle.get(2).getValue());
-		assertEquals("something.else.Entirely",         bundle.get(3).getValue());
-		assertEquals("abra.cad.abra.Hey",               bundle.get(4).getValue());
-		assertEquals("abra.cad.abra.Hat",               bundle.get(5).getValue());
-		assertEquals("abra.cad.abra.Presto",            bundle.get(6).getValue());
-		assertEquals("ala.kazam.Fizzle",                bundle.get(7).getValue());
-		assertEquals("ala.kazam.Zap",                   bundle.get(8).getValue());
-		assertEquals("ala.kazam.smoke.Mirrors",         bundle.get(9).getValue());
-	}
-
 }

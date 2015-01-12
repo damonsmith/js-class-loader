@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
-import java.util.logging.Logger;
 
 import jsclassloader.Bundler;
 import jsclassloader.Config;
@@ -21,7 +20,7 @@ public class CommandLineRunner implements GraphUpdateListener {
 	static String propFileName;
 	static List<String> seedClassesFromCmdLine;
 	static String [] sourcePaths;
-	private final static Logger LOG = Logger.getLogger("JS-Class-Loader");
+	//private final static Logger LOG = Logger.getLogger("JS-Class-Loader");
 	
 	private Bundler bundler;
 	private Config config;

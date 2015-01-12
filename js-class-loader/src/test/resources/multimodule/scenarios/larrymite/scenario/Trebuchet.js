@@ -14,6 +14,8 @@ larrymite.scenario.Trebuchet.prototype.zoomToPerson = function() {
 };
 
 larrymite.scenario.Trebuchet.prototype.reset = function() {
+	var extras = jssynth.webkitAudioContextMonkeyPatch();
+	var nothing = new jssynth.Sample();
 };
 
 

@@ -1,10 +1,11 @@
 package jsclassloader;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -139,35 +140,112 @@ public class BundlerTest {
 		Assert.assertEquals(22, outputLineNumber); 
 	}
 	
-	
 	@Test
 	public void testGenerateMultiFileMappings() throws Exception {
 		
 		Config config = new Config();
 		config.setProperty(Config.PROP_SOURCE_PATHS, "src/test/resources/sourcemap");
-		config.setProperty(Config.PROP_SEED_CLASSES, "box2d,nsone.sourceOne");
+		config.setProperty(Config.PROP_SEED_CLASSES, "nsone.sourceOne");
 		config.setProperty(Config.PROP_BUNDLE_FILE, "gen/bundle.js");
 		config.setProperty(Config.PROP_SOURCE_MAP_FILE, "gen/bundle.js.map");
 		
 		Logger.getGlobal().setLevel(Level.FINE);
-		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		MessageDigest md5 = MessageDigest.getInstance("MD5");
 		
 		Bundler bundler = new Bundler(config);
 		
 		File outfile = File.createTempFile("bundler-test","js");
 		List<Mapping> mappings = bundler.write(new FileOutputStream(outfile));
 
-		checkSourceAndTargetLines(mappings, 9678,  9890);
-		checkSourceAndTargetLines(mappings, 9683,  4);
+		testListOfMappings(mappings, 
+				new int[] {1, 3, 4, 5, 6, 7, 10, 11, 14, 15, 16, 1,  2,  3,  4,  5,  8,  9,  12}, 
+				new int[] {2, 3, 4, 5, 6, 7, 8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
 	}
 	
 	
-	private void checkSourceAndTargetLines(List<Mapping> mappings, int outputLineNumber, int sourceLineNumber) {
+	@Test
+	public void testSmallSourceFiles() throws Exception {
+		
+		Config config = new Config();
+		config.setProperty(Config.PROP_SOURCE_PATHS, "small/lib");
+		config.setProperty(Config.PROP_SEED_CLASSES, "once.Global");
+		config.setProperty(Config.PROP_BUNDLE_FILE, "gen/bundle.js");
+		config.setProperty(Config.PROP_SOURCE_MAP_FILE, "gen/bundle.js.map");
+		config.setProperty(Config.PROP_BASE_FOLDER, "src/test/resources");
+		
+		Logger.getGlobal().setLevel(Level.FINE);
+		
+		Bundler bundler = new Bundler(config);
+		
+		File outfile = File.createTempFile("bundler-test","js");
+		List<Mapping> mappings = bundler.write(new FileOutputStream(outfile));
+
+		checkSourceAndTargetLines(mappings, 2, 5, "../src/test/resources/small/lib/once/file1.js");
+		checkSourceAndTargetLines(mappings, 3, 6, "../src/test/resources/small/lib/once/file1.js");
+		checkSourceAndTargetLines(mappings, 4, 8, "../src/test/resources/small/lib/once/file1.js");
+		checkSourceAndTargetLines(mappings, 5, 9, "../src/test/resources/small/lib/once/file1.js");
+		checkSourceAndTargetLines(mappings, 6, 10, "../src/test/resources/small/lib/once/file1.js");
+		checkSourceAndTargetLines(mappings, 9, 15, "../src/test/resources/small/lib/once/file1.js");
+	}
+	
+	
+	@Test
+	public void testLargeSourceFiles() throws Exception {
+		
+		Config config = new Config();
+		config.setProperty(Config.PROP_SOURCE_PATHS, "full/lib,full/script");
+		config.setProperty(Config.PROP_SEED_CLASSES, "mite.base.Lang");
+		config.setProperty(Config.PROP_SEED_FILES, "seedFiles=full/script/larrymite/game/*");
+		config.setProperty(Config.PROP_BUNDLE_FILE, "gen/bundle.js");
+		config.setProperty(Config.PROP_SOURCE_MAP_FILE, "gen/bundle.js.map");
+		config.setProperty(Config.PROP_SCRIPT_TAGS, "gen/script-tag-list.html");
+		config.setProperty(Config.PROP_BASE_FOLDER, "src/test/resources");
+		
+		Logger.getGlobal().setLevel(Level.FINE);
+		
+		Bundler bundler = new Bundler(config);
+		
+		File outfile = File.createTempFile("bundler-test","js");
+		List<Mapping> mappings = bundler.write(new FileOutputStream(outfile));
+
+		checkSourceAndTargetLines(mappings, 3, 5, "../src/test/resources/full/lib/mite/base/Lang.js");
+		checkSourceAndTargetLines(mappings, 42, 1, "../src/test/resources/full/lib/box2d/b2Settings.js");
+		checkSourceAndTargetLines(mappings, 94, 9, "../src/test/resources/full/lib/prototype/prototype.js");
+		checkSourceAndTargetLines(mappings, 4312, 28, "../src/test/resources/full/lib/box2d/box2d.js");
+		
+		checkSourceAndTargetLines(mappings, 4999, 715, "../src/test/resources/full/lib/box2d/box2d.js");
+		checkSourceAndTargetLines(mappings, 5996, 1712, "../src/test/resources/full/lib/box2d/box2d.js");
+		checkSourceAndTargetLines(mappings, 13949, 9862, "../src/test/resources/full/lib/box2d/box2d.js");
+		checkSourceAndTargetLines(mappings, 13978, 9891, "../src/test/resources/full/lib/box2d/box2d.js");
+		checkSourceAndTargetLines(mappings, 13979, 9892, "../src/test/resources/full/lib/box2d/box2d.js");
+		checkLineOfBundleMatches(outfile, "\tenableMotor: null});", 13978);
+		checkLineOfBundleMatches(outfile, "second last line", 13979);
+		checkLineOfBundleMatches(outfile, "last line//end of box2d.js", 13980);
+		
+		checkSourceAndTargetLines(mappings, 13981, 19, "../src/test/resources/full/lib/jssynth/Global.js");
+		checkSourceAndTargetLines(mappings, 13982, 20, "../src/test/resources/full/lib/jssynth/Global.js");
+		checkSourceAndTargetLines(mappings, 13983, 23, "../src/test/resources/full/lib/jssynth/Global.js");
+		checkSourceAndTargetLines(mappings, 13984, 24, "../src/test/resources/full/lib/jssynth/Global.js");
+		checkSourceAndTargetLines(mappings, 13985, 25, "../src/test/resources/full/lib/jssynth/Global.js");
+		checkSourceAndTargetLines(mappings, 13988, 30, "../src/test/resources/full/lib/jssynth/Global.js");
+		checkSourceAndTargetLines(mappings, 14050, 8, "../src/test/resources/full/lib/jssynth/Instrument.js");
+	}
+	
+	private void checkLineOfBundleMatches(File outfile, String expected, int lineNumber) throws Exception {
+		BufferedReader reader = new BufferedReader(new FileReader(outfile));
+		for (int i=1; i<lineNumber; i++) {
+			reader.readLine();
+		}
+		String actual = reader.readLine();
+		Assert.assertEquals(expected, actual);
+		reader.close();
+	}
+	
+	
+	private void checkSourceAndTargetLines(List<Mapping> mappings, int outputLineNumber, int sourceLineNumber, String sourceFile) {
 		for (int i=0; i<mappings.size(); i++) {
 			if (mappings.get(i).getMappedPosition().getLine() == outputLineNumber) {
 				Assert.assertEquals(sourceLineNumber, mappings.get(i).getSourcePosition().getLine());
+				Assert.assertEquals(sourceFile, mappings.get(i).getSourceFile());
 				return;
 			}
 		}
@@ -180,14 +258,10 @@ public class BundlerTest {
 			Assert.assertEquals(outputLineNumbers[i], mappings.get(i).getMappedPosition().getLine());
 		}
 	}
-	
 
 	private void checkMapping(List<Mapping> mappings, int mappingNum, int sourceLineNumber, int outputLineNumber, String expectedSourcePath) {
 		Assert.assertEquals(sourceLineNumber, mappings.get(mappingNum).getSourcePosition().getLine());
 		Assert.assertEquals(outputLineNumber, mappings.get(mappingNum).getMappedPosition().getLine());
 		Assert.assertEquals(expectedSourcePath, mappings.get(mappingNum).getSourceFile());
 	}
-	
-	
-	
 }

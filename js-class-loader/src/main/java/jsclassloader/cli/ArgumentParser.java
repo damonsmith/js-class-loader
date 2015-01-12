@@ -17,7 +17,6 @@ public class ArgumentParser {
 	// General config parameters
 	private final Argument seedFilesArg;
 	private final Argument seedClassesArg;
-	private final Argument allClassesArg;
 	private final Argument sourcePathArg;
 	private final Argument basePathArg;
 	private final Argument bundleFilePathArg;
@@ -34,7 +33,6 @@ public class ArgumentParser {
 	public ArgumentParser() {
 		seedFilesArg = new Argument(Config.PROP_SEED_FILES, "sf");
 		seedClassesArg = new Argument(Config.PROP_SEED_CLASSES, "sc");
-		allClassesArg = new Argument(Config.PROP_ALL_CLASSES, "a");
 		sourcePathArg = new Argument(Config.PROP_SOURCE_PATHS, "sp");
 		basePathArg = new Argument(Config.PROP_BASE_FOLDER, "b");
 		bundleFilePathArg = new Argument(Config.PROP_BUNDLE_FILE, "o");
@@ -54,7 +52,6 @@ public class ArgumentParser {
 		for (String arg : args) {
 			if (!seedFilesArg.checkAndSet(arg)
 					&& !seedClassesArg.checkAndSet(arg)
-					&& !allClassesArg.checkAndSet(arg)
 					&& !sourcePathArg.checkAndSet(arg)
 					&& !basePathArg.checkAndSet(arg)
 					&& !configFileArg.checkAndSet(arg)
@@ -114,16 +111,6 @@ public class ArgumentParser {
 					watchFilesArg.getValue());
 		}
 
-		if (allClassesArg.isSet()) {
-			if (allClassesArg.getValue() != null) {
-				System.out
-						.println("Error, you don't need to set a value for allClasses. just use -a or --"
-								+ allClassesArg.getLongText());
-				System.exit(1);
-			}
-			jsClassLoaderConfig.setProperty(Config.PROP_ALL_CLASSES, "true");
-		}
-
 		if (bundleFilePathArg.isSet()) {
 			jsClassLoaderConfig.setProperty(Config.PROP_BUNDLE_FILE,
 					bundleFilePathArg.getValue());
@@ -142,7 +129,7 @@ public class ArgumentParser {
 		}
 
 		if (!configFileArg.isSet() && !seedFilesArg.isSet()
-				&& !seedClassesArg.isSet() && !allClassesArg.isSet()) {
+				&& !seedClassesArg.isSet()) {
 			System.out
 					.println("\nError, you must either specify a config file, like this:\n"
 							+ configFileArg.getLongText()

@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,9 @@ public class DependencyGraph {
 		depParser.setClassFileSet(classFileSet);
 		
 		nodeMap = new HashMap<String, ClassNode>();
-		for (String className : classFileSet.getAllJsClasses()) {
+		List<String> classNames = classFileSet.getAllJsClasses();
+		Collections.sort(classNames);
+		for (String className : classNames) {
 			nodeMap.put(className, new ClassNode(className));
 		}
 		for (ClassNode node : nodeMap.values()) {
@@ -98,6 +101,8 @@ public class DependencyGraph {
 	
 	public List<String> getSeedClassesFromFiles(List<File> seedSources) throws IOException {
 		
+		Collections.sort(seedSources);
+		
 		List<String> results = new ArrayList<String>();
 		
 		for (File file: seedSources) {
@@ -110,6 +115,7 @@ public class DependencyGraph {
 				in.close();
 			}
 		}
+		Collections.sort(results);
 		return results;
 	}
 }

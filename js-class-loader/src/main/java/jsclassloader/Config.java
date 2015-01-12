@@ -13,7 +13,6 @@ public class Config {
 	public static final String PROP_BASE_FOLDER = "basePath";
 	public static final String PROP_SOURCE_PATHS = "sourcePaths";
 
-	public static final String PROP_ALL_CLASSES = "allClasses";
 	public static final String PROP_SEED_FILES = "seedFiles";
 	public static final String PROP_SEED_CLASSES = "seedClasses";
 	public static final String PROP_WATCH_FILES = "watchFiles";
@@ -21,8 +20,6 @@ public class Config {
 	public static final String PROP_IMPLEMENT = "regex.implement";
 	public static final String PROP_EXTEND = "regex.extend";
 	public static final String PROP_FORCE = "regex.force";
-	public static final String PROP_START_FORCE = "regex.start.force";
-	public static final String PROP_WHOLE_FORCE = "regex.whole.force";
 	
 	public static final String PROP_BUNDLE_FILE = "bundleFile";
 	public static final String PROP_SOURCE_MAP_FILE = "sourceMapFile";

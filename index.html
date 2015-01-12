@@ -20,7 +20,7 @@
 			<a id="forkme_banner" href="https://github.com/damonsmith/js-class-loader">View on GitHub</a>
 
 			<h1 id="project_title"><a href=".">JS-Class-Loader</a></h1>
-			<h2 id="project_tagline">(Java) Fast Javascript aggregator / bundler, with dependency detection.</h2>
+			<h2 id="project_tagline">(Java) Fast Javascript aggregator / bundler. With dependency detection.</h2>
 			The javascript weapon of a more civilized age.
 
 			<section id="downloads">
@@ -38,38 +38,91 @@
 	<div id="main_content_wrap" class="outer">
 		<section id="main_content" class="inner">
 
-			
+			<ul class="menu">
+				<li><a href="config-options.html">Config options</a></li>
+				<li><a href="installation.html">Installation</a></li>
+				<li><a href="troubleshooting.html">Troubleshooting</a></li>
+				<li><a href="feedback.html">Feedback</a></li>
+				<div style="clear: both"></div>
+			</ul>
 
-			<div class="pure-g-r menu">
-			
-				<div class="pure-u-1-2">
-					<h1>Section 1</h1>
-					<a class="button_link" href="what-is-it.html">What is it?</a> 
-					<a class="button_link" href="how-to-use-it.html">How to use it</a>
-				</div>
-
-				<div class="pure-u-1-2">
-					<h1>Section 2</h1>
-					<a class="button_link" href="how-it-works.html">How it works</a> 
-					<a class="button_link" href="comparison.html">Comparison</a>
-				</div>
-
-				<div class="pure-u-1-2">
-					<h1>Section 3</h1>
-					<a class="button_link" href="examples.html">Examples</a> 
-					<a class="button_link" href="config-options.html">Config options</a>
-				</div>
+			<div>
+				<h1>What is it?</h1>
+				<p>
+				JS-Class-Loader is a tool that reads a codebase of javascript class files and generates a single 
+				module file of code. It uses name and folder conventions to detect dependencies and automatically 
+				put the code into the correct order.
+				</p>
 				
-				<div class="pure-u-1-2">
-					<h1>Section 4</h1>
-					<a class="button_link" href="feedback.html">Feedback</a> 
-				</div>
-<!-- 
-				<div class="pure-u-1 footer">
-					<a href="http://damon.larrymite.com.au/">Damon's code projects</a>
-				</div> -->
+				<p>It is written in Java and works as either a command line tool, a builder inside your IDE,
+				a server side generator, a file watcher, or as a step in your build. 
+				</p>
+				
+				<p>JSCL can be configured to build automatically inside your IDE as well as during your proper build.
+				This gives you a fast dev cycle that doesn't require a slow and laborious full build to see quick changes
+				to javascript code.</p>
 			</div>
 
+			<div>
+				<h1>How it works</h1>
+				<p>JSCL starts with some seed classes or config files - usually the main app loader, layout config and/or entry points to your application. 
+					It then reads your source folder trees and generates a dependency list and bundle file of
+					all required classes by reading each one and detecting run-time and parse-time dependencies inside it.</p>
+				
+				<p>It works best if you structure your javascript classes and files in the Java one-class-per-file style, where each class is defined in
+					a file with a matching name and any namespace structure matches the folder structure.
+				</p> 
+				
+				<p>The dependency detection is not complicated - if a folder and file "path/to/a/Camel.js" exists in one of your source folders,
+					then whenever JSCL finds a js file that contains the string path.to.a.Camel it will consider to depend on path/to/a/Camel.js</p>
+				
+				<p>Your project may have any structure at all, with one or more source folders in any location. You also do not necessarily need to structure
+					your source in the Java style either, if you don't then you'll just have to manually specify your dependencies with include() statements.</p>
+			</div>
+				
+				
+			<div>
+				<h1>Who is it for?</h1>
+				<p>The author (me!) has worked on a number of different, large scale javascript codebases in the Java enterprise environment and often it's not practical to run
+					a NodeJS or Ruby based tool to do javascript aggregation, and those tools don't tend to integrate well with standard java build tools.
+				</p>
+				<p>This tool is based on an implementation written at Caplin Systems where they have a massive library of thousands of javascript files, megabytes of code,
+					and need a fast bundling tool to generate deployment bundles of the modules that they are using.
+				</p>
+				<p>Generally, this tool is for javascript developers that want to manage a large js codebase with a neat, convention based code structure
+					without having to worry about manually managing dependencies or installing a suite of other compilers, runtimes and tools to bundle their
+					javascript up. 
+				</p>
+			</div>
+				
+			<div>
+				<h1>What are the worst things about it?</h1>
+				<p>For developers that are new to it, if you are expected to match your file names and class names and you don't, then JSCL won't detect them and you'll end
+					up frustratedly tearing your hair out trying to work out why your code isn't there. The "magical" aspect of the dependency management is annoying if you're
+					dropped in on an existing codebase and don't know or care how this bundler works.
+				</p>
+				<p>
+					Maven integration in eclipse is hard and bad, not just with JSCL but with Eclipse M2E and maven in general. Maven may change files and 
+					metadata outside of the project, making it difficult for M2E to guarantee that it's build does the same thing as the maven build. The
+					issue is covered in great detail <a href="http://wiki.eclipse.org/M2E_plugin_execution_not_covered">here, in the M2E wiki on "Plugin execution not covered"</a>
+				</p>
+				<p>
+					So the eclipse approach to custom maven plugins is to either force you to add m2e specific config to your project files, which is bad, or write a specific M2E configurator which is bad too,
+					and lots of pointless work to keep it working, tested and up to date. Having said all of that, it is possible to use the maven mojo effectively from within
+					eclipse, it's just that like with most things eclipse and maven, you might find yourself having to know rather more about maven than you'd like to fix any 
+					random spurious error messages you get when your project gets messed up. Generally I prefer to use the bundler as a builder from eclipse and only use the mojo at
+					build time, being confident that the bundles will end up identical. However some developers might get a bit uncomfortable with a bundle file being generated in
+					a different way in dev to in the deployed build.
+				</p>
+			</div>
+				
+			<div>
+				<h1>How fast (or slow) is it?</h1>
+				<p>The command line execution process is basically the time it takes for the jvm to start, the files to be read and then a very small amount of time to generate
+					the dependency tree and write out the bundle. For projects of under 100 files the command line runner will complete in under a second, for a thousand source files
+					it will run in a few seconds. If it is run in file watcher mode then it will be much, much faster again. 
+				</p>
+			</div>
 		</section>
 	</div>
 </body>

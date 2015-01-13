@@ -82,7 +82,7 @@
 				<h2>Try it out on the command line</h2>
 				<p>You need to have Java 1.7 or higher installed. Then find a seed class, source folder and output file, and run the bundler like this:</p>
 				
-				<code>java -jar js-class-loader-1.2.17.jar --sourcePaths=src --seedClasses=my.app.Main --bundleFile=gen/bundle.js</code>
+				<code>java -jar js-class-loader-1.2.18.jar --sourcePaths=src --seedClasses=my.app.Main --bundleFile=gen/bundle.js</code>
 				
 				<p>Check your output file to see what's in there.</p>
 				
@@ -91,12 +91,12 @@
 				it wherever you keep your config files. Add the basePath option into your config file to make sure it always runs from the right place.</p>
 				<p>You can then run the bundler again with</p>
 				
-				<code>java -jar js-class-loader-1.2.15.jar --config=conf/js-class-loader.properties</code>
+				<code>java -jar js-class-loader-1.2.18.jar --config=conf/js-class-loader.properties</code>
 				
 				<h2>Run it as a file watcher</h2>
 				<p>Sometimes an out-of-IDE process to bundle your code is the most effective way. To run JSCL like this, add --watchFiles=true on the command line</p>
 				
-				<code>java -jar js-class-loader-1.2.15.jar --config=conf/js-class-loader.properties --watchFiles=true</code>
+				<code>java -jar js-class-loader-1.2.18.jar --config=conf/js-class-loader.properties --watchFiles=true</code>
 				
 				<h2>Run it from your IDE</h2>
 				<p>In eclipse you can set up a project builder that runs the jar and specifies the arguments. Use the same arguments as you would from the command

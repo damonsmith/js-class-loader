@@ -40,67 +40,114 @@
 
 			<ul class="menu">
 				<li><a href="config-options.html">Config options</a></li>
-				<li><a href="installation.html">Installation</a></li>
 				<li><a href="troubleshooting.html">Troubleshooting</a></li>
 				<li><a href="feedback.html">Feedback</a></li>
 				<div style="clear: both"></div>
 			</ul>
 
 			<div>
-				<h1>What is it?</h1>
+				<h1>Fast overview</h1>
+				<p>A Java program to bundle together your javascript and generate source maps by inspecting the code for dependencies.</p>
 				<p>
-				JS-Class-Loader is a tool that reads a codebase of javascript class files and generates a single 
-				module file of code. It uses name and folder conventions to detect dependencies and automatically 
-				put the code into the correct order.
+				Some javascript codebases use a Java style class structure, where each class is in a file with the same name as the class inside it,
+				and each class namespace matches the folder tree that it is in. A project may have many modules and source roots
+				but inside each one the code is organised in a java style class/package structure.  
+				</p>
+				<p>
+				If your project structures it's code in this way, then this bundler will automatically detect dependencies and include
+				them. And if you use the standard extends() function for class inheritance, then this bundler will automatically 
+				know to generate the dependency list in the right order.
+				</p>
+				<p>
+					E.g: imagine ypur source roots are script/ and modules/* (so that each folder in modules is a source root)<br /> 
+					script/app/Main.js contains the class app.Main<br />
+					modules/audio/lib/audio/Sampler.js contains the class lib.audio.Sampler<br />
+					modules/services/lib/rest/DataService.js contains the class lib.rest.DataService<br />
 				</p>
 				
-				<p>It is written in Java and works as either a command line tool, a builder inside your IDE,
-				a server side generator, a file watcher, or as a step in your build. 
+				<p>
+				If app.Main uses the class audio.lib.Sampler then the bundler will see that and know to include the Sampler class.
+				You don't need to specify it or manually list your classes dependencies.
+				If some of your code doesn't conform to the standard structure then you can manually include it with the include
+				function.
 				</p>
 				
-				<p>JSCL can be configured to build automatically inside your IDE as well as during your proper build.
-				This gives you a fast dev cycle that doesn't require a slow and laborious full build to see quick changes
-				to javascript code.</p>
+				<p>It is written in Java and works as either a command line tool (which can run as a watcher while you code) 
+				a builder inside your IDE, a server side generator in Java apps, and as a step in your build. 
+				</p>
 			</div>
 
 			<div>
-				<h1>How it works</h1>
-				<p>JSCL starts with some seed classes or config files - usually the main app loader, layout config and/or entry points to your application. 
-					It then reads your source folder trees and generates a dependency list and bundle file of
-					all required classes by reading each one and detecting run-time and parse-time dependencies inside it.</p>
+				<h1>How to run it - </h1>
+				<h2>Try it out on the command line</h2>
+				<p>You need to have Java 1.7 or higher installed. Then find a seed class, source folder and output file, and run the bundler like this:</p>
 				
-				<p>It works best if you structure your javascript classes and files in the Java one-class-per-file style, where each class is defined in
-					a file with a matching name and any namespace structure matches the folder structure.
-				</p> 
+				<code>java -jar js-class-loader-1.2.17.jar --sourcePaths=src --seedClasses=my.app.Main --bundleFile=gen/bundle.js</code>
 				
-				<p>The dependency detection is not complicated - if a folder and file "path/to/a/Camel.js" exists in one of your source folders,
-					then whenever JSCL finds a js file that contains the string path.to.a.Camel it will consider to depend on path/to/a/Camel.js</p>
+				<p>Check your output file to see what's in there.</p>
 				
-				<p>Your project may have any structure at all, with one or more source folders in any location. You also do not necessarily need to structure
-					your source in the Java style either, if you don't then you'll just have to manually specify your dependencies with include() statements.</p>
+				<h2>Move your config into a config file</h2>
+				<p>Once you've got the basic bundling going on the command line, put your config options into a js-class-loader.properties file, and put it
+				it wherever you keep your config files. Add the basePath option into your config file to make sure it always runs from the right place.</p>
+				<p>You can then run the bundler again with</p>
+				
+				<code>java -jar js-class-loader-1.2.15.jar --config=conf/js-class-loader.properties</code>
+				
+				<h2>Run it as a file watcher</h2>
+				<p>Sometimes an out-of-IDE process to bundle your code is the most effective way. To run JSCL like this, add --watchFiles=true on the command line</p>
+				
+				<code>java -jar js-class-loader-1.2.15.jar --config=conf/js-class-loader.properties --watchFiles=true</code>
+				
+				<h2>Run it from your IDE</h2>
+				<p>In eclipse you can set up a project builder that runs the jar and specifies the arguments. Use the same arguments as you would from the command
+					line.</p>
+				
+				<h2>Add it to your Maven build</h2>
+				
+				<p>Add the following dependency to your pom.xml dependencies section:</p>
+				<code>
+				&lt;dependency&gt; <br />
+				&emsp;&emsp;&lt;groupId&gt;com.larrymite&lt;/groupId&gt; <br />
+				&emsp;&emsp;&lt;artifactId&gt;js-class-loader-mojo&lt;/artifactId&gt; <br />
+				&emsp;&emsp;&lt;version&gt;${pom.version}&lt;/version&gt; <br />
+				&lt;/dependency&gt; <br />
+				</code>
+				
+				<p>And add the following plugin to your build/plugins in your pom.xml file:</p>
+				
+				<code>
+					&lt;plugin&gt;<br />
+					&emsp;&emsp;&lt;groupId&gt;com.larrymite&lt;/groupId&gt;<br />
+					&emsp;&emsp;&lt;artifactId&gt;js-class-loader-mojo&lt;/artifactId&gt;<br />
+					&emsp;&emsp;&lt;version&gt;${pom.version}&lt;/version&gt;<br />
+					&emsp;&emsp;&lt;executions&gt;<br />
+					&emsp;&emsp;&emsp;&emsp;&lt;execution&gt;<br />
+					&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&lt;goals&gt;<br />
+					&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&lt;goal&gt;generate-js-bundle&lt;/goal&gt;<br />
+					&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&lt;/goals&gt;<br />
+					&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&lt;configuration&gt;<br />
+					&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&lt;configFile&gt;${basedir}/src/main/resources/js-class-loader.properties&lt;/configFile&gt;<br />
+					&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&lt;/configuration&gt;<br />
+					&emsp;&emsp;&emsp;&emsp;&lt;/execution&gt;<br />
+					&emsp;&emsp;&lt;/executions&gt;<br />
+					&lt;/plugin&gt;<br />
+				</code>
+				
+				
 			</div>
 				
 				
 			<div>
-				<h1>Who is it for?</h1>
-				<p>The author (me!) has worked on a number of different, large scale javascript codebases in the Java enterprise environment and often it's not practical to run
-					a NodeJS or Ruby based tool to do javascript aggregation, and those tools don't tend to integrate well with standard java build tools.
+				<h1>What is the point of all of this?</h1>
+				<p>Mainly this tool is for javascript developers working in a java web app environment that want to manage a large js codebase with a neat, 
+				convention based code structure without having to worry about manually managing dependencies or installing a suite of other compilers, 
+				runtimes and tools to bundle their javascript up. 
 				</p>
-				<p>This tool is based on an implementation written at Caplin Systems where they have a massive library of thousands of javascript files, megabytes of code,
-					and need a fast bundling tool to generate deployment bundles of the modules that they are using.
-				</p>
-				<p>Generally, this tool is for javascript developers that want to manage a large js codebase with a neat, convention based code structure
-					without having to worry about manually managing dependencies or installing a suite of other compilers, runtimes and tools to bundle their
-					javascript up. 
-				</p>
+				<p>No java knowledge is required to run the bundler though, so any developer could use it if they felt inclined.</p>
 			</div>
 				
 			<div>
-				<h1>What are the worst things about it?</h1>
-				<p>For developers that are new to it, if you are expected to match your file names and class names and you don't, then JSCL won't detect them and you'll end
-					up frustratedly tearing your hair out trying to work out why your code isn't there. The "magical" aspect of the dependency management is annoying if you're
-					dropped in on an existing codebase and don't know or care how this bundler works.
-				</p>
+				<h1>Issues</h1>
 				<p>
 					Maven integration in eclipse is hard and bad, not just with JSCL but with Eclipse M2E and maven in general. Maven may change files and 
 					metadata outside of the project, making it difficult for M2E to guarantee that it's build does the same thing as the maven build. The
@@ -109,7 +156,7 @@
 				<p>
 					So the eclipse approach to custom maven plugins is to either force you to add m2e specific config to your project files, which is bad, or write a specific M2E configurator which is bad too,
 					and lots of pointless work to keep it working, tested and up to date. Having said all of that, it is possible to use the maven mojo effectively from within
-					eclipse, it's just that like with most things eclipse and maven, you might find yourself having to know rather more about maven than you'd like to fix any 
+					eclipse, it's just that like with most things eclipse and maven, you might find yourself having to know rather more about maven than you'd like, if you want to fix any 
 					random spurious error messages you get when your project gets messed up. Generally I prefer to use the bundler as a builder from eclipse and only use the mojo at
 					build time, being confident that the bundles will end up identical. However some developers might get a bit uncomfortable with a bundle file being generated in
 					a different way in dev to in the deployed build.

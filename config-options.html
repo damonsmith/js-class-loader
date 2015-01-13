@@ -45,7 +45,7 @@
 			
 			<p>These options are also all available on the command line, use <pre>java -jar js-class-loader-1.x.x.jar --help</pre> to see the options.</p>
 			
-			<h1>Description of options</h1>
+			<h1>Available options</h1>
 
 			<ul>
 				<li><b>basePath</b>
@@ -86,10 +86,10 @@
 					</p>
 				</li>
 				
-				<li><b>allClasses</b>
+				<li><b>watchFiles</b>
 					<p>
-						Set this to true to parse and bundle all javascript files in your source trees. The classes
-						will still be in dependency order.
+						Set this to true to run the bundler in watcher mode, it will bundle files then listen for
+						file and folder changes to bundle again.
 					</p>
 				</li>
 				

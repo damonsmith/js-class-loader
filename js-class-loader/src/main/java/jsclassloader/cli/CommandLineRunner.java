@@ -42,14 +42,13 @@ public class CommandLineRunner implements GraphUpdateListener {
 			}
 		}
 		else {
-			generate();
-			
 			if (config.getProperty(Config.PROP_WATCH_FILES) != null 
 			    && config.getProperty(Config.PROP_WATCH_FILES).equals("true")) {
-				
 				FileChangeWatcher watcher = new FileChangeWatcher(bundler);
 				watcher.addUpdateListener(this);
+				graphUpdated();
 				watcher.processEvents();
+				
 			}
 		}
 	}
@@ -108,7 +107,13 @@ public class CommandLineRunner implements GraphUpdateListener {
 	@Override
 	public void graphUpdated() {
 		try {
+			long startTime = System.currentTimeMillis();
 			generate();
+			System.out.println("Generated new bundle in " + (System.currentTimeMillis() - startTime));
+			System.out.println(
+					bundler.getBundleSize() + " bytes, " + 
+					bundler.getLineNumber() + " lines, " + 
+					bundler.getClassList().size() + " files");
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);

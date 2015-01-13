@@ -45,12 +45,18 @@ public class Bundler {
 	private List<Mapping> mappings;
 	private Config config;
 	private boolean isGeneratingSourceMap;
+	private String md5String;
+	private long bundleSize;
+	private int lineNumber;
 	
 	public List<ClassNode> getClassList() {
 		return classList;
 	}
 
 	public Bundler(Config config) throws IOException {
+		
+		LOG.setLevel(Level.WARNING);
+		
 		classList = new LinkedList<ClassNode>();
 		this.config = config;
 		isGeneratingSourceMap = (config.getProperty(Config.PROP_SOURCE_MAP_FILE) != null);
@@ -190,10 +196,15 @@ public class Bundler {
 		mappings = new ArrayList<Mapping>();
 		
 		if (isGeneratingSourceMap) {
-			out.write(getSourceMappingUrlString().getBytes());
+			String sourceMapString = getSourceMappingUrlString();
+			out.write(sourceMapString.getBytes());
+			bundleSize = sourceMapString.length();
+		}
+		else {
+			bundleSize = 0;
 		}
 		
-		int lineNumber = 2;
+		lineNumber = 2;
 		while (iterator.hasNext()) {
 			currentNode = iterator.next();
 			File file = classFileSet.getFileFromClassname(currentNode
@@ -202,7 +213,7 @@ public class Bundler {
 			lineNumber = copyLinesAndStripComments(file, out, md5, lineNumber, mappings);
 		}
 		
-		String md5String = new BigInteger(1, md5.digest()).toString(16);
+		md5String = new BigInteger(1, md5.digest()).toString(16);
 		
 		out.write(("\n\nvar JSCL_UNIQUE_BUNDLE_HASH=" + "'" + md5String + "';\n\n").getBytes());
 		
@@ -255,6 +266,7 @@ public class Bundler {
 		StringBuilder line = new StringBuilder();
 		StringBuilder total = new StringBuilder();
 		while (true) {
+			bundleSize++;
 			if (prev == 13 && curr == 13) {
 				sourceFileLineNumber++;
 				outputFileLineNumber++;
@@ -266,7 +278,6 @@ public class Bundler {
 				if (prev == '\n' || prev == -1) {
 					if (!isInSlashStarComment) {
 						if (isGeneratingSourceMap) {
-							//System.out.println(sourceFileLineNumber + " : " + outputFileLineNumber + " - " + line);
 							total.append(line);
 							line = new StringBuilder();
 							mappings.add(new Mapping(pathRelative.toString(), new Position(sourceFileLineNumber, 0), new Position(outputFileLineNumber, 0)));
@@ -359,7 +370,7 @@ public class Bundler {
 			curr = (byte)input.read();
 		}
 		
-		output.write((new String("//end of " + inputFile.getName() + "\n")).getBytes());
+		output.write('\n');
 		outputFileLineNumber++;
 		
 		
@@ -423,4 +434,15 @@ public class Bundler {
 		return seedFileList;
 	}
 
+	public ClassFileSet getClassFileSet() {
+		return classFileSet;
+	}
+
+	public long getBundleSize() {
+		return bundleSize;
+	}
+
+	public int getLineNumber() {
+		return lineNumber;
+	}
 }

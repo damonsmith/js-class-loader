@@ -6,6 +6,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -36,6 +37,12 @@ public class FileChangeWatcher {
 		this.watcher = FileSystems.getDefault().newWatchService();
 		this.keys = new HashMap<WatchKey, Path>();
 		this.bundler = bundler;
+		String sourceRoots = "";
+		for (File file : bundler.getClassFileSet().getRootDirs()) {
+			this.registerAll(file.toPath());
+			sourceRoots += file.getPath() + " ";
+		}
+		System.out.println("Javascript Class Loader watching source paths: " + sourceRoots);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -43,9 +50,6 @@ public class FileChangeWatcher {
 		return (WatchEvent<T>) event;
 	}
 
-	/**
-	 * Register the given directory with the WatchService
-	 */
 	private void register(Path dir) throws IOException {
 		WatchKey key = dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
 		keys.put(key, dir);
@@ -140,14 +144,10 @@ public class FileChangeWatcher {
 					}
 				}
 			}
+			key.reset();
 		}
 	}
 
-	static void usage() {
-		System.err.println("usage: java Watcher dir");
-		System.exit(-1);
-	}
-	
 	public void addUpdateListener(GraphUpdateListener listener) {
 		this.listener = listener;
 	}

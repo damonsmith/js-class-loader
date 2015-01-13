@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jsclassloader.Config;
@@ -32,6 +33,7 @@ public class ClassFileSet {
 
 	public ClassFileSet(Config config) throws IOException {
 
+		LOG.setLevel(Level.WARNING);
 		basePath = java.nio.file.Paths.get(new File(config.getProperty(Config.PROP_BASE_FOLDER)).getCanonicalPath());
 
 		classnameToFilelookup = new HashMap<String, File>();
@@ -159,4 +161,10 @@ public class ClassFileSet {
 		}
 		return paths.dirsOnly().getFiles();
 	}
+
+	public List<File> getRootDirs() {
+		return rootDirs;
+	}
+	
+	
 }

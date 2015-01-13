@@ -50,6 +50,9 @@ public class CommandLineRunner implements GraphUpdateListener {
 				watcher.processEvents();
 				
 			}
+			else {
+				graphUpdated();
+			}
 		}
 	}
 	
@@ -109,7 +112,7 @@ public class CommandLineRunner implements GraphUpdateListener {
 		try {
 			long startTime = System.currentTimeMillis();
 			generate();
-			System.out.println("Generated new bundle in " + (System.currentTimeMillis() - startTime));
+			System.out.println("Generated new bundle in " + (System.currentTimeMillis() - startTime) + "ms");
 			System.out.println(
 					bundler.getBundleSize() + " bytes, " + 
 					bundler.getLineNumber() + " lines, " + 

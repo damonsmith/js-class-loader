@@ -193,7 +193,7 @@ public class BundlerTest {
 		checkSourceAndTargetLines(mappings, 13979, 9892, "../src/test/resources/full/lib/box2d/box2d.js");
 		checkLineOfBundleMatches(outfile, "\tenableMotor: null});", 13978);
 		checkLineOfBundleMatches(outfile, "second last line", 13979);
-		checkLineOfBundleMatches(outfile, "last line//end of box2d.js", 13980);
+		checkLineOfBundleMatches(outfile, "last line", 13980);
 		
 		checkSourceAndTargetLines(mappings, 13981, 19, "../src/test/resources/full/lib/jssynth/Global.js");
 		checkSourceAndTargetLines(mappings, 13982, 20, "../src/test/resources/full/lib/jssynth/Global.js");
